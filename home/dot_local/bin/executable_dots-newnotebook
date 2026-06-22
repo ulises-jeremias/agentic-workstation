@@ -11,7 +11,7 @@ set -euo pipefail
 SKILL_DIR="${HOME}/.local/share/dots-ai/skills/jupyter-notebook"
 SCRIPT="${SKILL_DIR}/scripts/new_notebook.py"
 
-if [[ ! -f "${SCRIPT}" ]]; then
+if [[ ! -f ${SCRIPT} ]]; then
   printf 'dots-newnotebook: missing helper script at %s\n' "${SCRIPT}" >&2
   printf "Run \`chezmoi apply\` and \`dots-skills sync\` to install the jupyter-notebook skill.\n" >&2
   exit 1
