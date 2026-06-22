@@ -30,16 +30,16 @@ DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && p
 DOTS_AI_LIB_DIR="${DOTS_AI_LIB_DIR:-${DEFAULT_DOTS_AI_LIB_DIR:-$HOME/.local/lib/dots-ai}}"
 EASY_OPTIONS_LIB="${DOTS_AI_LIB_DIR}/easy-options/easyoptions.sh"
 
-if [[ ! -f "${EASY_OPTIONS_LIB}" ]]; then
-	echo "[dots-llm-server] Missing dependency: ${EASY_OPTIONS_LIB}" >&2
-	exit 1
+if [[ ! -f ${EASY_OPTIONS_LIB} ]]; then
+  echo "[dots-llm-server] Missing dependency: ${EASY_OPTIONS_LIB}" >&2
+  exit 1
 fi
 source "${EASY_OPTIONS_LIB}"
 
 LLM_SERVER_LIB="${DOTS_AI_LIB_DIR}/llm-server.sh"
-if [[ ! -f "${LLM_SERVER_LIB}" ]]; then
-	echo "[dots-llm-server] Missing dependency: ${LLM_SERVER_LIB}" >&2
-	exit 1
+if [[ ! -f ${LLM_SERVER_LIB} ]]; then
+  echo "[dots-llm-server] Missing dependency: ${LLM_SERVER_LIB}" >&2
+  exit 1
 fi
 source "${LLM_SERVER_LIB}"
 
@@ -47,16 +47,16 @@ command="${arguments[0]:-}"
 arg2="${arguments[1]:-}"
 
 case "$command" in
-install) llm_install ;;
-start) llm_start "${arg2}" ;;
-stop) llm_stop ;;
-switch) llm_switch "${arg2}" ;;
-status) llm_status ;;
-logs) llm_logs "${arg2}" ;;
-"") exit 0 ;;
-*)
-	echo "[dots-llm-server] Unknown command: ${command}" >&2
-	echo "Run 'dots-llm-server --help' for usage." >&2
-	exit 1
-	;;
+  install) llm_install ;;
+  start) llm_start "${arg2}" ;;
+  stop) llm_stop ;;
+  switch) llm_switch "${arg2}" ;;
+  status) llm_status ;;
+  logs) llm_logs "${arg2}" ;;
+  "") exit 0 ;;
+  *)
+    echo "[dots-llm-server] Unknown command: ${command}" >&2
+    echo "Run 'dots-llm-server --help' for usage." >&2
+    exit 1
+    ;;
 esac

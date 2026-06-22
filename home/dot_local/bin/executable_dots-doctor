@@ -480,19 +480,19 @@ emit_json_line() {
     return 1
   fi
   DOTS_AI_DOC_HOSTNAME="$(hostname 2>/dev/null || true)" \
-    DOTS_AI_DOC_USER="$(whoami 2>/dev/null || true)" \
-    DOTS_AI_DOC_OS="$(_os_pretty)" \
-    DOTS_AI_DOC_KERNEL="$(uname -r 2>/dev/null || true)" \
-    DOTS_AI_DOC_ARCH="$(uname -m 2>/dev/null || true)" \
-    DOTS_AI_DOC_WSL="$(_wsl_hint)" \
-    DOTS_AI_DOC_PROFILE="${DOTS_AI_DOCTOR_PROFILE:-}" \
-    DOTS_AI_DOC_PASSED="$passed" \
-    DOTS_AI_DOC_CHECKS="$checks" \
-    DOTS_AI_DOC_ERRORS="$errors" \
-    DOTS_AI_DOC_INTG_ENVD="${DOTS_AI_DOC_INTG_ENVD:-}" \
-    DOTS_AI_DOC_INTG_GH="${DOTS_AI_DOC_INTG_GH:-}" \
-    DOTS_AI_DOC_INTG_CLICKUP="${DOTS_AI_DOC_INTG_CLICKUP:-}" \
-    DOTS_AI_DOC_INTG_GLAB="${DOTS_AI_DOC_INTG_GLAB:-}" \
+  DOTS_AI_DOC_USER="$(whoami 2>/dev/null || true)" \
+  DOTS_AI_DOC_OS="$(_os_pretty)" \
+  DOTS_AI_DOC_KERNEL="$(uname -r 2>/dev/null || true)" \
+  DOTS_AI_DOC_ARCH="$(uname -m 2>/dev/null || true)" \
+  DOTS_AI_DOC_WSL="$(_wsl_hint)" \
+  DOTS_AI_DOC_PROFILE="${DOTS_AI_DOCTOR_PROFILE:-}" \
+  DOTS_AI_DOC_PASSED="$passed" \
+  DOTS_AI_DOC_CHECKS="$checks" \
+  DOTS_AI_DOC_ERRORS="$errors" \
+  DOTS_AI_DOC_INTG_ENVD="${DOTS_AI_DOC_INTG_ENVD:-}" \
+  DOTS_AI_DOC_INTG_GH="${DOTS_AI_DOC_INTG_GH:-}" \
+  DOTS_AI_DOC_INTG_CLICKUP="${DOTS_AI_DOC_INTG_CLICKUP:-}" \
+  DOTS_AI_DOC_INTG_GLAB="${DOTS_AI_DOC_INTG_GLAB:-}" \
     python3 -c "import json,os;d=os.environ;print(json.dumps({
     'hostname': d.get('DOTS_AI_DOC_HOSTNAME') or None,
     'user': d.get('DOTS_AI_DOC_USER') or None,
