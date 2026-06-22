@@ -81,6 +81,12 @@ Interactive `chezmoi init` captures user choices for:
 
 Those choices are persisted and used by `home/.chezmoiscripts/` installer scripts on future applies without re-prompting. At the end of each apply, `dots-skills sync` regenerates all skill symlinks.
 
+## Local AI Audit
+
+`dots-ai-audit` inventories local AI tool installation, safe auth hints, config file presence, and privacy-related metadata for Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, Windsurf, and Gemini. It is intentionally redacted: it never prints token values, raw auth files, prompt history, chat logs, or memory contents. Local subscription evidence is best-effort only; vendor admin consoles or APIs remain authoritative for plan ownership.
+
+`dots-security-audit` provides a shallow workstation security check for sensitive file permissions, AI auth file permissions, and expected dots-ai baseline directories. Deep secret scanning is skipped by default to avoid noisy false positives.
+
 ## Safety guarantees
 
 > [!CAUTION]

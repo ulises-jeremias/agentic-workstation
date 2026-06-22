@@ -17,6 +17,8 @@
 | `dots-loadenv` | Load environment variables from `~/.config/dots-ai/env.d/` |
 | `dots-update-check` | Check if the local baseline is behind origin/main |
 | `dots-bootstrap` | Re-run `chezmoi apply` with dry-run preview |
+| `dots-ai-audit` | Inventory AI tool installs, auth hints, and privacy/config metadata without printing secrets |
+| `dots-security-audit` | Run shallow workstation security checks for sensitive permissions and baseline paths |
 
 ---
 
@@ -62,6 +64,19 @@ gh auth status
 clickup auth status
 glab auth status
 ```
+
+### Audit AI tools and workstation security
+
+```bash
+dots-ai-audit --issue
+dots-ai-audit --json
+dots-security-audit --issue
+dots-security-audit --json
+```
+
+`dots-ai-audit` reports safe metadata for local AI tools such as Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, Windsurf, and Gemini. It never prints token values, raw auth files, prompt history, chat logs, or memory contents. Vendor subscription details are best-effort locally; authoritative plan ownership usually requires the vendor's admin console or API.
+
+`dots-security-audit` runs low-noise checks for sensitive file permissions, AI auth file permissions, and expected dots-ai directories. Deep secret scanning is skipped by default.
 
 ---
 

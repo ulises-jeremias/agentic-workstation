@@ -44,7 +44,7 @@ repos:
     hooks:
       - id: shellcheck
         args: [--severity=warning, --shell=bash]
-        files: \.sh$
+        files: (\.sh$|executable_dots-.*$)
         exclude: (^|/)\.reference/|(^|/)megalinter-reports/|(^|/)\.cursor/
 
   - repo: https://github.com/scop/pre-commit-shfmt
@@ -52,7 +52,7 @@ repos:
     hooks:
       - id: shfmt
         args: [-w, -s, -i, '2', -ci]
-        files: \.sh$
+        files: (\.sh$|executable_dots-.*$)
         exclude: (^|/)\.reference/|(^|/)megalinter-reports/|(^|/)\.cursor/
 
   - repo: https://github.com/igorshubovych/markdownlint-cli

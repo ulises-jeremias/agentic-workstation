@@ -66,7 +66,7 @@ install_python_tool() {
     if uv tool list 2>/dev/null | grep -q "^${pkg} "; then
       ok "${pkg} already installed (uv tool)"
     else
-      uv tool install "$pkg" && ok "${pkg} installed via uv tool" || warn "uv tool install ${pkg} failed"
+      uv tool install --force "$pkg" && ok "${pkg} installed via uv tool" || warn "uv tool install ${pkg} failed"
     fi
   elif has_cmd pipx; then
     if pipx list --short 2>/dev/null | grep -q "^${pkg} "; then

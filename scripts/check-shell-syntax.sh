@@ -18,7 +18,7 @@ fail() { printf '%b[shell-syntax]%b %s\n' "$c_red" "$c_reset" "$*"; }
 ok() { printf '%b[shell-syntax]%b %s\n' "$c_green" "$c_reset" "$*"; }
 
 status=0
-info "checking bash syntax for all .sh files"
+info "checking bash syntax for all .sh files and chezmoi executables"
 while IFS= read -r file; do
   info "checking: ${file}"
   if ! bash -n "${file}"; then
@@ -28,6 +28,15 @@ while IFS= read -r file; do
     ok "valid: ${file}"
   fi
 done < <(rg --files -g "*.sh")
+while IFS= read -r file; do
+  info "checking: ${file}"
+  if ! bash -n "${file}"; then
+    fail "syntax error: ${file}"
+    status=1
+  else
+    ok "valid: ${file}"
+  fi
+done < <(rg --files -g "home/dot_local/bin/executable_dots-*" .)
 
 if [[ ${status} -eq 0 ]]; then
   ok "all shell scripts passed syntax validation"

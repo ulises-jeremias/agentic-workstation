@@ -1,0 +1,163 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+## dots-security-audit
+##
+## Performs shallow workstation security checks for dots-ai-managed machines.
+## Default mode avoids deep secret scanning to keep output low-noise.
+##
+## Usage:
+##     @script.name [options]
+##
+## Options:
+##     -h, --help              Show this help message.
+##     --json                  Emit a single JSON report.
+##     --issue, --paste        Emit a Markdown-friendly report.
+##     --strict                Exit non-zero when failures are found.
+
+MODE="human"
+STRICT=0
+findings_json="[]"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h | --help)
+      sed -n '3,17p' "$0" | sed 's/^## \{0,1\}//'
+      exit 0
+      ;;
+    --json)
+      MODE="json"
+      shift
+      ;;
+    --issue | --paste)
+      MODE="issue"
+      shift
+      ;;
+    --strict)
+      STRICT=1
+      shift
+      ;;
+    *)
+      echo "[dots-security-audit] unknown option: $1 (try --help)" >&2
+      exit 2
+      ;;
+  esac
+done
+
+add_finding() {
+  local level="$1" check="$2" message="$3" path="${4:-}"
+  findings_json=$(
+    FINDINGS_JSON="$findings_json" LEVEL="$level" CHECK="$check" MESSAGE="$message" PATH_VALUE="$path" python3 - <<'PY'
+import json, os
+items = json.loads(os.environ["FINDINGS_JSON"])
+items.append({
+  "level": os.environ["LEVEL"],
+  "check": os.environ["CHECK"],
+  "message": os.environ["MESSAGE"],
+  "path": os.environ["PATH_VALUE"] or None,
+})
+print(json.dumps(items))
+PY
+  )
+}
+
+perm_of() { stat -c %a "$1" 2>/dev/null || stat -f %Lp "$1" 2>/dev/null || true; }
+
+check_permissions() {
+  if [[ -d $HOME/.ssh ]]; then
+    local p
+    p="$(perm_of "$HOME/.ssh")"
+    [[ -n $p && $p != "700" ]] && add_finding fail ssh_permissions "SSH directory should be 700" "${HOME}/.ssh"
+    while IFS= read -r key; do
+      p="$(perm_of "$key")"
+      case "$p" in
+        600 | 400) ;;
+        *) add_finding fail ssh_key_permissions "private SSH key should be 600 or 400" "$key" ;;
+      esac
+    done < <(find "$HOME/.ssh" -type f \( -name "id_*" -o -name "*_rsa" -o -name "*_ed25519" -o -name "*_ecdsa" \) ! -name "*.pub" 2>/dev/null)
+  fi
+
+  for f in "$HOME/.local/share/opencode/auth.json" "$HOME/.codex/auth.json" "$HOME/.config/gh/hosts.yml"; do
+    [[ -e $f ]] || continue
+    local p
+    p="$(perm_of "$f")"
+    case "$p" in
+      600 | 400) ;;
+      *) add_finding warn auth_file_permissions "auth file should not be group/world readable" "$f" ;;
+    esac
+  done
+}
+
+check_sensitive_files() {
+  while IFS= read -r -d '' file; do
+    local p
+    p="$(perm_of "$file")"
+    [[ -n $p ]] || continue
+    case "${p: -1}" in
+      4 | 5 | 6 | 7)
+        add_finding warn world_readable_sensitive "sensitive-looking file is world-readable" "$file"
+        ;;
+    esac
+  done < <(
+    find "$HOME" -maxdepth 3 -type f \
+      \( -name "*.key" -o -name "*.pem" -o -name "*.p12" -o -name "*.pfx" -o -name "*password*" -o -name "*secret*" \) \
+      -print0 2>/dev/null
+  )
+}
+
+check_baseline_dirs() {
+  for d in "$HOME/.local/share/dots-ai" "$HOME/.config/dots-ai"; do
+    [[ -d $d ]] || add_finding warn baseline_layout "expected dots-ai directory is missing" "$d"
+  done
+}
+
+check_secret_scan_policy() {
+  add_finding info secret_scan "deep secret scan skipped by default; inspect env.d and auth files manually when needed" ""
+}
+
+check_permissions
+check_sensitive_files
+check_baseline_dirs
+check_secret_scan_policy
+
+failures=$(
+  FINDINGS_JSON="$findings_json" python3 - <<'PY'
+import json, os
+print(sum(1 for f in json.loads(os.environ["FINDINGS_JSON"]) if f["level"] == "fail"))
+PY
+)
+
+if [[ ${MODE} == "json" ]]; then
+  FINDINGS_JSON="$findings_json" FAILURES="$failures" python3 - <<'PY'
+import json, os
+findings = json.loads(os.environ["FINDINGS_JSON"])
+print(json.dumps({
+  "schema_version": 1,
+  "scope": "dots-ai",
+  "failures": int(os.environ["FAILURES"]),
+  "compliant": int(os.environ["FAILURES"]) == 0,
+  "findings": findings,
+}, sort_keys=True))
+PY
+elif [[ ${MODE} == "issue" ]]; then
+  FINDINGS_JSON="$findings_json" python3 - <<'PY'
+import json, os
+print("## dots-ai security audit\n")
+for f in json.loads(os.environ["FINDINGS_JSON"]):
+    marker = "[ ]" if f["level"] == "fail" else "[-]"
+    path = f" (`{f['path']}`)" if f.get("path") else ""
+    print(f"- {marker} **{f['level']}** {f['check']}: {f['message']}{path}")
+PY
+else
+  echo "[dots-security-audit] shallow security audit"
+  FINDINGS_JSON="$findings_json" python3 - <<'PY'
+import json, os
+for f in json.loads(os.environ["FINDINGS_JSON"]):
+    path = f" ({f['path']})" if f.get("path") else ""
+    print(f"  [{f['level']}] {f['check']}: {f['message']}{path}")
+PY
+fi
+
+if [[ ${STRICT} -eq 1 && ${failures} -gt 0 ]]; then
+  exit 1
+fi
