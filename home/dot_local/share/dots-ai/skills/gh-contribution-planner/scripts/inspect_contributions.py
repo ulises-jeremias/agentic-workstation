@@ -75,6 +75,26 @@ query($login: String!, $since: DateTime!) {
 }
 """.strip()
 
+OPEN_PRS_GRAPHQL = """
+query($queryString: String!) {
+  search(query: $queryString, type: ISSUE, first: 100) {
+    nodes {
+      ... on PullRequest {
+        url
+        title
+        number
+        isDraft
+        createdAt
+        updatedAt
+        state
+        reviewDecision
+        repository { nameWithOwner }
+      }
+    }
+  }
+}
+""".strip()
+
 
 class GhResult:
     def __init__(self, returncode: int, stdout: str, stderr: str) -> None:
@@ -92,6 +112,20 @@ def run_gh(args: list[str], *, dry_run: bool = False) -> GhResult:
     return GhResult(proc.returncode, proc.stdout, proc.stderr)
 
 
+def _positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("must be > 0")
+    return parsed
+
+
+def _non_negative_int(value: str) -> int:
+    parsed = int(value)
+    if parsed < 0:
+        raise argparse.ArgumentTypeError("must be >= 0")
+    return parsed
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
@@ -107,9 +141,9 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--max-per-bucket",
-        type=int,
+        type=_positive_int,
         default=DEFAULT_MAX_PER_BUCKET,
-        help="Cap items per bucket.",
+        help="Cap items per bucket (must be > 0).",
     )
     parser.add_argument(
         "--user",
@@ -118,9 +152,9 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--stale-issue-days",
-        type=int,
+        type=_non_negative_int,
         default=STALE_ISSUE_DAYS_DEFAULT,
-        help="Issues older than this many days count as stale.",
+        help="Issues older than this many days count as stale (must be >= 0).",
     )
     parser.add_argument(
         "--json",
@@ -211,32 +245,31 @@ def fetch_owned_repos(user: str, *, dry_run: bool) -> list[dict[str, Any]]:
     return _parse_json_list(result.stdout)
 
 
-def fetch_authored_open_prs(*, dry_run: bool) -> list[dict[str, Any]]:
-    fields = ",".join([
-        "url",
-        "title",
-        "repository",
-        "number",
-        "isDraft",
-        "createdAt",
-        "updatedAt",
-        "state",
+def fetch_authored_open_prs(user: str, *, dry_run: bool) -> list[dict[str, Any]]:
+    query_string = f"is:pr is:open author:{user}"
+    if dry_run:
+        print(
+            f"+ gh api graphql -f query=<openPullRequests> -f queryString='{query_string}'",
+            file=sys.stderr,
+        )
+        return []
+    result = run_gh([
+        "api", "graphql",
+        "-f", f"query={OPEN_PRS_GRAPHQL}",
+        "-f", f"queryString={query_string}",
     ])
-    result = run_gh(
-        [
-            "search", "prs",
-            "--author", "@me",
-            "--state", "open",
-            "--limit", "100",
-            "--json", fields,
-        ],
-        dry_run=dry_run,
-    )
     if result.returncode != 0:
         msg = (result.stderr or result.stdout or "").strip()
-        print(f"Warning: gh search prs (open) failed: {msg}", file=sys.stderr)
+        print(f"Warning: open PRs GraphQL query failed: {msg}", file=sys.stderr)
         return []
-    return _parse_json_list(result.stdout)
+    try:
+        payload = json.loads(result.stdout or "{}")
+    except json.JSONDecodeError:
+        return []
+    nodes = (
+        ((payload.get("data") or {}).get("search") or {}).get("nodes") or []
+    )
+    return [node for node in nodes if isinstance(node, dict) and node]
 
 
 def fetch_contributions_collection(
@@ -418,9 +451,18 @@ def bucketize(
         })
 
     # Top up quick_wins with unassigned good-first-issue / help-wanted in own repos.
-    own_easy = [i for i in issues_good_first if not (i.get("assignees") or [])] + [
+    # Issues can carry both labels — dedupe by (repo, number) so each slot is unique.
+    own_easy_raw = [i for i in issues_good_first if not (i.get("assignees") or [])] + [
         i for i in issues_help_wanted if not (i.get("assignees") or [])
     ]
+    own_easy: list[dict[str, Any]] = []
+    seen_easy: set[tuple[str, Any]] = set()
+    for issue in own_easy_raw:
+        key = (_repo_full(issue.get("repository")), issue.get("number"))
+        if key in seen_easy:
+            continue
+        seen_easy.add(key)
+        own_easy.append(issue)
     remaining = max(0, max_per_bucket - len(plan["quick_wins"]))
     for issue in own_easy[:remaining]:
         plan["quick_wins"].append({
@@ -459,14 +501,17 @@ def bucketize(
         })
 
     # --- Review feedback ---
+    # Filter strictly by reviewDecision == CHANGES_REQUESTED so this bucket
+    # represents real unaddressed reviewer feedback, not just inactivity.
     candidates: list[tuple[int, dict[str, Any]]] = []
     for pr in open_prs:
-        updated = _iso(pr.get("updatedAt"))
-        if not updated or pr.get("isDraft"):
+        if pr.get("isDraft"):
             continue
-        age_days = (now - updated).days
-        if age_days >= REVIEW_FEEDBACK_AGE_DAYS:
-            candidates.append((age_days, pr))
+        if pr.get("reviewDecision") != "CHANGES_REQUESTED":
+            continue
+        updated = _iso(pr.get("updatedAt"))
+        age_days = (now - updated).days if updated else 0
+        candidates.append((age_days, pr))
     candidates.sort(key=lambda pair: pair[0], reverse=True)
     for age_days, pr in candidates[:max_per_bucket]:
         plan["review_feedback"].append({
@@ -474,12 +519,15 @@ def bucketize(
             "url": pr.get("url"),
             "pr_number": pr.get("number"),
             "summary": (
-                f"PR untouched for {age_days} days — likely awaiting your "
-                "response to reviewers."
+                f"Reviewer requested changes ({age_days} days since last activity) "
+                "— address the feedback."
             ),
             "effort": "~30 min",
             "delegate": DELEGATES["review_feedback"],
-            "signals": {"updated_days_ago": age_days},
+            "signals": {
+                "review_decision": pr.get("reviewDecision"),
+                "updated_days_ago": age_days,
+            },
         })
 
     # --- Forks needing sync ---
@@ -664,7 +712,7 @@ def main() -> int:
         return 2
 
     repos = fetch_owned_repos(user, dry_run=args.dry_run)
-    open_prs = fetch_authored_open_prs(dry_run=args.dry_run)
+    open_prs = fetch_authored_open_prs(user, dry_run=args.dry_run)
     contributions = fetch_contributions_collection(
         user, since_iso_datetime, dry_run=args.dry_run
     )
@@ -684,7 +732,17 @@ def main() -> int:
         with ThreadPoolExecutor(max_workers=PARALLEL_FORK_COMPARES) as pool:
             futures = [pool.submit(fetch_fork_compare, fork) for fork in forks]
             for future in as_completed(futures):
-                fork_compares.append(future.result())
+                try:
+                    fork_compares.append(future.result())
+                except Exception as exc:
+                    fork_compares.append({
+                        "fork": None,
+                        "fork_url": None,
+                        "parent": None,
+                        "behind": None,
+                        "ahead": None,
+                        "error": f"Fork compare task failed: {exc}",
+                    })
     elif args.dry_run:
         for fork in forks:
             print(
