@@ -1,10 +1,6 @@
 ---
-name: client-workflow-bootstrap
-description: >-
-  dots-ai client workflow bootstrap specialist. Use when onboarding a new client project or updating
-  an existing delivery workflow skill pair. Conducts a structured interview and generates
-  dots-ai-<client>-workflow + dots-ai-<client>-dev-companion skills, then opens a draft PR to
-  dots-ai.
+name: dots-ai-client-workflow-bootstrap
+description: "dots-ai client workflow bootstrap specialist. Use when onboarding a new client project or updating an existing delivery workflow skill pair. Conducts a structured interview and generates dots-ai-<client>-workflow + dots-ai-<client>-dev-companion skills, then opens a draft PR to dots-ai."
 tools: Read, Grep, Glob, Bash
 ---
 
