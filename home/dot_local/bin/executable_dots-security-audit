@@ -25,16 +25,29 @@ while [[ $# -gt 0 ]]; do
       sed -n '3,17p' "$0" | sed 's/^## \{0,1\}//'
       exit 0
       ;;
-    --json) MODE="json"; shift ;;
-    --issue | --paste) MODE="issue"; shift ;;
-    --strict) STRICT=1; shift ;;
-    *) echo "[dots-security-audit] unknown option: $1 (try --help)" >&2; exit 2 ;;
+    --json)
+      MODE="json"
+      shift
+      ;;
+    --issue | --paste)
+      MODE="issue"
+      shift
+      ;;
+    --strict)
+      STRICT=1
+      shift
+      ;;
+    *)
+      echo "[dots-security-audit] unknown option: $1 (try --help)" >&2
+      exit 2
+      ;;
   esac
 done
 
 add_finding() {
   local level="$1" check="$2" message="$3" path="${4:-}"
-  findings_json=$(FINDINGS_JSON="$findings_json" LEVEL="$level" CHECK="$check" MESSAGE="$message" PATH_VALUE="$path" python3 - <<'PY'
+  findings_json=$(
+    FINDINGS_JSON="$findings_json" LEVEL="$level" CHECK="$check" MESSAGE="$message" PATH_VALUE="$path" python3 - <<'PY'
 import json, os
 items = json.loads(os.environ["FINDINGS_JSON"])
 items.append({
@@ -45,7 +58,7 @@ items.append({
 })
 print(json.dumps(items))
 PY
-)
+  )
 }
 
 perm_of() { stat -c %a "$1" 2>/dev/null || stat -f %Lp "$1" 2>/dev/null || true; }
@@ -54,11 +67,11 @@ check_permissions() {
   if [[ -d $HOME/.ssh ]]; then
     local p
     p="$(perm_of "$HOME/.ssh")"
-    [[ -n $p && $p != "700" ]] && add_finding fail ssh_permissions "~/.ssh should be 700" "${HOME}/.ssh"
+    [[ -n $p && $p != "700" ]] && add_finding fail ssh_permissions "SSH directory should be 700" "${HOME}/.ssh"
     while IFS= read -r key; do
       p="$(perm_of "$key")"
       case "$p" in
-        600|400) ;;
+        600 | 400) ;;
         *) add_finding fail ssh_key_permissions "private SSH key should be 600 or 400" "$key" ;;
       esac
     done < <(find "$HOME/.ssh" -type f \( -name "id_*" -o -name "*_rsa" -o -name "*_ed25519" -o -name "*_ecdsa" \) ! -name "*.pub" 2>/dev/null)
@@ -81,7 +94,7 @@ check_sensitive_files() {
     p="$(perm_of "$file")"
     [[ -n $p ]] || continue
     case "${p: -1}" in
-      4|5|6|7)
+      4 | 5 | 6 | 7)
         add_finding warn world_readable_sensitive "sensitive-looking file is world-readable" "$file"
         ;;
     esac
@@ -107,7 +120,8 @@ check_sensitive_files
 check_baseline_dirs
 check_secret_scan_policy
 
-failures=$(FINDINGS_JSON="$findings_json" python3 - <<'PY'
+failures=$(
+  FINDINGS_JSON="$findings_json" python3 - <<'PY'
 import json, os
 print(sum(1 for f in json.loads(os.environ["FINDINGS_JSON"]) if f["level"] == "fail"))
 PY
