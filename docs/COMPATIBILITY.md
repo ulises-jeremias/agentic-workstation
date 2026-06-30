@@ -3,7 +3,7 @@
 > Auto-generated from `skill.json` compatibility fields. Run
 > `python3 scripts/generate-compatibility.py` to regenerate after editing skill manifests.
 >
-> 47 skills indexed.
+> 48 skills indexed.
 
 ## Legend
 
@@ -28,6 +28,7 @@
 | `dots-ai-development-workflow` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-ai-epic` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-ai-incident` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| `dots-ai-loop-runner` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `dots-ai-management-unit-assessment` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-ai-meeting-minutes` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-ai-output-handshake` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
