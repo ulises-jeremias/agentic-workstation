@@ -676,13 +676,28 @@ case "$command" in
   deps)
     _graph_script="${DOTS_AI_SKILLS_DIR:?}/../../scripts/skill-graph.py"
     if [[ ! -f ${_graph_script} ]]; then
-      # Fallback: look next to dots-skills in the install tree
       _graph_script="$(cd "$(dirname "${BASH_SOURCE[0]}")/../share/dots-ai/../../" && pwd)/scripts/skill-graph.py"
     fi
-    if [[ ! -f ${_graph_script} ]]; then
-      die "skill-graph.py not found. Ensure dots-ai is installed correctly."
-    fi
+    [[ -f ${_graph_script} ]] || die "skill-graph.py not found. Ensure dots-ai is installed correctly."
     python3 "${_graph_script}" deps "${@}"
+    ;;
+  enable)
+    scope=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --scope)
+          scope="$2"
+          shift 2
+          ;;
+        *) die "Usage: dots-skills enable --scope <name>" ;;
+      esac
+    done
+    [[ -z ${scope} ]] && die "Usage: dots-skills enable --scope <name>"
+    scope_file="${DOTS_AI_SHARE}/scopes/${scope}.yaml"
+    [[ -f ${scope_file} ]] || die "Scope '${scope}' not found at ${scope_file}"
+    echo "${scope}" >"${DOTS_AI_SHARE}/.active-scope"
+    ok "Active scope set to '${scope}'"
+    info "Run 'dots-skills sync' to apply scope to AI tool directories."
     ;;
   "" | --help | -h)
     # easyoptions handles --help via the header comment block
