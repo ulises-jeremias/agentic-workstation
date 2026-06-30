@@ -16,8 +16,14 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SKILLS_DIR="${REPO_ROOT}/home/dot_local/share/dots-ai/skills"
 
 _c() { [[ -t 1 ]] && printf '\033[%sm%s\033[0m' "$1" "$2" || printf '%s' "$2"; }
-ok() { _c "1;32" "  ✓"; echo " $*"; }
-fail() { _c "1;31" "  ✗"; echo " $*"; }
+ok() {
+  _c "1;32" "  ✓"
+  echo " $*"
+}
+fail() {
+  _c "1;31" "  ✗"
+  echo " $*"
+}
 
 FILTER_SKILL=""
 while [[ $# -gt 0 ]]; do
