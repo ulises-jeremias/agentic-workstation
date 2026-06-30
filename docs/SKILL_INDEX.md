@@ -3,7 +3,7 @@
 > Auto-generated from `skill-catalog.yaml` and `skill.json` manifests.
 > Run `python3 scripts/dots-skills-search.py generate-index` to regenerate.
 >
-> 47 skills indexed.
+> 48 skills indexed.
 
 ## Orchestration
 
@@ -31,6 +31,7 @@
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
+| `dots-ai-loop-runner` | Execute and manage loop engineering primitives from an AI coding sessi | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
 | `gh-contribution-planner` | Daily GitHub contribution planner — analyzes the gh-logged-in user's n | `claude-code`, `opencode`, `cursor`, `windsurf`, `copilot-cli`, `pi` |
 
 ## Clickup
