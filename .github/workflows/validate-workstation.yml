@@ -59,6 +59,12 @@ jobs:
             scripts \
             home/dot_local/share/dots-ai/dev-companion/runner
 
+      - name: Install PyYAML for skill graph
+        run: pip install PyYAML
+
+      - name: Check skill dependency graph for cycles
+        run: python3 scripts/skill-graph.py check-cycles
+
       - name: Install shellcheck
         run: sudo apt-get update && sudo apt-get install -y shellcheck ripgrep
 

@@ -673,6 +673,17 @@ case "$command" in
   install) cmd_install "${1:-}" ;;
   check) cmd_check ;;
   add) cmd_add "${1:-}" ;;
+  deps)
+    _graph_script="${DOTS_AI_SKILLS_DIR:?}/../../scripts/skill-graph.py"
+    if [[ ! -f ${_graph_script} ]]; then
+      # Fallback: look next to dots-skills in the install tree
+      _graph_script="$(cd "$(dirname "${BASH_SOURCE[0]}")/../share/dots-ai/../../" && pwd)/scripts/skill-graph.py"
+    fi
+    if [[ ! -f ${_graph_script} ]]; then
+      die "skill-graph.py not found. Ensure dots-ai is installed correctly."
+    fi
+    python3 "${_graph_script}" deps "${@}"
+    ;;
   "" | --help | -h)
     # easyoptions handles --help via the header comment block
     ;;
