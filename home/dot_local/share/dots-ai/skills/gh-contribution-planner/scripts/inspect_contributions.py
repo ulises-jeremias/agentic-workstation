@@ -422,6 +422,30 @@ def bucketize(
     plan: dict[str, list[dict[str, Any]]] = {bucket: [] for bucket in BUCKETS}
     now = datetime.now(timezone.utc)
 
+    # --- Filter issues to non-archived repos ---
+    # `repos` is fetched with --no-archived so it only contains non-archived
+    # repos. `gh search issues --owner <user>` does NOT exclude archived repos,
+    # so issues from archived repos leak into the Maintenance and Quick wins
+    # buckets. Filter them out here using the non-archived repo set as an
+    # allow-list. Guard on non_archived_repos being non-empty so that a failed
+    # repos fetch doesn't wipe all issue items (fall back to old behavior).
+    non_archived_repos: set[str] = {
+        (repo.get("nameWithOwner") or "") for repo in repos
+    }
+    if non_archived_repos:
+        issues_good_first = [
+            i for i in issues_good_first
+            if _repo_full(i.get("repository")) in non_archived_repos
+        ]
+        issues_help_wanted = [
+            i for i in issues_help_wanted
+            if _repo_full(i.get("repository")) in non_archived_repos
+        ]
+        issues_owned = [
+            i for i in issues_owned
+            if _repo_full(i.get("repository")) in non_archived_repos
+        ]
+
     # --- Quick wins ---
     quick: list[tuple[int, dict[str, Any]]] = []
     for repo in repos:

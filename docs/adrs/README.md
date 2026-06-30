@@ -25,6 +25,7 @@ Each ADR follows this structure:
 | [005](005-llm-provider-abstraction.md) | LLM provider abstraction for dev companion runner | Accepted |
 | [006](006-multi-tool-portability.md) | Multi-tool portability via symlinks and thin adapters | Accepted |
 | [007](007-agentic-harness-three-layers.md) | Agentic harness with three-layer architecture | Accepted |
+| [008](008-dev-companion-queue-safety.md) | Dev companion queue with plan-only default | Accepted |
 
 ---
 

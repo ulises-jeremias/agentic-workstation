@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Validate repository structure
         run: bash scripts/validate-repo-structure.sh
@@ -59,11 +59,17 @@ jobs:
             scripts \
             home/dot_local/share/dots-ai/dev-companion/runner
 
-      - name: Install PyYAML for skill graph
-        run: pip install PyYAML
+      - name: Install PyYAML and jsonschema for skill tools
+        run: pip install PyYAML jsonschema
 
       - name: Check skill dependency graph for cycles
         run: python3 scripts/skill-graph.py check-cycles
+
+      - name: Validate skill manifests (schema + compatibility declarations)
+        run: bash scripts/validate-skills.sh --strict
+
+      - name: Verify COMPATIBILITY.md is up to date
+        run: python3 scripts/generate-compatibility.py --check
 
       - name: Install shellcheck
         run: sudo apt-get update && sudo apt-get install -y shellcheck ripgrep
@@ -99,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup dependencies
         shell: bash
@@ -185,7 +191,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup dependencies
         shell: bash

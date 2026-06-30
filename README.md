@@ -107,6 +107,22 @@ Pair this workstation layer with [`ai-workspace`](https://github.com/ulises-jere
 | `scripts/` | Validation, release, and install support scripts |
 | `.github/workflows/` | CI and release automation |
 
+## Architecture Decisions
+
+Key decisions are recorded as [ADRs](docs/adrs/) — immutable once accepted,
+superseded by new ADRs when revisited.
+
+| ADR | Decision | Status |
+|-----|----------|--------|
+| [001](docs/adrs/001-chezmoi-home-source-state.md) | Use `home/` as chezmoi source state | Accepted |
+| [002](docs/adrs/002-profile-driven-tooling.md) | Profile-driven tooling model | Accepted |
+| [003](docs/adrs/003-ai-and-mcp-baseline.md) | AI and MCP baseline in shared local paths | Accepted |
+| [004](docs/adrs/004-skills-compatibility-matrix.md) | Skills system with per-tool compatibility matrix | Accepted |
+| [005](docs/adrs/005-llm-provider-abstraction.md) | LLM provider abstraction for dev companion runner | Accepted |
+| [006](docs/adrs/006-multi-tool-portability.md) | Multi-tool portability via symlinks and thin adapters | Accepted |
+| [007](docs/adrs/007-agentic-harness-three-layers.md) | Agentic harness with three-layer architecture | Accepted |
+| [008](docs/adrs/008-dev-companion-queue-safety.md) | Dev companion queue with plan-only default | Accepted |
+
 ## Development Checks
 
 ```bash

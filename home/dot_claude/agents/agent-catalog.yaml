@@ -1,0 +1,192 @@
+# Agent Catalog — dots-ai
+# Role hierarchy and handoff map for all agents under ~/.claude/agents/
+#
+# Naming convention: dots-ai-* prefix is canonical for dots-ai agents.
+# Generic-named agents (code-reviewer, planner, etc.) are retained for
+# compatibility but may be consolidated in a future release.
+#
+# fields:
+#   name:         matches the 'name:' field in the agent's frontmatter
+#   role:         short functional description
+#   domain:       orchestration | delivery | review | design | testing | ops
+#   handoffs:     list of agent names to delegate to
+
+version: 1
+
+agents:
+
+  # ── Orchestration ────────────────────────────────────────────────────────────
+
+  - name: dots-ai-assistant
+    role: primary_orchestrator
+    domain: orchestration
+    handoffs:
+      - dots-ai-architect
+      - dots-ai-planner
+      - dots-ai-code-reviewer
+      - dots-ai-security-reviewer
+
+  - name: dev-assistant
+    role: alias_for_dots_ai_assistant
+    domain: orchestration
+    deprecated: true
+    superseded_by: dots-ai-assistant
+    handoffs:
+      - dots-ai-assistant
+
+  # ── Design & Planning ────────────────────────────────────────────────────────
+
+  - name: dots-ai-architect
+    role: system_design
+    domain: design
+    handoffs:
+      - dots-ai-planner
+      - dots-ai-code-reviewer
+
+  - name: dots-ai-planner
+    role: feature_planning
+    domain: design
+    handoffs:
+      - dots-ai-code-reviewer
+
+  - name: dots-ai-client-workflow-bootstrap
+    role: client_onboarding
+    domain: delivery
+    handoffs:
+      - dots-ai-assistant
+
+  - name: dots-ai-contribution-planner
+    role: oss_contribution_planner
+    domain: delivery
+    handoffs:
+      - dots-ai-code-reviewer
+      - dots-ai-assistant
+
+  - name: planner
+    role: alias_planner
+    domain: design
+    deprecated: true
+    superseded_by: dots-ai-planner
+
+  # ── Review ───────────────────────────────────────────────────────────────────
+
+  - name: dots-ai-code-reviewer
+    role: code_quality_review
+    domain: review
+    handoffs: []
+
+  - name: dots-ai-security-reviewer
+    role: security_audit
+    domain: review
+    handoffs: []
+
+  - name: dots-ai-typescript-reviewer
+    role: typescript_type_safety
+    domain: review
+    handoffs: []
+
+  - name: dots-ai-database-reviewer
+    role: postgresql_schema_review
+    domain: review
+    handoffs: []
+
+  - name: dots-ai-performance-optimizer
+    role: performance_analysis
+    domain: review
+    handoffs: []
+
+  - name: code-reviewer
+    role: alias_code_reviewer
+    domain: review
+    deprecated: true
+    superseded_by: dots-ai-code-reviewer
+
+  - name: security-reviewer
+    role: alias_security_reviewer
+    domain: review
+    deprecated: true
+    superseded_by: dots-ai-security-reviewer
+
+  - name: typescript-reviewer
+    role: alias_typescript_reviewer
+    domain: review
+    deprecated: true
+    superseded_by: dots-ai-typescript-reviewer
+
+  - name: database-reviewer
+    role: alias_database_reviewer
+    domain: review
+    deprecated: true
+    superseded_by: dots-ai-database-reviewer
+
+  - name: performance-optimizer
+    role: alias_performance_optimizer
+    domain: review
+    deprecated: true
+    superseded_by: dots-ai-performance-optimizer
+
+  # ── Testing ──────────────────────────────────────────────────────────────────
+
+  - name: dots-ai-tdd-guide
+    role: test_driven_development
+    domain: testing
+    handoffs: []
+
+  - name: dots-ai-e2e-runner
+    role: playwright_e2e_testing
+    domain: testing
+    handoffs: []
+
+  - name: tdd-guide
+    role: alias_tdd_guide
+    domain: testing
+    deprecated: true
+    superseded_by: dots-ai-tdd-guide
+
+  - name: e2e-runner
+    role: alias_e2e_runner
+    domain: testing
+    deprecated: true
+    superseded_by: dots-ai-e2e-runner
+
+  # ── Build & Refactor ─────────────────────────────────────────────────────────
+
+  - name: dots-ai-build-error-resolver
+    role: build_and_typescript_errors
+    domain: ops
+    handoffs: []
+
+  - name: dots-ai-refactor-cleaner
+    role: dead_code_cleanup
+    domain: ops
+    handoffs: []
+
+  - name: build-error-resolver
+    role: alias_build_error_resolver
+    domain: ops
+    deprecated: true
+    superseded_by: dots-ai-build-error-resolver
+
+  - name: refactor-cleaner
+    role: alias_refactor_cleaner
+    domain: ops
+    deprecated: true
+    superseded_by: dots-ai-refactor-cleaner
+
+  # ── Lookup ───────────────────────────────────────────────────────────────────
+
+  - name: dots-ai-docs-lookup
+    role: documentation_search
+    domain: ops
+    handoffs: []
+
+  - name: dots-ai-reference-lookup
+    role: dots_ai_reference_patterns
+    domain: ops
+    handoffs: []
+
+  - name: docs-lookup
+    role: alias_docs_lookup
+    domain: ops
+    deprecated: true
+    superseded_by: dots-ai-docs-lookup
