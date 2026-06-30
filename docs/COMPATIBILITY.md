@@ -44,7 +44,7 @@
 | `dots-ai-work-item` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-ai-workflow-client-bootstrap` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-ai-workflow-generic-project` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-ai-workspace-knowledge-sync` | 1.0.0 | ✅ | ✅ | — | — | ✅ | — | ✅ |
+| `dots-ai-workspace-knowledge-sync` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-ai-workstation-triage` | 1.1.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `figma` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `figma-code-connect-components` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
