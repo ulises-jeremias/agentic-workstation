@@ -1,4 +1,4 @@
-# ADR-007: Dev companion queue with plan-only default
+# ADR-008: Dev companion queue with plan-only default
 
 ## Status
 
