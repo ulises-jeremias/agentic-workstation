@@ -7,7 +7,7 @@
 </picture>
 
 <h1>dots-ai</h1>
-<h3>Portable AI workstation tooling for real delivery work</h3>
+<h3>Agentic Workstation Baseline — chezmoi-managed skills, agents, MCP, and loops for AI-assisted delivery</h3>
 
 <p><strong>Chezmoi-managed • Skills-first • Multi-tool • Cross-platform</strong></p>
 
@@ -39,7 +39,7 @@
 
 ## What Is dots-ai?
 
-`dots-ai` is a portable workstation baseline for AI-assisted software delivery. It installs a chezmoi-managed layer of AI skills, agents, MCP templates, CLI helpers, and dev companion tooling across Linux, macOS, and Windows.
+`dots-ai` is an agentic workstation baseline for AI-assisted software delivery. It installs a chezmoi-managed layer of AI skills, agents, MCP templates, CLI helpers, and dev companion tooling across Linux, macOS, and Windows.
 
 The wiki is the source of truth for setup and day-to-day usage. The repository `docs/` directory is for technical references, architecture notes, maintainer contracts, and ADRs.
 
