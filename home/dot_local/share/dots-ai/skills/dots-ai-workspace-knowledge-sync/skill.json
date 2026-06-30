@@ -1,8 +1,12 @@
 {
   "name": "dots-ai-workspace-knowledge-sync",
-  "description": "Syncs knowledge to ai-workspace knowledge base. Auto-triggers from dots-ai-tech-assistant.",
   "version": "1.0.0",
+  "description": "Syncs knowledge to ai-workspace knowledge base. Auto-triggers from dots-ai-tech-assistant.",
+  "source": "bundled",
   "author": "dots-ai",
+  "dependencies": [
+    "assistant-memory"
+  ],
   "trigger_points": [
     "task_creation",
     "task_update",
@@ -10,9 +14,6 @@
     "decision_made",
     "user_preference_learned",
     "manual_sync_request"
-  ],
-  "dependencies": [
-    "assistant-memory"
   ],
   "knowledge_targets": [
     "knowledge/skills/discovered.md",
@@ -33,6 +34,15 @@
     },
     "windsurf": {
       "supported": true
+    },
+    "opencode": {
+      "supported": false
+    },
+    "cursor": {
+      "supported": false
+    },
+    "copilot-cli": {
+      "supported": false
     }
   }
 }
