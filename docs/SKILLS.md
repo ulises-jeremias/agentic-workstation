@@ -566,6 +566,42 @@ Example minimal `package.json` for a skill package:
 
 ---
 
+## Knowledge Base Write API
+
+Skills that sync discoveries to the ai-workspace knowledge base use the stable `assistant-memory` API with the `--from-skill` flag for origin tracking.
+
+### API Reference
+
+```bash
+assistant-memory add --type <type> --from-skill <skill-name> [--tags a,b,c] <content>
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--type` | Yes | Entry type: `skill`, `process`, `learning`, `todo` |
+| `--from-skill` | Yes (for cross-repo skills) | Origin skill name |
+| `--tags` | No | Comma-separated tags |
+| `content` | Yes | Free-text entry content |
+
+### Example (from a skill)
+
+```bash
+assistant-memory add --type learning --from-skill my-skill "Pattern: always verify X"
+assistant-memory add --type skill --from-skill my-skill --tags jira,workflow "New workflow pattern"
+```
+
+### Version negotiation
+
+Skills should probe for `--from-skill` support and fall back gracefully:
+
+```bash
+assistant-memory add --type learning --from-skill test "probe" >/dev/null 2>&1 \
+  && echo "API available" \
+  || echo "fall back to plain add"
+```
+
+---
+
 ## See Also
 
 - [AI_LAYER.md](AI_LAYER.md) — AI layer overview and directory structure
@@ -573,3 +609,4 @@ Example minimal `package.json` for a skill package:
 - [DEV_COMPANION.md](DEV_COMPANION.md) — Dev companion layers (uses skills)
 - [ARCHITECTURE.md](ARCHITECTURE.md) — High-level architecture overview
 - [adrs/004-skills-compatibility-matrix.md](adrs/004-skills-compatibility-matrix.md) — ADR: Skills system design
+- [ai-workspace docs/KNOWLEDGE.md](https://github.com/ulises-jeremias/ai-workspace/blob/main/docs/KNOWLEDGE.md) — Full API reference

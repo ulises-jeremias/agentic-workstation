@@ -35,20 +35,20 @@ The dots-ai-tech-assistant will invoke this skill automatically when:
 
 ## How It Works
 
-The skill uses `assistant-memory` CLI tool to sync knowledge:
+The skill uses the stable `assistant-memory` API with `--from-skill` for origin tracking:
 
 ```bash
 # Search before adding
 assistant-memory search "<query>"
 
-# Add a learning
-assistant-memory add --type learning "Pattern: <description>"
+# Add a learning (with origin tracking)
+assistant-memory add --type learning --from-skill dots-ai-workspace-knowledge-sync "Pattern: <description>"
 
-# Add a skill
-assistant-memory add --type skill "New skill: <name> - <description>"
+# Add a skill (with tags)
+assistant-memory add --type skill --from-skill dots-ai-workspace-knowledge-sync --tags jira,workflow "New skill: <name>"
 
 # Add a pending todo
-assistant-memory add --type todo "<description>"
+assistant-memory add --type todo --from-skill dots-ai-workspace-knowledge-sync "<description>"
 ```
 
 ---
