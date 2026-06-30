@@ -1,0 +1,33 @@
+name: Chezmoi Snapshot
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "home/**"
+      - ".chezmoi*"
+      - "scripts/test-chezmoi-snapshot.sh"
+      - ".github/workflows/chezmoi-snapshot.yml"
+  push:
+    branches: [main]
+    paths:
+      - "home/**"
+      - ".chezmoi*"
+      - "scripts/test-chezmoi-snapshot.sh"
+      - ".github/workflows/chezmoi-snapshot.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run chezmoi snapshot test
+        run: bash scripts/test-chezmoi-snapshot.sh
