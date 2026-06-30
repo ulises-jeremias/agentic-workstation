@@ -61,7 +61,7 @@
 | `playwright-cli` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `slack-cli` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `snowflake-validation` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `ui-ux-pro-max` | 1.0.0 | ✅ | ✅ | — | — | ✅ | — | ✅ |
+| `ui-ux-pro-max` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `workflow-client-bootstrap` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `workflow-generic-project` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 
