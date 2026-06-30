@@ -59,8 +59,11 @@ jobs:
             scripts \
             home/dot_local/share/dots-ai/dev-companion/runner
 
-      - name: Install jsonschema for skill validation
-        run: pip install jsonschema
+      - name: Install PyYAML and jsonschema for skill tools
+        run: pip install PyYAML jsonschema
+
+      - name: Check skill dependency graph for cycles
+        run: python3 scripts/skill-graph.py check-cycles
 
       - name: Validate skill manifests (schema + compatibility declarations)
         run: bash scripts/validate-skills.sh --strict
