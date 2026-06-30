@@ -8,12 +8,16 @@ set -eo pipefail
 ##
 ## Usage:
 ##     @script.name [options]
+##     @script.name drift [--json]
 ##
 ## Options:
 ##     -h, --help              Show this help message.
 ##     --issue, --paste        Markdown-friendly report (no colors) for GitHub / Slack.
 ##     --json                  Emit a single JSON line with snapshot + summary (stderr for human checks).
 ##     --no-snapshot           Skip the snapshot block (checks only; for narrow CI parsing).
+##
+## Subcommands:
+##     drift                   Compare skill registry versions against deployed skill.json
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && pwd || true)"
@@ -29,10 +33,31 @@ source "${EASY_OPTIONS_LIB}"
 MODE="default"
 SNAPSHOT=1
 
+# Subcommand dispatch
+_SUBCOMMAND="${1:-}"
+case "${_SUBCOMMAND}" in
+  drift)
+    _DRIFT_SCRIPT="${SCRIPT_DIR}/../scripts/check-skill-drift.py"
+    if [[ ! -f $_DRIFT_SCRIPT ]]; then
+      # Fallback: look relative to repo root
+      _DRIFT_SCRIPT="$(cd -- "$(dirname -- "$(realpath "$0" 2>/dev/null || echo "$0")")/.." && pwd)/scripts/check-skill-drift.py"
+    fi
+    if [[ -f $_DRIFT_SCRIPT ]]; then
+      exec python3 "$_DRIFT_SCRIPT" "$@"
+    else
+      echo "[dots-doctor] drift script not found. Is dots-ai installed correctly?" >&2
+      exit 1
+    fi
+    ;;
+esac
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h | --help)
-      sed -n '3,24p' "$0" | sed 's/^## \{0,1\}//'
+      sed -n '4,25p' "$0" | sed 's/^## \{0,1\}//'
+      echo ""
+      echo "Subcommands:"
+      echo "  drift          Compare skill versions (registry vs deployed)"
       exit 0
       ;;
     --issue | --paste)

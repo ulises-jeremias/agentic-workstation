@@ -68,6 +68,9 @@ jobs:
       - name: Check skill version constraints
         run: python3 scripts/skill-graph.py check-versions
 
+      - name: Check skill version drift
+        run: python3 scripts/check-skill-drift.py
+
       - name: Validate skill manifests (schema + compatibility declarations)
         run: bash scripts/validate-skills.sh --strict
 
