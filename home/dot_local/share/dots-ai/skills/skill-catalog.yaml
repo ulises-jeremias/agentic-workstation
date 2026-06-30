@@ -33,8 +33,10 @@ skills:
     triggers:
       - dots-ai or client delivery work
     depends_on:
-      - dots-ai-assistant
-      - dots-ai-workflow-generic-project
+      - name: dots-ai-assistant
+        version: ">=1.0.0"
+      - name: dots-ai-workflow-generic-project
+        version: ">=1.0.0"
     usage_hints: Load the relevant workspace pack for client/account overlays; read LOOP_GUARDRAILS for optional runner
 
   - name: dots-ai-workflow-generic-project
