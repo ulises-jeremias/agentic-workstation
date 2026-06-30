@@ -59,6 +59,12 @@ jobs:
             scripts \
             home/dot_local/share/dots-ai/dev-companion/runner
 
+      - name: Install jsonschema for skill validation
+        run: pip install jsonschema
+
+      - name: Validate skill manifests (schema + compatibility declarations)
+        run: bash scripts/validate-skills.sh --strict
+
       - name: Verify COMPATIBILITY.md is up to date
         run: python3 scripts/generate-compatibility.py --check
 

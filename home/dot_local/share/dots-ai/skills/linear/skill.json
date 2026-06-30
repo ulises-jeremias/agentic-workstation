@@ -27,10 +27,13 @@
     },
     "windsurf": {
       "supported": true,
-      "notes": "On Windows native, run the MCP via WSL \u2014 see SKILL.md."
+      "notes": "On Windows native, run the MCP via WSL — see SKILL.md."
     },
     "pi": {
       "supported": true
+    },
+    "copilot-cli": {
+      "supported": false
     }
   }
 }
