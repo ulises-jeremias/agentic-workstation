@@ -10,19 +10,22 @@ Commands:
     deps <skill>          Show transitive dependencies of a skill (tree)
     rdeps <skill>         Show skills that depend on a skill (reverse)
     check-cycles          Detect cycles in the dependency graph (exit 1 if found)
+    check-versions        Validate semver constraints against registry
     install <skill>       Print install order for a skill and all its dependencies
 
 Usage:
     python3 scripts/skill-graph.py deps dots-ai-assistant
     python3 scripts/skill-graph.py check-cycles
+    python3 scripts/skill-graph.py check-versions
     python3 scripts/skill-graph.py install dots-ai-workflow-generic-project
 """
 from __future__ import annotations
 
 import json
 import pathlib
+import re
 import sys
-from typing import Iterator
+from typing import Any, Iterator
 
 try:
     import yaml  # type: ignore
@@ -32,64 +35,88 @@ except ImportError:
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 CATALOG_PATH = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills" / "skill-catalog.yaml"
+REGISTRY_PATH = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills-registry.yaml"
 
-# ── helpers ───────────────────────────────────────────────────────────────────
+# ── semver helpers ───────────────────────────────────────────────────────────
 
-def load_catalog() -> dict[str, list[str]]:
-    """Return {skill_name: [dep_name, ...]} from skill-catalog.yaml."""
-    if not CATALOG_PATH.exists():
-        print(f"Catalog not found: {CATALOG_PATH}", file=sys.stderr)
-        sys.exit(1)
+def _parse_version(v: str) -> tuple[int, int, int]:
+    parts = v.strip().split(".")
+    return (int(parts[0]), int(parts[1]), int(parts[2]))
 
-    text = CATALOG_PATH.read_text(encoding="utf-8")
-    if _YAML:
-        data = yaml.safe_load(text)
+
+def _satisfies(installed: str, constraint: str) -> bool:
+    """Check if installed version satisfies a semver constraint.
+
+    Supports: >=X.Y.Z, ~X.Y.Z (patch-level compatibility),
+    ^X.Y.Z (major-level compatibility), and bare X.Y.Z (exact match).
+    """
+    iv = _parse_version(installed)
+    cv = _parse_version(constraint.lstrip("~^>="))
+
+    if constraint.startswith(">="):
+        return iv >= cv
+    elif constraint.startswith("~"):
+        # ~1.2.3 means >=1.2.3 and <1.3.0
+        return cv <= iv < (cv[0], cv[1] + 1, 0)
+    elif constraint.startswith("^"):
+        # ^1.2.3 means >=1.2.3 and <2.0.0
+        return cv <= iv < (cv[0] + 1, 0, 0)
     else:
-        print("[warn] PyYAML not installed; falling back to basic parser", file=sys.stderr)
-        data = _parse_catalog_basic(text)
+        return iv == cv
 
+
+# ── catalog helpers ──────────────────────────────────────────────────────────
+
+def _load_yaml(path: pathlib.Path) -> dict[str, Any]:
+    if not path.exists():
+        print(f"File not found: {path}", file=sys.stderr)
+        sys.exit(1)
+    text = path.read_text(encoding="utf-8")
+    if _YAML:
+        return yaml.safe_load(text)
+    else:
+        print("[warn] PyYAML not installed", file=sys.stderr)
+        return {}
+
+
+def load_catalog() -> dict[str, list[dict | str]]:
+    """Return {skill_name: [dep_name_or_object, ...]} from skill-catalog.yaml."""
+    data = _load_yaml(CATALOG_PATH)
     if not isinstance(data, dict) or "skills" not in data:
         print("Unexpected catalog format — expected {version, skills: [...]}", file=sys.stderr)
         sys.exit(1)
 
-    graph: dict[str, list[str]] = {}
+    graph: dict[str, list[dict | str]] = {}
     for entry in data["skills"]:
         name = entry.get("name", "")
         deps = entry.get("depends_on", []) or []
-        if isinstance(deps, list):
-            graph[name] = [d if isinstance(d, str) else d.get("name", "") for d in deps]
-        else:
-            graph[name] = []
+        graph[name] = list(deps)
 
     return graph
 
 
-def _parse_catalog_basic(text: str) -> dict:
-    """Very basic YAML reader for the catalog without PyYAML."""
-    import re
-    skills = []
-    current: dict | None = None
-    in_deps = False
-
-    for line in text.splitlines():
-        stripped = line.strip()
-        if stripped.startswith("- name:") and not line.startswith("    "):
-            current = {"name": stripped.split(":", 1)[1].strip(), "depends_on": []}
-            skills.append(current)
-            in_deps = False
-        elif stripped == "depends_on: []" and current:
-            in_deps = False
-        elif stripped == "depends_on:" and current:
-            in_deps = True
-        elif in_deps and stripped.startswith("- ") and current:
-            current["depends_on"].append(stripped[2:].strip())
-        elif not stripped.startswith("-") and ":" in stripped:
-            in_deps = False
-
-    return {"version": 1, "skills": skills}
+def load_registry() -> dict[str, dict[str, Any]]:
+    """Return {skill_name: {version, depends_on, ...}} from skills-registry.yaml."""
+    data = _load_yaml(REGISTRY_PATH)
+    registry: dict[str, dict[str, Any]] = {}
+    for entry in data.get("skills", []):
+        name = entry.get("name", "")
+        if name:
+            registry[name] = entry
+    return registry
 
 
-def transitive_deps(graph: dict[str, list[str]], name: str) -> list[str]:
+def _dep_name(dep: dict | str) -> str:
+    return dep if isinstance(dep, str) else dep.get("name", "")
+
+
+def _dep_version(dep: dict | str) -> str | None:
+    return None if isinstance(dep, str) else dep.get("version")
+
+
+# ── graph algorithms ────────────────────────────────────────────────────────
+
+def transitive_deps(graph: dict[str, list[dict | str]], name: str) -> list[str]:
     """Return topologically sorted list of all transitive deps (deepest-first)."""
     visited: set[str] = set()
     order: list[str] = []
@@ -100,7 +127,7 @@ def transitive_deps(graph: dict[str, list[str]], name: str) -> list[str]:
         if n in visited:
             return
         for dep in graph.get(n, []):
-            visit(dep, path + (n,))
+            visit(_dep_name(dep), path + (n,))
         visited.add(n)
         order.append(n)
 
@@ -108,36 +135,46 @@ def transitive_deps(graph: dict[str, list[str]], name: str) -> list[str]:
     return [x for x in order if x != name]
 
 
-def detect_cycles(graph: dict[str, list[str]]) -> list[list[str]]:
+def detect_cycles(graph: dict[str, list[dict | str]]) -> list[list[str]]:
     """Return list of cycle paths found (empty list = no cycles)."""
     cycles: list[list[str]] = []
     WHITE, GRAY, BLACK = 0, 1, 2
-    color: dict[str, int] = {n: WHITE for n in graph}
+
+    names = list(graph.keys())
+
+    for entry in graph.values():
+        for dep in entry:
+            dn = _dep_name(dep)
+            if dn not in names:
+                names.append(dn)
+
+    color: dict[str, int] = {n: WHITE for n in names}
     path_stack: list[str] = []
 
     def dfs(n: str) -> None:
         color[n] = GRAY
         path_stack.append(n)
         for dep in graph.get(n, []):
-            if dep not in color:
-                color[dep] = WHITE
-            if color[dep] == GRAY:
-                idx = path_stack.index(dep)
-                cycles.append(path_stack[idx:] + [dep])
-            elif color[dep] == WHITE:
-                dfs(dep)
+            dn = _dep_name(dep)
+            if dn not in color:
+                color[dn] = WHITE
+            if color[dn] == GRAY:
+                idx = path_stack.index(dn)
+                cycles.append(path_stack[idx:] + [dn])
+            elif color[dn] == WHITE:
+                dfs(dn)
         path_stack.pop()
         color[n] = BLACK
 
-    for node in graph:
-        if color[node] == WHITE:
+    for node in names:
+        if color.get(node, WHITE) == WHITE:
             dfs(node)
 
     return cycles
 
 
 def print_tree(
-    graph: dict[str, list[str]],
+    graph: dict[str, list[dict | str]],
     name: str,
     prefix: str = "",
     seen: set[str] | None = None,
@@ -149,17 +186,20 @@ def print_tree(
         last = i == len(deps) - 1
         connector = "└── " if last else "├── "
         extension = "    " if last else "│   "
-        if dep in seen:
-            print(f"{prefix}{connector}{dep} (already shown)")
+        label = _dep_name(dep)
+        ver = _dep_version(dep)
+        label = f"{label} ({ver})" if ver else label
+        if label in seen:
+            print(f"{prefix}{connector}{label} (already shown)")
             continue
-        print(f"{prefix}{connector}{dep}")
-        seen.add(dep)
-        print_tree(graph, dep, prefix + extension, seen)
+        print(f"{prefix}{connector}{label}")
+        seen.add(label)
+        print_tree(graph, label, prefix + extension, seen)
 
 
-# ── commands ──────────────────────────────────────────────────────────────────
+# ── commands ─────────────────────────────────────────────────────────────────
 
-def cmd_deps(graph: dict[str, list[str]], args: list[str]) -> None:
+def cmd_deps(graph: dict[str, list[dict | str]], args: list[str]) -> None:
     if not args:
         print("Usage: skill-graph.py deps <skill>")
         sys.exit(1)
@@ -178,12 +218,12 @@ def cmd_deps(graph: dict[str, list[str]], args: list[str]) -> None:
         print(f"\n⚠ {e}", file=sys.stderr)
 
 
-def cmd_rdeps(graph: dict[str, list[str]], args: list[str]) -> None:
+def cmd_rdeps(graph: dict[str, list[dict | str]], args: list[str]) -> None:
     if not args:
         print("Usage: skill-graph.py rdeps <skill>")
         sys.exit(1)
     target = args[0]
-    rdeps = [n for n, deps in graph.items() if target in deps]
+    rdeps = [n for n, deps in graph.items() if target in [_dep_name(d) for d in deps]]
     if not rdeps:
         print(f"No skills depend on '{target}'.")
     else:
@@ -192,7 +232,7 @@ def cmd_rdeps(graph: dict[str, list[str]], args: list[str]) -> None:
             print(f"  - {n}")
 
 
-def cmd_check_cycles(graph: dict[str, list[str]]) -> None:
+def cmd_check_cycles(graph: dict[str, list[dict | str]]) -> None:
     cycles = detect_cycles(graph)
     if cycles:
         print(f"\n✗ {len(cycles)} cycle(s) found:", file=sys.stderr)
@@ -203,7 +243,42 @@ def cmd_check_cycles(graph: dict[str, list[str]]) -> None:
         print(f"\n✓ No cycles detected. Graph has {len(graph)} skills.")
 
 
-def cmd_install(graph: dict[str, list[str]], args: list[str]) -> None:
+def cmd_check_versions(graph: dict[str, list[dict | str]]) -> None:
+    """Validate all version constraints against the registry."""
+    registry = load_registry()
+    violations = 0
+    checked = 0
+
+    for skill_name, deps in sorted(graph.items()):
+        for dep in deps:
+            constraint = _dep_version(dep)
+            if not constraint:
+                continue
+            checked += 1
+            dep_name = _dep_name(dep)
+            reg_entry = registry.get(dep_name)
+            if not reg_entry:
+                print(f"  ⚠ {skill_name} → {dep_name}: not in registry (skipped)")
+                continue
+            installed = reg_entry.get("version", "")
+            if not installed:
+                print(f"  ⚠ {skill_name} → {dep_name}: no version in registry (skipped)")
+                continue
+            if not _satisfies(installed, constraint):
+                print(f"  ✗ {skill_name} requires {dep_name} {constraint}, registry has {installed}")
+                violations += 1
+            else:
+                print(f"  ✓ {skill_name} → {dep_name} {constraint} (installed: {installed})")
+
+    print(f"\nChecked {checked} version constraint(s).")
+    if violations:
+        print(f"✗ {violations} violation(s) found.", file=sys.stderr)
+        sys.exit(1)
+    else:
+        print("✓ All constraints satisfied.")
+
+
+def cmd_install(graph: dict[str, list[dict | str]], args: list[str]) -> None:
     if not args:
         print("Usage: skill-graph.py install <skill>")
         sys.exit(1)
@@ -224,15 +299,20 @@ def cmd_install(graph: dict[str, list[str]], args: list[str]) -> None:
         print(f"  {i:2}. {s} {marker}")
 
 
-def cmd_list(graph: dict[str, list[str]]) -> None:
+def cmd_list(graph: dict[str, list[dict | str]]) -> None:
     print(f"\n{len(graph)} skills in catalog:\n")
     for name in sorted(graph):
         deps = graph[name]
-        dep_str = f"  ← depends on: {', '.join(deps)}" if deps else ""
+        dep_strs = []
+        for d in deps:
+            dn = _dep_name(d)
+            dv = _dep_version(d)
+            dep_strs.append(f"{dn} ({dv})" if dv else dn)
+        dep_str = f"  ← depends on: {', '.join(dep_strs)}" if dep_strs else ""
         print(f"  {name}{dep_str}")
 
 
-# ── main ──────────────────────────────────────────────────────────────────────
+# ── main ─────────────────────────────────────────────────────────────────────
 
 def main() -> None:
     argv = sys.argv[1:]
@@ -251,6 +331,8 @@ def main() -> None:
             cmd_rdeps(graph, rest)
         case "check-cycles":
             cmd_check_cycles(graph)
+        case "check-versions":
+            cmd_check_versions(graph)
         case "install":
             cmd_install(graph, rest)
         case "list":

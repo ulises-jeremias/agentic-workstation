@@ -14,202 +14,262 @@
 #   name:     Unique kebab-case identifier
 #   source:   bundled | npm  (github/url → see .chezmoiexternal.toml.tmpl)
 #   enabled:  Whether this skill is active by default
+#   version:  Current installed version (semver)
+#   depends_on: List of dependencies with optional version constraints
 
 skills:
   # ── Bundled (distributed via chezmoi) ───────────────────────────────────────
   - name: clickup-cli
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: slack-cli
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-workstation-triage
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-assistant
     source: bundled
     enabled: true
+    version: 1.0.0
+    depends_on:
+      - name: dots-ai-development-workflow
+        version: ">=1.0.0"
 
   - name: github-cli-workflow
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: gitlab-cli-workflow
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dbt-validation
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: snowflake-validation
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-workflow-generic-project
     source: bundled
     enabled: true
+    version: 1.0.0
+    depends_on:
+      - name: github-cli-workflow
+        version: ">=1.0.0"
+      - name: dots-ai-output-handshake
+        version: ">=1.0.0"
 
   - name: dots-ai-dev-companion
     source: bundled
     enabled: true
+    version: 1.0.0
+    depends_on:
+      - name: dots-ai-assistant
+        version: ">=1.0.0"
 
   - name: dots-ai-workflow-client-bootstrap
     source: bundled
     enabled: true
+    version: 1.0.0
 
   # Deprecated stub dirs under skills/ — must NOT be managed by dots-skills sync
   # (chezmoi owns ~/.claude/skills/workflow-* → dots-ai-workflow-* canonical paths).
   - name: workflow-generic-project
     source: bundled
     enabled: false
+    version: 1.0.0
 
   - name: workflow-client-bootstrap
     source: bundled
     enabled: false
+    version: 1.0.0
 
   - name: dots-slack-assistant
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-workspace-knowledge-sync
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-prd
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-trd
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-adr
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-output-handshake
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-pr-fallback
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-planning
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-development-workflow
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-work-item
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-epic
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-user-story
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-task
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-bug
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-incident
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-meeting-minutes
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-decision-log
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-agreement
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-spike
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-project-assessment
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-project-assessment-evidence
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-technical-unit-assessment
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: dots-ai-management-unit-assessment
     source: bundled
     enabled: true
+    version: 1.0.0
 
   # ── Imported from openai/skills (Apache-2.0) ────────────────────────────────
   # See docs/SKILLS.md → "Imported skills" and each skill's NOTICE.txt.
   - name: gh-address-comments
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: gh-fix-ci
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: linear
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: figma
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: figma-implement-design
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: figma-code-connect-components
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: figma-create-design-system-rules
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: figma-create-new-file
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: playwright-cli
     source: bundled
     enabled: true
+    version: 1.0.0
 
   - name: jupyter-notebook
     source: bundled
     enabled: true
+    version: 1.0.0
 
   # ── npm registry ─────────────────────────────────────────────────────────────
   - name: ui-ux-pro-max
     source: npm
     package: uipro-cli
     enabled: true
+    version: 1.0.0
 
   # ── github/url skills → managed by .chezmoiexternal.toml.tmpl ────────────────
   # JIRA Assistant Skills (14 skills) — install_skill_jira_assistant = true

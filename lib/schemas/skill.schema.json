@@ -72,8 +72,28 @@
     },
     "dependencies": {
       "type": "array",
-      "description": "Other skill names or CLI tools this skill depends on at runtime",
-      "items": { "type": "string" },
+      "description": "Other skills or CLI tools this skill depends on at runtime. Use string for name-only or object for version-constrained dependency.",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Skill name"
+              },
+              "version": {
+                "type": "string",
+                "description": "Semver constraint (e.g. >=1.2.0, ~1.2.0, ^1.0.0)",
+                "pattern": "^[~^]?[0-9]+\\.[0-9]+\\.[0-9]+$"
+              }
+            }
+          }
+        ]
+      },
       "uniqueItems": true
     },
     "trigger_points": {
