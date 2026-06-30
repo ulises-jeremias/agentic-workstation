@@ -71,6 +71,12 @@ jobs:
       - name: Verify COMPATIBILITY.md is up to date
         run: python3 scripts/generate-compatibility.py --check
 
+      - name: Verify SKILL_INDEX.md is up to date
+        run: python3 scripts/dots-skills-search.py check-index
+
+      - name: Smoke test all bundled skills
+        run: bash scripts/smoke-test-skills.sh
+
       - name: Install shellcheck
         run: sudo apt-get update && sudo apt-get install -y shellcheck ripgrep
 
