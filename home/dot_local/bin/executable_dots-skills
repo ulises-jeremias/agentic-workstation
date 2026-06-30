@@ -681,6 +681,14 @@ case "$command" in
     [[ -f ${_graph_script} ]] || die "skill-graph.py not found. Ensure dots-ai is installed correctly."
     python3 "${_graph_script}" deps "${@}"
     ;;
+  search | explain | doctor)
+    _search_script="${DOTS_AI_SKILLS_DIR:?}/../../scripts/dots-skills-search.py"
+    if [[ ! -f ${_search_script} ]]; then
+      _search_script="$(cd "$(dirname "${BASH_SOURCE[0]}")/../share/dots-ai/../../" && pwd)/scripts/dots-skills-search.py"
+    fi
+    [[ -f ${_search_script} ]] || die "dots-skills-search.py not found. Ensure dots-ai is installed correctly."
+    python3 "${_search_script}" "${command}" "${@}"
+    ;;
   enable)
     scope=""
     while [[ $# -gt 0 ]]; do
