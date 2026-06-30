@@ -266,8 +266,8 @@ jobs:
   # ---------------------------------------------------------------------------
   windows-native:
     name: Native Windows (install.ps1 + flags)
-    # Keep Windows validation opt-in to reduce Actions minutes on PR/push.
-    if: github.event_name == 'workflow_dispatch'
+    # Windows validation on PRs and push; gated by paths to avoid spurious runs.
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: build-release-artifacts
     runs-on: windows-latest
     env:
@@ -392,8 +392,8 @@ jobs:
           grep -q "unknown argument" /tmp/err
 
   flag-windows:
-    name: CLI flag matrix (windows, opt-in)
-    if: github.event_name == 'workflow_dispatch'
+    name: CLI flag matrix (windows)
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -403,6 +403,8 @@ jobs:
         shell: pwsh
         run: |
           pwsh -File scripts/install-skills.ps1 -DryRun -Tool cursor
+          pwsh -File scripts/install-skills.ps1 -DryRun -Guided
+          pwsh -File scripts/install-skills.ps1 -DryRun -Tool cursor -Guided
           pwsh -File scripts/check-ai-install-prereqs.ps1 | Tee-Object -FilePath prereqs.log
           if (-not (Select-String -Path prereqs.log -Pattern "READY" -SimpleMatch)) {
               Write-Error "prereq checker did not report READY"
