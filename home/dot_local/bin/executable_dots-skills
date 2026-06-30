@@ -673,6 +673,28 @@ case "$command" in
   install) cmd_install "${1:-}" ;;
   check) cmd_check ;;
   add) cmd_add "${1:-}" ;;
+  enable)
+    # dots-skills enable --scope <name>
+    # Sets ~/.local/share/dots-ai/.active-scope and re-syncs symlinks.
+    scope=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --scope)
+          scope="$2"
+          shift 2
+          ;;
+        *) die "Usage: dots-skills enable --scope <name>" ;;
+      esac
+    done
+    [[ -z ${scope} ]] && die "Usage: dots-skills enable --scope <name>"
+    scope_file="${DOTS_AI_SHARE}/scopes/${scope}.yaml"
+    if [[ ! -f ${scope_file} ]]; then
+      die "Scope '${scope}' not found at ${scope_file}\nAvailable scopes:"
+    fi
+    echo "${scope}" >"${DOTS_AI_SHARE}/.active-scope"
+    ok "Active scope set to '${scope}'"
+    info "Run 'dots-skills sync' to apply scope to AI tool directories."
+    ;;
   "" | --help | -h)
     # easyoptions handles --help via the header comment block
     ;;

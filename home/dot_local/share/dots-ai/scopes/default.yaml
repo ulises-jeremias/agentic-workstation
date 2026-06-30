@@ -1,0 +1,7 @@
+# Default scope — all skills enabled.
+# Activate with: dots-skills enable --scope default
+name: default
+description: "All bundled skills enabled (no restrictions)"
+# Omit 'skills.allow' to enable all; 'skills.deny' to exclude specific ones
+skills:
+  deny: []
