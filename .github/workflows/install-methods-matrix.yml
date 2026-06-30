@@ -67,7 +67,7 @@ jobs:
       version: ${{ steps.export.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y zip unzip
@@ -153,7 +153,7 @@ jobs:
           pacman -S --noconfirm --needed base-devel curl ca-certificates git jq ripgrep fd unzip
 
       - name: Checkout (for assertion script)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Run install.sh from PR HEAD
         shell: bash
@@ -180,7 +180,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout (workspace copy used as the clone source)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: source-clone
 
@@ -217,7 +217,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout (for ci helpers)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Download hermetic artifacts
         uses: actions/download-artifact@v8
@@ -274,7 +274,7 @@ jobs:
       DOTS_AI_SKILLS_VERSION: ${{ needs.build-release-artifacts.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Download hermetic artifacts
         uses: actions/download-artifact@v8
@@ -361,7 +361,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Bash CLI surface
         if: runner.os != 'Windows'
@@ -397,7 +397,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: PowerShell CLI surface
         shell: pwsh
@@ -423,7 +423,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout (for assertion scripts)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Note: this repository is private, so direct `.../releases/latest/download/...`
       # and `raw.githubusercontent.com/...` requests return 404 without auth headers.

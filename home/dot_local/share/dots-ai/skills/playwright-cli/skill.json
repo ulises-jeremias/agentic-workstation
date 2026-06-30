@@ -32,6 +32,9 @@
     },
     "pi": {
       "supported": true
+    },
+    "copilot-cli": {
+      "supported": false
     }
   }
 }

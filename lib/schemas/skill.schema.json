@@ -70,6 +70,24 @@
       "items": { "type": "string" },
       "uniqueItems": true
     },
+    "dependencies": {
+      "type": "array",
+      "description": "Other skill names or CLI tools this skill depends on at runtime",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "trigger_points": {
+      "type": "array",
+      "description": "Semantic event names that auto-trigger this skill (e.g. task_creation, decision_made)",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "knowledge_targets": {
+      "type": "array",
+      "description": "Paths to knowledge files this skill writes to (relative to ai-workspace root)",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
     "compatibility": {
       "type": "object",
       "description": "Per-tool compatibility declarations. Add an entry for each AI tool this skill supports.",
@@ -86,13 +104,13 @@
       }
     }
   },
-  "if": { "properties": { "source": { "const": "npm" } } },
+  "if": { "required": ["source"], "properties": { "source": { "const": "npm" } } },
   "then": { "required": ["package"] },
   "else": {
-    "if": { "properties": { "source": { "const": "github" } } },
+    "if": { "required": ["source"], "properties": { "source": { "const": "github" } } },
     "then": { "required": ["repo"] },
     "else": {
-      "if": { "properties": { "source": { "const": "url" } } },
+      "if": { "required": ["source"], "properties": { "source": { "const": "url" } } },
       "then": { "required": ["url"] }
     }
   },

@@ -91,3 +91,10 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      - id: check-changelog
+        name: Check CHANGELOG.md has [Unreleased] entry for source changes
+        entry: bash scripts/check-changelog.sh --skip-if-no-diff
+        language: system
+        pass_filenames: false
+        files: ^(home/|scripts/|lib/)
