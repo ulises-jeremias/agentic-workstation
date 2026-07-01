@@ -21,36 +21,36 @@ set -euo pipefail
 BASE="HEAD~1"
 SKIP_IF_NO_DIFF=false
 for arg in "$@"; do
-  case "${arg}" in
-    --base=*) BASE="${arg#*=}" ;;
-    --base)
-      echo "Use --base=<ref>" >&2
-      exit 1
-      ;;
-    --skip-if-no-diff) SKIP_IF_NO_DIFF=true ;;
-    -h | --help)
-      echo "Usage: $0 [--base=<ref>] [--skip-if-no-diff]"
-      exit 0
-      ;;
-  esac
+	case "${arg}" in
+		--base=*) BASE="${arg#*=}" ;;
+		--base)
+			echo "Use --base=<ref>" >&2
+			exit 1
+			;;
+		--skip-if-no-diff) SKIP_IF_NO_DIFF=true ;;
+		-h | --help)
+			echo "Usage: $0 [--base=<ref>] [--skip-if-no-diff]"
+			exit 0
+			;;
+	esac
 done
 
 CHANGELOG="CHANGELOG.md"
 
 if [[ ! -f ${CHANGELOG} ]]; then
-  echo "[skip] CHANGELOG.md not found — skipping check." >&2
-  exit 0
+	echo "[skip] CHANGELOG.md not found — skipping check." >&2
+	exit 0
 fi
 
 # Detect changed significant files
-CHANGED=$(git diff --name-only "${BASE}" HEAD 2>/dev/null | grep -E '^(home/|scripts/|lib/)' || true)
+CHANGED=$(git diff --name-only "${BASE}" HEAD 2> /dev/null | grep -E '^(home/|scripts/|lib/)' || true)
 
 if [[ -z ${CHANGED} ]]; then
-  if [[ ${SKIP_IF_NO_DIFF} == "true" ]]; then
-    exit 0
-  fi
-  echo "  ✓ No significant source changes — CHANGELOG not required."
-  exit 0
+	if [[ ${SKIP_IF_NO_DIFF} == "true" ]]; then
+		exit 0
+	fi
+	echo "  ✓ No significant source changes — CHANGELOG not required."
+	exit 0
 fi
 
 # Check for Unreleased section with content
@@ -62,13 +62,13 @@ UNRELEASED_CONTENT=$(awk '
 ' "${CHANGELOG}" | grep -E '^- |^\* |^### ' | head -5 || true)
 
 if [[ -z ${UNRELEASED_CONTENT} ]]; then
-  echo "  ✗ CHANGELOG.md [Unreleased] section is empty." >&2
-  echo "" >&2
-  echo "  Files changed that require a CHANGELOG entry:" >&2
-  echo "${CHANGED}" | head -10 | sed 's/^/    /' >&2
-  echo "" >&2
-  echo "  Add an entry under ## [Unreleased] in CHANGELOG.md." >&2
-  exit 1
+	echo "  ✗ CHANGELOG.md [Unreleased] section is empty." >&2
+	echo "" >&2
+	echo "  Files changed that require a CHANGELOG entry:" >&2
+	echo "${CHANGED}" | head -10 | sed 's/^/    /' >&2
+	echo "" >&2
+	echo "  Add an entry under ## [Unreleased] in CHANGELOG.md." >&2
+	exit 1
 fi
 
 echo "  ✓ CHANGELOG.md [Unreleased] has entries."

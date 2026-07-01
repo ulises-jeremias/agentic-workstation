@@ -16,13 +16,13 @@ SKILLS_DIR="${REPO_ROOT}/home/dot_local/share/agentic-workstation/skills"
 
 STRICT=false
 for arg in "$@"; do
-  case "$arg" in
-    --strict) STRICT=true ;;
-    -h | --help)
-      echo "Usage: $0 [--strict]"
-      exit 0
-      ;;
-  esac
+	case "$arg" in
+		--strict) STRICT=true ;;
+		-h | --help)
+			echo "Usage: $0 [--strict]"
+			exit 0
+			;;
+	esac
 done
 
 # Ordered list of tools every bundled skill should declare
@@ -31,26 +31,26 @@ REQUIRED_TOOLS=(claude-code opencode cursor windsurf copilot-cli pi universal)
 # ── colors ────────────────────────────────────────────────────────────────────
 _c() { [[ -t 1 ]] && printf '\033[%sm%s\033[0m' "$1" "$2" || printf '%s' "$2"; }
 ok() {
-  _c "1;32" "  ✓"
-  echo " $*"
+	_c "1;32" "  ✓"
+	echo " $*"
 }
 fail() {
-  _c "1;31" "  ✗"
-  echo " $*"
+	_c "1;31" "  ✗"
+	echo " $*"
 }
 info() {
-  _c "1;34" "  →"
-  echo " $*"
+	_c "1;34" "  →"
+	echo " $*"
 }
 warn() {
-  _c "1;33" "  ⚠"
-  echo " $*"
+	_c "1;33" "  ⚠"
+	echo " $*"
 }
 
 # ── Python validator (uses jsonschema, stdlib yaml fallback via json) ──────────
 validate_json() {
-  local file="$1"
-  python3 - "$file" "$SCHEMA" <<'PYEOF'
+	local file="$1"
+	python3 - "$file" "$SCHEMA" << 'PYEOF'
 import sys, json, pathlib
 
 try:
@@ -80,8 +80,8 @@ PYEOF
 
 # ── compatibility lint ────────────────────────────────────────────────────────
 lint_compat() {
-  local file="$1"
-  python3 - "$file" "${REQUIRED_TOOLS[@]}" <<'PYEOF'
+	local file="$1"
+	python3 - "$file" "${REQUIRED_TOOLS[@]}" << 'PYEOF'
 import sys, json, pathlib
 
 file_path = pathlib.Path(sys.argv[1])
@@ -112,8 +112,8 @@ WARNINGS=0
 COUNT=0
 
 if [[ ! -f ${SCHEMA} ]]; then
-  fail "Schema not found: ${SCHEMA}"
-  exit 1
+	fail "Schema not found: ${SCHEMA}"
+	exit 1
 fi
 
 info "Schema: ${SCHEMA#"${REPO_ROOT}/"}"
@@ -121,51 +121,51 @@ info "Skills: ${SKILLS_DIR#"${REPO_ROOT}/"}"
 echo ""
 
 while IFS= read -r -d '' skill_json; do
-  name="${skill_json#"${SKILLS_DIR}/"}"
-  name="${name%/skill.json}"
-  COUNT=$((COUNT + 1))
+	name="${skill_json#"${SKILLS_DIR}/"}"
+	name="${name%/skill.json}"
+	COUNT=$((COUNT + 1))
 
-  # Schema validation — capture output and exit code without triggering set -e
-  schema_ok=0
-  output=$(validate_json "$skill_json" 2>&1) || schema_ok=$?
-  if [[ $schema_ok -ne 0 ]]; then
-    fail "${name}"
-    echo "$output"
-    ERRORS=$((ERRORS + 1))
-    continue
-  fi
+	# Schema validation — capture output and exit code without triggering set -e
+	schema_ok=0
+	output=$(validate_json "$skill_json" 2>&1) || schema_ok=$?
+	if [[ $schema_ok -ne 0 ]]; then
+		fail "${name}"
+		echo "$output"
+		ERRORS=$((ERRORS + 1))
+		continue
+	fi
 
-  # Compatibility lint
-  compat_rc=0
-  compat_output=$(lint_compat "$skill_json" 2>&1) || compat_rc=$?
-  if [[ $compat_rc -eq 2 ]]; then
-    if [[ ${STRICT} == "true" ]]; then
-      fail "${name} — ${compat_output#  [warn] }"
-      ERRORS=$((ERRORS + 1))
-    else
-      warn "${name} — ${compat_output#  [warn] }"
-      WARNINGS=$((WARNINGS + 1))
-    fi
-  elif [[ $compat_rc -ne 0 ]]; then
-    fail "${name} — compat lint error"
-    echo "$compat_output"
-    ERRORS=$((ERRORS + 1))
-  else
-    ok "${name}"
-  fi
+	# Compatibility lint
+	compat_rc=0
+	compat_output=$(lint_compat "$skill_json" 2>&1) || compat_rc=$?
+	if [[ $compat_rc -eq 2 ]]; then
+		if [[ ${STRICT} == "true" ]]; then
+			fail "${name} — ${compat_output#  [warn] }"
+			ERRORS=$((ERRORS + 1))
+		else
+			warn "${name} — ${compat_output#  [warn] }"
+			WARNINGS=$((WARNINGS + 1))
+		fi
+	elif [[ $compat_rc -ne 0 ]]; then
+		fail "${name} — compat lint error"
+		echo "$compat_output"
+		ERRORS=$((ERRORS + 1))
+	else
+		ok "${name}"
+	fi
 done < <(find "${SKILLS_DIR}" -name "skill.json" -print0 | sort -z)
 
 echo ""
 if [[ $ERRORS -gt 0 ]]; then
-  _c "1;31" "  ${ERRORS} error(s)"
-  echo " in ${COUNT} skills."
-  exit 1
+	_c "1;31" "  ${ERRORS} error(s)"
+	echo " in ${COUNT} skills."
+	exit 1
 elif [[ $WARNINGS -gt 0 ]]; then
-  _c "1;33" "  ${WARNINGS} warning(s)"
-  echo ", ${COUNT} skills passed schema validation."
-  exit 0
+	_c "1;33" "  ${WARNINGS} warning(s)"
+	echo ", ${COUNT} skills passed schema validation."
+	exit 0
 else
-  _c "1;32" "  All ${COUNT} skills valid."
-  echo ""
-  exit 0
+	_c "1;32" "  All ${COUNT} skills valid."
+	echo ""
+	exit 0
 fi

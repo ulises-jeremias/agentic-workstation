@@ -23,14 +23,14 @@ EXTERNALS="${HOME_DIR}/dot_local/share/agentic-workstation/.chezmoiexternal.toml
 
 PROFILES_DEFAULT=(technical non-technical ai node python data infra minimal custom)
 if [[ $# -gt 0 ]]; then
-  PROFILES=("$@")
+	PROFILES=("$@")
 else
-  PROFILES=("${PROFILES_DEFAULT[@]}")
+	PROFILES=("${PROFILES_DEFAULT[@]}")
 fi
 
-if ! command -v chezmoi >/dev/null; then
-  echo "error: chezmoi not found in PATH" >&2
-  exit 2
+if ! command -v chezmoi > /dev/null; then
+	echo "error: chezmoi not found in PATH" >&2
+	exit 2
 fi
 
 c_reset=$'\033[0m'
@@ -45,56 +45,56 @@ out_dir="$(mktemp -d)"
 trap 'rm -rf "$out_dir"' EXIT
 
 render_profile() {
-  local profile="$1"
-  local tmpcfg="$out_dir/cfg-${profile}"
-  mkdir -p "$tmpcfg"
+	local profile="$1"
+	local tmpcfg="$out_dir/cfg-${profile}"
+	mkdir -p "$tmpcfg"
 
-  # Step 1 — render .chezmoi.toml.tmpl non-interactively.
-  local rendered_toml="$tmpcfg/chezmoi.toml"
-  WORKSTATION_PROFILE="$profile" chezmoi execute-template --init --stdinisatty=false \
-    --source "$CHEZMOI_SOURCE" \
-    <"$HOME_DIR/.chezmoi.toml.tmpl" >"$rendered_toml"
+	# Step 1 — render .chezmoi.toml.tmpl non-interactively.
+	local rendered_toml="$tmpcfg/chezmoi.toml"
+	WORKSTATION_PROFILE="$profile" chezmoi execute-template --init --stdinisatty=false \
+		--source "$CHEZMOI_SOURCE" \
+		< "$HOME_DIR/.chezmoi.toml.tmpl" > "$rendered_toml"
 
-  # Step 2 — render every install script against those values.
-  local any_fail=0
-  for tmpl in "$SCRIPTS_DIR"/*.tmpl "$EXTERNALS"; do
-    [[ -e $tmpl ]] || continue
-    local script
-    script="$out_dir/$(basename "$tmpl" .tmpl)--${profile}"
-    if ! chezmoi --config "$rendered_toml" --source "$CHEZMOI_SOURCE" execute-template <"$tmpl" >"$script"; then
-      printf '  %b✗ render failed%b %s\n' "$c_red" "$c_reset" "$(basename "$tmpl")"
-      any_fail=1
-      continue
-    fi
-    # Only syntax-check .sh outputs (externals → toml).
-    if [[ $tmpl == *.sh.tmpl ]]; then
-      if ! bash -n "$script" 2>/tmp/test-init-render.err; then
-        printf '  %b✗ bash -n%b %s\n' "$c_red" "$c_reset" "$(basename "$tmpl")"
-        sed 's/^/      /' /tmp/test-init-render.err
-        any_fail=1
-      fi
-    fi
-  done
+	# Step 2 — render every install script against those values.
+	local any_fail=0
+	for tmpl in "$SCRIPTS_DIR"/*.tmpl "$EXTERNALS"; do
+		[[ -e $tmpl ]] || continue
+		local script
+		script="$out_dir/$(basename "$tmpl" .tmpl)--${profile}"
+		if ! chezmoi --config "$rendered_toml" --source "$CHEZMOI_SOURCE" execute-template < "$tmpl" > "$script"; then
+			printf '  %b✗ render failed%b %s\n' "$c_red" "$c_reset" "$(basename "$tmpl")"
+			any_fail=1
+			continue
+		fi
+		# Only syntax-check .sh outputs (externals → toml).
+		if [[ $tmpl == *.sh.tmpl ]]; then
+			if ! bash -n "$script" 2> /tmp/test-init-render.err; then
+				printf '  %b✗ bash -n%b %s\n' "$c_red" "$c_reset" "$(basename "$tmpl")"
+				sed 's/^/      /' /tmp/test-init-render.err
+				any_fail=1
+			fi
+		fi
+	done
 
-  if ((any_fail == 0)); then
-    printf '%b✓%b %s\n' "$c_green" "$c_reset" "$profile"
-    pass=$((pass + 1))
-  else
-    printf '%b✗%b %s\n' "$c_red" "$c_reset" "$profile"
-    fail=$((fail + 1))
-  fi
+	if ((any_fail == 0)); then
+		printf '%b✓%b %s\n' "$c_green" "$c_reset" "$profile"
+		pass=$((pass + 1))
+	else
+		printf '%b✗%b %s\n' "$c_red" "$c_reset" "$profile"
+		fail=$((fail + 1))
+	fi
 }
 
 printf '%bRendering chezmoi scripts for %d profile(s)...%b\n' "$c_blue" "${#PROFILES[@]}" "$c_reset"
 for p in "${PROFILES[@]}"; do
-  render_profile "$p"
+	render_profile "$p"
 done
 
 echo
 printf 'Passed: %d   Failed: %d\n' "$pass" "$fail"
 if ((fail > 0)); then
-  printf '%bSome profiles produced broken scripts.%b\n' "$c_red" "$c_reset" >&2
-  exit 1
+	printf '%bSome profiles produced broken scripts.%b\n' "$c_red" "$c_reset" >&2
+	exit 1
 fi
 printf '%bAll profiles render cleanly.%b\n' "$c_green" "$c_reset"
 
@@ -103,7 +103,7 @@ printf '%bAll profiles render cleanly.%b\n' "$c_green" "$c_reset"
 # installed everywhere.
 profiles_yaml="${HOME_DIR}/.chezmoidata/profiles.yaml"
 if [[ -f $profiles_yaml ]]; then
-  declared=$(awk '
+	declared=$(awk '
     /^profiles:/ { in_profiles=1; next }
     in_profiles && /^[^ ]/ { in_profiles=0 }
     in_profiles && /^  [a-zA-Z0-9_-]+:/ {
@@ -112,15 +112,15 @@ if [[ -f $profiles_yaml ]]; then
       print name
     }
   ' "$profiles_yaml")
-  missing=0
-  for p in $declared; do
-    if ! printf '%s\n' "${PROFILES_DEFAULT[@]}" | grep -qx "$p"; then
-      printf '%bwarning%b: profile "%s" is declared in profiles.yaml but not tested\n' "$c_yellow" "$c_reset" "$p" >&2
-      missing=1
-    fi
-  done
-  if ((missing > 0)); then
-    echo "Add the missing profile(s) to PROFILES_DEFAULT in scripts/test-init-render.sh"
-    exit 1
-  fi
+	missing=0
+	for p in $declared; do
+		if ! printf '%s\n' "${PROFILES_DEFAULT[@]}" | grep -qx "$p"; then
+			printf '%bwarning%b: profile "%s" is declared in profiles.yaml but not tested\n' "$c_yellow" "$c_reset" "$p" >&2
+			missing=1
+		fi
+	done
+	if ((missing > 0)); then
+		echo "Add the missing profile(s) to PROFILES_DEFAULT in scripts/test-init-render.sh"
+		exit 1
+	fi
 fi
