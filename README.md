@@ -18,7 +18,7 @@
 
 <p>
   <strong>agentic-workstation</strong> is the baseline layer of my personal Developer Experience stack:<br>
-  reproducible dotfiles, AI skills, MCP servers, agent workflows, and CLI guardrails optimized for flow.
+  reproducible dotfiles, AI skills, MCP servers, agent workflows, and CLI guardrails optimized for deep flow.
 </p>
 
 [Install](#quick-start) · [Wiki](https://github.com/ulises-jeremias/agentic-workstation/wiki) · [Integrations](#integrations) · [Personal DX Stack](#personal-dx-stack) · [Docs](docs/) · [Contributing](CONTRIBUTING.md)
