@@ -183,7 +183,7 @@ agentic-workstation/
 Key decisions are recorded as ADRs — immutable once accepted, superseded by new ADRs when revisited.
 
 | ADR | Decision | Status |
-|-----|----------|--------|
+| --- | --- | --- |
 | [001](docs/adrs/001-chezmoi-home-source-state.md) | Use `home/` as chezmoi source state | ✅ Accepted |
 | [002](docs/adrs/002-profile-driven-tooling.md) | Profile-driven tooling model | ✅ Accepted |
 | [003](docs/adrs/003-ai-and-mcp-baseline.md) | AI and MCP baseline in shared local paths | ✅ Accepted |
