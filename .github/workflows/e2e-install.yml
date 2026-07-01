@@ -1,0 +1,42 @@
+name: E2E Install Test
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "install.sh"
+      - "install.ps1"
+      - "scripts/test-e2e-install.sh"
+      - "home/**"
+      - ".github/workflows/e2e-install.yml"
+  push:
+    branches: [main]
+    paths:
+      - "install.sh"
+      - "install.ps1"
+      - "scripts/test-e2e-install.sh"
+      - "home/**"
+      - ".github/workflows/e2e-install.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup dependencies
+        shell: bash
+        run: |
+          sudo apt-get update && sudo apt-get install -y curl git
+
+      - name: Run E2E install test
+        shell: bash
+        run: bash scripts/test-e2e-install.sh
