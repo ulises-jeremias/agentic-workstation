@@ -6,16 +6,16 @@ Superseded by [ADR-010](010-rename-to-agentic-workstation.md)
 
 ## Context
 
-As the project evolved from a personal chezmoi dotfiles repo to a portable agentic workstation baseline, contributors and users questioned whether the name `dots-ai` still fit. Two main alternatives emerged during issue #20 discussion:
+As the project evolved from a personal chezmoi dotfiles repo to a portable agentic workstation baseline, contributors and users questioned whether the name `agentic-workstation` still fit. Two main alternatives emerged during issue #20 discussion:
 
 1. **Rebrand** to a new name that better conveys the project's scope (agentic workstation, delivery automation, multi-tool orchestration)
-2. **Keep `dots-ai`** but refresh the tagline to accurately describe what the project has become
+2. **Keep `agentic-workstation`** but refresh the tagline to accurately describe what the project has become
 
-The name `dots-ai` has existing recognition, a growing wiki, published integrations, and references in documentation, CI workflows, and community forks. A full rename would require updating dozens of references across the repo, the wiki, badges, and external tooling configs.
+The name `agentic-workstation` has existing recognition, a growing wiki, published integrations, and references in documentation, CI workflows, and community forks. A full rename would require updating dozens of references across the repo, the wiki, badges, and external tooling configs.
 
 ## Decision
 
-Keep the name `dots-ai` and adopt a refreshed tagline that reflects the current scope and ambition:
+Keep the name `agentic-workstation` and adopt a refreshed tagline that reflects the current scope and ambition:
 
 **Tagline:** "Agentic Workstation Baseline — chezmoi-managed skills, agents, MCP, and loops for AI-assisted delivery."
 
@@ -34,6 +34,6 @@ All existing references, badges, URLs, and tooling remain unchanged. Future docu
 
 ### Negative
 
-- The name `dots-ai` remains somewhat ambiguous (doesn't explicitly say "workstation baseline" or "delivery")
+- The name `agentic-workstation` remains somewhat ambiguous (doesn't explicitly say "workstation baseline" or "delivery")
 - Newcomers may still need the tagline to understand the project's purpose
 - Missed opportunity for a clean break and a more descriptive project name

@@ -47,7 +47,7 @@ function Require-File { param($Path)
 }
 
 $LocalBin     = Join-Path $env:USERPROFILE ".local\bin"
-$SkillsDir    = Join-Path $env:USERPROFILE ".local\share\dots-ai\skills"
+$SkillsDir    = Join-Path $env:USERPROFILE ".local\share\agentic-workstation\skills"
 $ClaudeAgents = Join-Path $env:USERPROFILE ".claude\agents"
 $OpenCode     = Join-Path $env:APPDATA     "opencode\agents"
 $CursorRules  = Join-Path $env:USERPROFILE ".cursor\rules"
@@ -63,7 +63,7 @@ switch ($Profile) {
             Write-AssertFail "expected several dots-* scripts in $LocalBin"
         }
         Write-AssertOk "found $($nanScripts.Count) dots-* scripts in $LocalBin"
-        Require-DirNonEmpty (Join-Path $env:USERPROFILE ".local\share\dots-ai")
+        Require-DirNonEmpty (Join-Path $env:USERPROFILE ".local\share\agentic-workstation")
     }
     "skills" {
         Require-DirNonEmpty $SkillsDir

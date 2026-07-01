@@ -29,7 +29,7 @@
 
 ## Recommended setup order
 
-1. Configure credentials in `~/.config/dots-ai/env.d/`.
+1. Configure credentials in `~/.config/agentic-workstation/env.d/`.
 2. Enable optional skill packs if the integration uses one.
 3. Register MCP servers in the AI tool you actually use.
 4. Run `dots-doctor` and `dots-skills list`.

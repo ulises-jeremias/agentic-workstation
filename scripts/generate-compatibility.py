@@ -21,7 +21,7 @@ import sys
 
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills"
+SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills"
 OUT_FILE = REPO_ROOT / "docs" / "COMPATIBILITY.md"
 
 # Ordered list of tools (columns in the table)

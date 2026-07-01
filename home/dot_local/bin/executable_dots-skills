@@ -3,7 +3,7 @@ set -eo pipefail
 
 ## dots-skills
 ##
-## Manage dots-ai AI skills across multiple AI tools.
+## Manage agentic-workstation AI skills across multiple AI tools.
 ##
 ## Usage:
 ##     @script.name <command> [options]
@@ -23,9 +23,9 @@ set -eo pipefail
 ##
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && pwd || true)"
-DOTS_AI_LIB_DIR="${DOTS_AI_LIB_DIR:-${DEFAULT_DOTS_AI_LIB_DIR:-$HOME/.local/lib/dots-ai}}"
-EASY_OPTIONS_LIB="${DOTS_AI_LIB_DIR}/easy-options/easyoptions.sh"
+DEFAULT_DOTS_WORKSTATION_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/agentic-workstation" 2>/dev/null && pwd || true)"
+DOTS_WORKSTATION_LIB_DIR="${DOTS_WORKSTATION_LIB_DIR:-${DEFAULT_DOTS_WORKSTATION_LIB_DIR:-$HOME/.local/lib/agentic-workstation}}"
+EASY_OPTIONS_LIB="${DOTS_WORKSTATION_LIB_DIR}/easy-options/easyoptions.sh"
 
 if [[ ! -f ${EASY_OPTIONS_LIB} ]]; then
   echo "[dots-skills] Missing dependency: ${EASY_OPTIONS_LIB}" >&2
@@ -43,10 +43,10 @@ fi
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 
-DOTS_AI_SHARE="${HOME}/.local/share/dots-ai"
-SKILLS_DIR="${DOTS_AI_SHARE}/skills"
-SKILLS_EXTERNAL_DIR="${DOTS_AI_SHARE}/skills-external"
-REGISTRY_FILE="${DOTS_AI_SHARE}/skills-registry.yaml"
+DOTS_WORKSTATION_SHARE="${HOME}/.local/share/agentic-workstation"
+SKILLS_DIR="${DOTS_WORKSTATION_SHARE}/skills"
+SKILLS_EXTERNAL_DIR="${DOTS_WORKSTATION_SHARE}/skills-external"
+REGISTRY_FILE="${DOTS_WORKSTATION_SHARE}/skills-registry.yaml"
 
 # ── AI Tool → Skills Directory mapping ────────────────────────────────────────
 # Keys must match the tool keys used in skill.json compatibility blocks.
@@ -203,9 +203,9 @@ cmd_list() {
   # One Python process for the entire table. The previous implementation called
   # python3 once per metadata field and once per tool column per skill (O(skills
   # × tools) subprocesses) which made `dots-skills list` take tens of seconds.
-  DOTS_AI_SKILLS_LIST_HOME="${HOME}" \
-    DOTS_AI_SKILLS_LIST_DIR="${SKILLS_DIR}" \
-    DOTS_AI_SKILLS_LIST_EXTERNAL="${SKILLS_EXTERNAL_DIR}" \
+  DOTS_WORKSTATION_SKILLS_LIST_HOME="${HOME}" \
+    DOTS_WORKSTATION_SKILLS_LIST_DIR="${SKILLS_DIR}" \
+    DOTS_WORKSTATION_SKILLS_LIST_EXTERNAL="${SKILLS_EXTERNAL_DIR}" \
     python3 - <<'PY'
 import json
 import os
@@ -213,9 +213,9 @@ import sys
 from pathlib import Path
 from typing import List
 
-home = Path(os.environ["DOTS_AI_SKILLS_LIST_HOME"])
-skills_dir = Path(os.environ["DOTS_AI_SKILLS_LIST_DIR"])
-ext_dir = Path(os.environ["DOTS_AI_SKILLS_LIST_EXTERNAL"])
+home = Path(os.environ["DOTS_WORKSTATION_SKILLS_LIST_HOME"])
+skills_dir = Path(os.environ["DOTS_WORKSTATION_SKILLS_LIST_DIR"])
+ext_dir = Path(os.environ["DOTS_WORKSTATION_SKILLS_LIST_EXTERNAL"])
 
 # Must match list output order in the bash version: universal, claude-code, pi, windsurf
 TOOLS = [
@@ -674,19 +674,19 @@ case "$command" in
   check) cmd_check ;;
   add) cmd_add "${1:-}" ;;
   deps)
-    _graph_script="${DOTS_AI_SKILLS_DIR:?}/../../scripts/skill-graph.py"
+    _graph_script="${DOTS_WORKSTATION_SKILLS_DIR:?}/../../scripts/skill-graph.py"
     if [[ ! -f ${_graph_script} ]]; then
-      _graph_script="$(cd "$(dirname "${BASH_SOURCE[0]}")/../share/dots-ai/../../" && pwd)/scripts/skill-graph.py"
+      _graph_script="$(cd "$(dirname "${BASH_SOURCE[0]}")/../share/agentic-workstation/../../" && pwd)/scripts/skill-graph.py"
     fi
-    [[ -f ${_graph_script} ]] || die "skill-graph.py not found. Ensure dots-ai is installed correctly."
+    [[ -f ${_graph_script} ]] || die "skill-graph.py not found. Ensure agentic-workstation is installed correctly."
     python3 "${_graph_script}" deps "${@}"
     ;;
   search | explain | doctor)
-    _search_script="${DOTS_AI_SKILLS_DIR:?}/../../scripts/dots-skills-search.py"
+    _search_script="${DOTS_WORKSTATION_SKILLS_DIR:?}/../../scripts/dots-skills-search.py"
     if [[ ! -f ${_search_script} ]]; then
-      _search_script="$(cd "$(dirname "${BASH_SOURCE[0]}")/../share/dots-ai/../../" && pwd)/scripts/dots-skills-search.py"
+      _search_script="$(cd "$(dirname "${BASH_SOURCE[0]}")/../share/agentic-workstation/../../" && pwd)/scripts/dots-skills-search.py"
     fi
-    [[ -f ${_search_script} ]] || die "dots-skills-search.py not found. Ensure dots-ai is installed correctly."
+    [[ -f ${_search_script} ]] || die "dots-skills-search.py not found. Ensure agentic-workstation is installed correctly."
     python3 "${_search_script}" "${command}" "${@}"
     ;;
   enable)
@@ -701,9 +701,9 @@ case "$command" in
       esac
     done
     [[ -z ${scope} ]] && die "Usage: dots-skills enable --scope <name>"
-    scope_file="${DOTS_AI_SHARE}/scopes/${scope}.yaml"
+    scope_file="${DOTS_WORKSTATION_SHARE}/scopes/${scope}.yaml"
     [[ -f ${scope_file} ]] || die "Scope '${scope}' not found at ${scope_file}"
-    echo "${scope}" >"${DOTS_AI_SHARE}/.active-scope"
+    echo "${scope}" >"${DOTS_WORKSTATION_SHARE}/.active-scope"
     ok "Active scope set to '${scope}'"
     info "Run 'dots-skills sync' to apply scope to AI tool directories."
     ;;

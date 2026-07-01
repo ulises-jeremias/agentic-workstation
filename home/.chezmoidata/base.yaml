@@ -1,8 +1,8 @@
 company:
-  name: dots-ai
+  name: agentic-workstation
 paths:
   local_bin: "{{ .chezmoi.homeDir }}/.local/bin"
-  dots_ai_share: "{{ .chezmoi.homeDir }}/.local/share/dots-ai"
+  dots_ai_share: "{{ .chezmoi.homeDir }}/.local/share/agentic-workstation"
 defaults:
   shell: zsh
   editor: vi

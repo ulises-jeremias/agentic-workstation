@@ -12,7 +12,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SCHEMA="${REPO_ROOT}/lib/schemas/skill.schema.json"
-SKILLS_DIR="${REPO_ROOT}/home/dot_local/share/dots-ai/skills"
+SKILLS_DIR="${REPO_ROOT}/home/dot_local/share/agentic-workstation/skills"
 
 STRICT=false
 for arg in "$@"; do

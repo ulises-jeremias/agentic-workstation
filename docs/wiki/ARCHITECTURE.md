@@ -1,6 +1,6 @@
 # Architecture
 
-> Layered design model for the dots-ai workstation platform.
+> Layered design model for the agentic-workstation workstation platform.
 
 ---
 
@@ -31,7 +31,7 @@ home/
 ├── .chezmoiscripts/      # install scripts (run during apply)
 ├── dot_local/
 │   ├── bin/              # dots-* CLI helpers
-│   └── share/dots-ai/    # AI resources (skills, prompts, mcp)
+│   └── share/agentic-workstation/    # AI resources (skills, prompts, mcp)
 └── dot_config/           # tool configurations
 ```
 
@@ -45,4 +45,4 @@ Skills and agents are deployed to well-known paths and symlinked to each AI tool
 
 ---
 
-**Canonical doc:** [`docs/ARCHITECTURE.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/ARCHITECTURE.md)
+**Canonical doc:** [`docs/ARCHITECTURE.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/ARCHITECTURE.md)

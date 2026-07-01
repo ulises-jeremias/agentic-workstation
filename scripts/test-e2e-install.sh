@@ -73,7 +73,7 @@ EXPECTED_SCRIPTS=(
   dots-bootstrap
   dots-devcompanion
   dots-sync-ai
-  dots-ai-audit
+  dots-workstation-audit
   dots-mcp
   dots-security-audit
 )
@@ -87,7 +87,7 @@ for script in "${EXPECTED_SCRIPTS[@]}"; do
 done
 
 # Step 6 — Verify chezmoi config was created
-CHEZMOI_CONFIG="$HOME/.config/chezmoi/dots-ai.toml"
+CHEZMOI_CONFIG="$HOME/.config/chezmoi/agentic-workstation.toml"
 if [ -f "$CHEZMOI_CONFIG" ]; then
   ok "chezmoi config file present: $CHEZMOI_CONFIG"
 else

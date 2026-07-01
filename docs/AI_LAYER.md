@@ -1,9 +1,9 @@
 # AI Layer
 
-Shared AI resources are installed under `~/.local/share/dots-ai/`.
+Shared AI resources are installed under `~/.local/share/agentic-workstation/`.
 
 > [!NOTE]
-> This document describes the **deployed** AI layer on the target machine. For the **source state** (before `chezmoi apply`), look under `home/dot_local/share/dots-ai/` in the repository.
+> This document describes the **deployed** AI layer on the target machine. For the **source state** (before `chezmoi apply`), look under `home/dot_local/share/agentic-workstation/` in the repository.
 
 ## Directory structure
 
@@ -37,9 +37,9 @@ See [docs/SKILLS.md](SKILLS.md) for the full skills system documentation includi
 
 **Dev companion** layers (general + workspace overlays) are documented for humans in [docs/DEV_COMPANION.md](DEV_COMPANION.md); companion skills live next to the workflow skills under `skills/`.
 
-**Client/project** bundled skills ship in the same `skills/` tree. **Workflow** and **dev companion** skills default to **`enabled: true`** in `skills-registry.yaml` (override in private chezmoi data to opt out). Engagement overlays are stored in the workspace—see [docs/CLIENT_AI_PLAYBOOKS.md](CLIENT_AI_PLAYBOOKS.md) and [docs/DEV_COMPANION.md](DEV_COMPANION.md). Routing is summarized in **`skills/skill-catalog.yaml`**; full orchestration rules live in **`skills/dots-ai-assistant/references/ORCHESTRATION.md`** (installed path).
+**Client/project** bundled skills ship in the same `skills/` tree. **Workflow** and **dev companion** skills default to **`enabled: true`** in `skills-registry.yaml` (override in private chezmoi data to opt out). Engagement overlays are stored in the workspace—see [docs/CLIENT_AI_PLAYBOOKS.md](CLIENT_AI_PLAYBOOKS.md) and [docs/DEV_COMPANION.md](DEV_COMPANION.md). Routing is summarized in **`skills/skill-catalog.yaml`**; full orchestration rules live in **`skills/dots-workstation-assistant/references/ORCHESTRATION.md`** (installed path).
 
-**dots-ai-assistant** (dots-ai Assistant) is the recommended **organization-wide orchestrator and fallback**: in **any** repo it drives a **document-first** pass (README, `docs/`, `AGENTS.md`, CONTRIBUTING, PR templates, task runners, devcontainer, CI, tooling config, then source), with **`AGENTS.md` as the primary agent contract** when present. It includes `references/REPO_INSPECTION.md`, `references/ORCHESTRATION.md`, and an optional **`AGENTS.project.md.tmpl`** in `home/.chezmoitemplates/agents/` for new application repos. On the baseline checkout it also uses `docs/` and `dots-*`. Future org playbooks should live under documented paths under `~/.local/share/dots-ai/` so the skill stays pointer-based.
+**dots-workstation-assistant** (agentic-workstation Assistant) is the recommended **organization-wide orchestrator and fallback**: in **any** repo it drives a **document-first** pass (README, `docs/`, `AGENTS.md`, CONTRIBUTING, PR templates, task runners, devcontainer, CI, tooling config, then source), with **`AGENTS.md` as the primary agent contract** when present. It includes `references/REPO_INSPECTION.md`, `references/ORCHESTRATION.md`, and an optional **`AGENTS.project.md.tmpl`** in `home/.chezmoitemplates/agents/` for new application repos. On the baseline checkout it also uses `docs/` and `dots-*`. Future org playbooks should live under documented paths under `~/.local/share/agentic-workstation/` so the skill stays pointer-based.
 
 ## Conceptual model: The Ralph Loop
 
@@ -48,10 +48,10 @@ This workstation is the **infrastructure layer** of a [Ralph Loop](https://ghunt
 | Ralph concept | What this workstation provides |
 |---------------|-------------------------------|
 | **Backing specifications** | `AGENTS.md` templates in `home/.chezmoitemplates/agents/` — deployed to each repo/session |
-| **Context engineering** | `~/.local/share/dots-ai/skills/` — modular skills that prime each loop with domain context |
+| **Context engineering** | `~/.local/share/agentic-workstation/skills/` — modular skills that prime each loop with domain context |
 | **Persistent memory between loops** | `ai-workspace/knowledge/` — the running instance's knowledge base |
-| **Fix the loop** | `dots-ai-workspace-knowledge-sync` skill — auto-syncs discoveries after each session |
-| **Monolithic orchestrator** | `dots-ai-assistant` as single entry point; multi-agent is optional and bounded |
+| **Fix the loop** | `dots-harness-knowledge-sync` skill — auto-syncs discoveries after each session |
+| **Monolithic orchestrator** | `dots-workstation-assistant` as single entry point; multi-agent is optional and bounded |
 | **Forward mode** | Dev companion skills driving autonomous delivery phases |
 | **Reverse mode** | Sanitized Archive archiving procedure |
 
@@ -83,9 +83,9 @@ Those choices are persisted and used by `home/.chezmoiscripts/` installer script
 
 ## Local AI Audit
 
-`dots-ai-audit` inventories local AI tool installation, safe auth hints, config file presence, and privacy-related metadata for Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, Windsurf, and Gemini. It is intentionally redacted: it never prints token values, raw auth files, prompt history, chat logs, or memory contents. Local subscription evidence is best-effort only; vendor admin consoles or APIs remain authoritative for plan ownership.
+`dots-workstation-audit` inventories local AI tool installation, safe auth hints, config file presence, and privacy-related metadata for Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, Windsurf, and Gemini. It is intentionally redacted: it never prints token values, raw auth files, prompt history, chat logs, or memory contents. Local subscription evidence is best-effort only; vendor admin consoles or APIs remain authoritative for plan ownership.
 
-`dots-security-audit` provides a shallow workstation security check for sensitive file permissions, AI auth file permissions, and expected dots-ai baseline directories. Deep secret scanning is skipped by default to avoid noisy false positives.
+`dots-security-audit` provides a shallow workstation security check for sensitive file permissions, AI auth file permissions, and expected agentic-workstation baseline directories. Deep secret scanning is skipped by default to avoid noisy false positives.
 
 ## Safety guarantees
 

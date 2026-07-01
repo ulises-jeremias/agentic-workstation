@@ -3,7 +3,7 @@ set -eo pipefail
 
 ## dots-devcompanion
 ##
-## Minimal companion CLI for the dots-ai dev-companion system.
+## Minimal companion CLI for the agentic-workstation dev-companion system.
 ##
 ## Usage:
 ##     @script.name <command> [options]
@@ -20,9 +20,9 @@ set -eo pipefail
 ##
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && pwd || true)"
-DOTS_AI_LIB_DIR="${DOTS_AI_LIB_DIR:-${DEFAULT_DOTS_AI_LIB_DIR:-$HOME/.local/lib/dots-ai}}"
-EASY_OPTIONS_LIB="${DOTS_AI_LIB_DIR}/easy-options/easyoptions.sh"
+DEFAULT_DOTS_WORKSTATION_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/agentic-workstation" 2>/dev/null && pwd || true)"
+DOTS_WORKSTATION_LIB_DIR="${DOTS_WORKSTATION_LIB_DIR:-${DEFAULT_DOTS_WORKSTATION_LIB_DIR:-$HOME/.local/lib/agentic-workstation}}"
+EASY_OPTIONS_LIB="${DOTS_WORKSTATION_LIB_DIR}/easy-options/easyoptions.sh"
 
 # NO_CHECK=1 prevents easy-options from rejecting subcommand-specific flags
 # (e.g. --request, --repo) that appear after the subcommand name.
@@ -47,7 +47,7 @@ fi
 cmd="${1:-}"
 shift || true
 
-dots_ai_share="${HOME}/.local/share/dots-ai"
+dots_ai_share="${HOME}/.local/share/agentic-workstation"
 dev_home="${dots_ai_share}/dev-companion"
 packs_dir="${dev_home}/packs"
 queue_pending="${dev_home}/queue/pending"

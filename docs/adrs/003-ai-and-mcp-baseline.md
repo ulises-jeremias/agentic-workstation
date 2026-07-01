@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-dots-ai needs a reusable AI enablement layer that provides:
+agentic-workstation needs a reusable AI enablement layer that provides:
 
 - **Skills** — modular markdown documents that teach AI tools specific workflows
 - **Prompts** — reusable internal prompt templates
@@ -22,10 +22,10 @@ Key constraints:
 
 ## Decision
 
-Ship AI assets and MCP templates under `~/.local/share/dots-ai/` and enforce env-var-only secrets. The directory structure:
+Ship AI assets and MCP templates under `~/.local/share/agentic-workstation/` and enforce env-var-only secrets. The directory structure:
 
 ```
-~/.local/share/dots-ai/
+~/.local/share/agentic-workstation/
 ├── skills/               # Bundled skills (managed by chezmoi)
 ├── skills-external/      # External skills (chezmoiexternal + dots-skills)
 ├── skills-registry.yaml  # Runtime registry for dots-skills
@@ -49,6 +49,6 @@ MCP templates are **examples only** — they contain no credentials and require 
 
 ### Negative
 
-- `~/.local/share/dots-ai/` is a non-standard location that new contributors must learn
+- `~/.local/share/agentic-workstation/` is a non-standard location that new contributors must learn
 - MCP templates require manual credential setup per machine
 - The separation between `skills/` (bundled) and `skills-external/` (external) adds cognitive overhead

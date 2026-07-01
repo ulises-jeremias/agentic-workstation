@@ -4,18 +4,18 @@
 
 ## Agents
 
-dots-ai agents are deployed to `~/.claude/agents/` by chezmoi.
-All agent files use the `dots-ai-` prefix (e.g. `dots-ai-code-reviewer.md`).
+agentic-workstation agents are deployed to `~/.claude/agents/` by chezmoi.
+All agent files use the `dots-workstation-` prefix (e.g. `dots-workstation-code-reviewer.md`).
 
 ## Usage
 
 ```bash
-@dots-ai-planner design a feature
-@dots-ai-code-reviewer review this code
-@dots-ai-reference-lookup React state patterns
+@dots-workstation-planner design a feature
+@dots-workstation-code-reviewer review this code
+@dots-workstation-reference-lookup React state patterns
 ```
 
-## dots-ai Skills
+## agentic-workstation Skills
 
 Delegate to skills:
 - `dbt-validation` — dbt checks

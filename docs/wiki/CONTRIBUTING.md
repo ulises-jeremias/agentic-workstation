@@ -1,6 +1,6 @@
 # Contributing
 
-> How to contribute to the dots-ai platform.
+> How to contribute to the agentic-workstation platform.
 
 ---
 
@@ -71,8 +71,8 @@ Write short, imperative summaries. Explain "why" in the body.
 
 - Never commit credentials, tokens, or private keys
 - Use environment variables in all examples
-- Follow [`SECURITY.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/SECURITY.md) for vulnerability reporting
+- Follow [`SECURITY.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/SECURITY.md) for vulnerability reporting
 
 ---
 
-**Canonical doc:** [`CONTRIBUTING.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/CONTRIBUTING.md)
+**Canonical doc:** [`CONTRIBUTING.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/CONTRIBUTING.md)

@@ -52,8 +52,8 @@ case "$PROFILE" in
   chezmoi)
     # Full chezmoi apply path — install.sh / manual init+apply.
     require_executable "$HOME/.local/bin/dots-doctor"
-    require_dir_nonempty "$HOME/.local/share/dots-ai/skills"
-    count=$(find "$HOME/.local/share/dots-ai/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+    require_dir_nonempty "$HOME/.local/share/agentic-workstation/skills"
+    count=$(find "$HOME/.local/share/agentic-workstation/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
     if [ "$count" -lt 3 ]; then
       miss "expected at least 3 skill directories, found $count"
     fi
@@ -61,7 +61,7 @@ case "$PROFILE" in
     ;;
   skills)
     # install-skills.* path — only the AI-layer subset.
-    require_dir_nonempty "$HOME/.local/share/dots-ai/skills"
+    require_dir_nonempty "$HOME/.local/share/agentic-workstation/skills"
     case "$TOOL" in
       cursor) require_dir_nonempty "$HOME/.cursor/rules" ;;
       claude) require_dir_nonempty "$HOME/.claude/agents" ;;

@@ -1,4 +1,4 @@
-# yamllint configuration for dots-ai
+# yamllint configuration for agentic-workstation
 ---
 extends: default
 

@@ -7,22 +7,22 @@
 
 ## TL;DR
 
-- The runner now ships a **policy layer** ([`policy.py`](../home/dot_local/share/dots-ai/dev-companion/runner/policy.py)). You can keep the historical zero-config behaviour or **lock the runner to a single backend** (e.g. only Anthropic via the client's API key) and **fail closed** if that backend is unreachable.
+- The runner now ships a **policy layer** ([`policy.py`](../home/dot_local/share/agentic-workstation/dev-companion/runner/policy.py)). You can keep the historical zero-config behaviour or **lock the runner to a single backend** (e.g. only Anthropic via the client's API key) and **fail closed** if that backend is unreachable.
 - Inspect the active policy with `dots-devcompanion llm-status` (no model call).
 - The policy is composed from three layers; later layers can only **restrict**, never widen:
 
 ```
-env vars  →  ~/.config/dots-ai/devcompanion-llm.json  →  per-job "llm" block
+env vars  →  ~/.config/agentic-workstation/devcompanion-llm.json  →  per-job "llm" block
 ```
 
 > [!IMPORTANT]
-> If a client engagement requires "**only** their Anthropic / OpenAI / OpenCode account", you **must** apply the [Client-Restricted Mode](#client-restricted-mode) below. The default mode is convenient for internal dots-ai work but does not enforce single-backend usage.
+> If a client engagement requires "**only** their Anthropic / OpenAI / OpenCode account", you **must** apply the [Client-Restricted Mode](#client-restricted-mode) below. The default mode is convenient for internal agentic-workstation work but does not enforce single-backend usage.
 
 ---
 
 ## Two Modes
 
-### Default Mode (dots-ai)
+### Default Mode (agentic-workstation)
 
 Convenience-first. The dispatcher tries providers in this hard-coded order
 and picks the first available one:
@@ -35,7 +35,7 @@ and picks the first available one:
 | 4 | OpenAI | Cloud | Paid | `OPENAI_API_KEY` |
 
 > [!TIP]
-> This mode is fine for internal dots-ai exploration, training and demos. **Do not** use it for client repos when contracts mandate a single AI account.
+> This mode is fine for internal agentic-workstation exploration, training and demos. **Do not** use it for client repos when contracts mandate a single AI account.
 
 ### Client-Restricted Mode
 
@@ -43,10 +43,10 @@ Explicitly declare the only providers/identity you will use, and refuse to
 fall back to anything else.
 
 ```bash
-# Allow only Anthropic. Use the client's key, not dots-ai'.
+# Allow only Anthropic. Use the client's key, not agentic-workstation'.
 export ANTHROPIC_API_KEY="<client key from their secret store>"
-export DOTS_AI_DEVCOMPANION_LLM_ALLOWLIST="anthropic"
-export DOTS_AI_DEVCOMPANION_LLM_STRICT="1"
+export DOTS_WORKSTATION_DEVCOMPANION_LLM_ALLOWLIST="anthropic"
+export DOTS_WORKSTATION_DEVCOMPANION_LLM_STRICT="1"
 
 dots-devcompanion llm-status     # confirm
 dots-devcompanion run-once       # run; refuses to fall back to OpenCode/Ollama
@@ -63,19 +63,19 @@ and exits with code `2` instead of silently using OpenCode.
 
 | Variable | Type | Notes |
 |----------|------|-------|
-| `DOTS_AI_DEVCOMPANION_LLM_ALLOWLIST` | comma list | Ordered preference, e.g. `anthropic,opencode` |
-| `DOTS_AI_DEVCOMPANION_LLM_DENYLIST` | comma list | Always blocked, even if allowlisted |
-| `DOTS_AI_DEVCOMPANION_LLM_PINNED_PROVIDER` | string | Only this provider is tried |
-| `DOTS_AI_DEVCOMPANION_LLM_PINNED_MODEL` | string | Override the provider's default model |
-| `DOTS_AI_DEVCOMPANION_LLM_STRICT` | `1`/`true`/`yes`/`on` | Fail closed if no allowed provider is available |
-| `DOTS_AI_DEVCOMPANION_LLM_CONFIG` | path | Override the policy file path |
+| `DOTS_WORKSTATION_DEVCOMPANION_LLM_ALLOWLIST` | comma list | Ordered preference, e.g. `anthropic,opencode` |
+| `DOTS_WORKSTATION_DEVCOMPANION_LLM_DENYLIST` | comma list | Always blocked, even if allowlisted |
+| `DOTS_WORKSTATION_DEVCOMPANION_LLM_PINNED_PROVIDER` | string | Only this provider is tried |
+| `DOTS_WORKSTATION_DEVCOMPANION_LLM_PINNED_MODEL` | string | Override the provider's default model |
+| `DOTS_WORKSTATION_DEVCOMPANION_LLM_STRICT` | `1`/`true`/`yes`/`on` | Fail closed if no allowed provider is available |
+| `DOTS_WORKSTATION_DEVCOMPANION_LLM_CONFIG` | path | Override the policy file path |
 
-Per-engagement env files under `~/.config/dots-ai/env.d/` are a good place to
+Per-engagement env files under `~/.config/agentic-workstation/env.d/` are a good place to
 set these (loaded by `dots-loadenv`).
 
 ### 2. Policy File
 
-Optional JSON file at `~/.config/dots-ai/devcompanion-llm.json`:
+Optional JSON file at `~/.config/agentic-workstation/devcompanion-llm.json`:
 
 ```json
 {
@@ -86,7 +86,7 @@ Optional JSON file at `~/.config/dots-ai/devcompanion-llm.json`:
 }
 ```
 
-Override the path with `DOTS_AI_DEVCOMPANION_LLM_CONFIG=/some/other.json`.
+Override the path with `DOTS_WORKSTATION_DEVCOMPANION_LLM_CONFIG=/some/other.json`.
 
 ### 3. Per-Job `llm` Block
 
@@ -123,7 +123,7 @@ model. Safe to run on customer machines.
 ```bash
 dots-devcompanion llm-status
 dots-devcompanion llm-status --json
-dots-devcompanion llm-status --job ~/.local/share/dots-ai/dev-companion/queue/pending/foo.job
+dots-devcompanion llm-status --job ~/.local/share/agentic-workstation/dev-companion/queue/pending/foo.job
 ```
 
 Exit codes:
@@ -140,7 +140,7 @@ Exit codes:
 
 `result.json` now embeds the active policy (`llm_policy_applied`) and a
 single-line JSON record is appended to
-`~/.local/share/dots-ai/dev-companion/logs/llm-audit.log`:
+`~/.local/share/agentic-workstation/dev-companion/logs/llm-audit.log`:
 
 ```json
 {
@@ -202,8 +202,8 @@ Short version:
 ## FAQ
 
 **Q: How do I force "only the client's Anthropic key, never OpenCode"?**
-A: Set `DOTS_AI_DEVCOMPANION_LLM_ALLOWLIST=anthropic` and
-`DOTS_AI_DEVCOMPANION_LLM_STRICT=1` (per-engagement env file). Run
+A: Set `DOTS_WORKSTATION_DEVCOMPANION_LLM_ALLOWLIST=anthropic` and
+`DOTS_WORKSTATION_DEVCOMPANION_LLM_STRICT=1` (per-engagement env file). Run
 `dots-devcompanion llm-status` to confirm before queuing jobs.
 
 **Q: Can a job widen the global allowlist?**
@@ -218,9 +218,9 @@ allowed provider (e.g. install `opencode` or set the right API key) or
 relax the policy explicitly.
 
 **Q: How do I debug?**
-A: `DOTS_AI_LLM_DEBUG=1 dots-devcompanion llm-status` shows full provider
+A: `DOTS_WORKSTATION_LLM_DEBUG=1 dots-devcompanion llm-status` shows full provider
 detection. Check the audit log under
-`~/.local/share/dots-ai/dev-companion/logs/llm-audit.log`.
+`~/.local/share/agentic-workstation/dev-companion/logs/llm-audit.log`.
 
 **Q: Can I keep the old zero-config behaviour?**
 A: Yes — leave the env vars unset and no policy file. The dispatcher behaves
@@ -231,7 +231,7 @@ exactly as before and `result.json` stays compatible.
 ## Extending Providers
 
 Add new providers by implementing `LLMProvider` from
-[`providers/base.py`](../home/dot_local/share/dots-ai/dev-companion/runner/providers/base.py):
+[`providers/base.py`](../home/dot_local/share/agentic-workstation/dev-companion/runner/providers/base.py):
 
 ```python
 class MyProvider(LLMProvider):

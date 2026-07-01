@@ -1,0 +1,17 @@
+# Example client scope — allowlist only delivery-relevant skills.
+# Copy to scopes/<client-name>.yaml and customize.
+# Activate with: dots-skills enable --scope example-client
+name: example-client
+description: "Sample client scope — allowlist delivery skills only"
+skills:
+  allow:
+    - dots-workstation-assistant
+    - dots-workstation-workflow-generic-project
+    - github-cli-workflow
+    - dots-workstation-code-reviewer
+    - dots-workstation-security-reviewer
+    - dots-workstation-prd
+    - dots-workstation-trd
+    - dots-workstation-adr
+    - clickup-cli
+  deny: []

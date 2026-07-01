@@ -22,7 +22,7 @@ We needed a queue system that is:
 
 ## Decision
 
-Implement a file-based job queue under `~/.local/share/dots-ai/dev-companion/` with **plan-only as the default mode**:
+Implement a file-based job queue under `~/.local/share/agentic-workstation/dev-companion/` with **plan-only as the default mode**:
 
 - `dots-devcompanion enqueue` creates a job JSON file
 - `dots-devcompanion run-once` processes the next job

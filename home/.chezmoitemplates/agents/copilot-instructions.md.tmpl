@@ -2,7 +2,7 @@
 
 ## Platform Scope
 
-Work only within the dots-ai baseline and keep behavior profile-driven.
+Work only within the agentic-workstation baseline and keep behavior profile-driven.
 
 ## Security Rules
 

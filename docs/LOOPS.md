@@ -20,7 +20,7 @@
 
 ## Quick Start
 
-dots-ai bundles the `dots-ai-loop-runner` skill and `dots-loop` CLI. They wrap
+agentic-workstation bundles the `dots-workstation-loop-runner` skill and `dots-loop` CLI. They wrap
 [ai-workspace](https://github.com/ulises-jeremias/ai-workspace)'s `bin/loop`:
 
 ```bash
@@ -58,7 +58,7 @@ See: `https://github.com/ulises-jeremias/ai-workspace`
 ## Reference Patterns
 
 7 patterns pre-installed under
-`~/.local/share/dots-ai/loops/` after `chezmoi apply`.
+`~/.local/share/agentic-workstation/loops/` after `chezmoi apply`.
 
 | Pattern | Tier | Cadence | Cost | Use case |
 |---------|------|---------|------|----------|
@@ -73,7 +73,7 @@ See: `https://github.com/ulises-jeremias/ai-workspace`
 To use a reference pattern:
 
 ```bash
-cp -r ~/.local/share/dots-ai/loops/daily-triage ~/.ai-workspace/loops/
+cp -r ~/.local/share/agentic-workstation/loops/daily-triage ~/.ai-workspace/loops/
 dots-loop init daily-triage   # or: edit LOOP.md directly
 ```
 
@@ -108,5 +108,5 @@ Never widen the allowlist beyond what you have manually tested at L1 first.
 ## More
 
 - [ai-workspace docs/LOOPS.md](https://github.com/ulises-jeremias/ai-workspace/blob/main/docs/LOOPS.md) — full technical reference
-- [dots-ai-loop-runner skill](../home/dot_local/share/dots-ai/skills/dots-ai-loop-runner/SKILL.md)
+- [dots-workstation-loop-runner skill](../home/dot_local/share/agentic-workstation/skills/dots-workstation-loop-runner/SKILL.md)
 - [Loop engineering reference](https://github.com/cobusgreyling/loop-engineering)

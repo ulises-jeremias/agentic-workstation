@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-This directory tracks major architectural decisions for `dots-ai`.
+This directory tracks major architectural decisions for `agentic-workstation`.
 
 > [!NOTE]
 > ADRs are immutable once accepted. If a decision is revisited, write a new ADR that **supersedes** the original rather than editing it.

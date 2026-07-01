@@ -102,7 +102,7 @@ def main() -> None:
         elif engine == "tar_gz":
             base_rel = dest_relative(art.get("base_relative") or "")
             members: list[str] = art.get("members") or []
-            prefix = art.get("archive_prefix") or "dots-ai-assets"
+            prefix = art.get("archive_prefix") or "dots-workstation-assets"
             if not base_rel or not members:
                 die(f"artifact {art.get('id')}: tar_gz needs base_relative and members")
 
@@ -114,7 +114,7 @@ def main() -> None:
                 if not (base / m).exists():
                     die(f"artifact {art.get('id')}: member missing: {base / m}")
 
-            # GNU tar: transform prefix so paths become dots-ai-assets/skills/...
+            # GNU tar: transform prefix so paths become dots-workstation-assets/skills/...
             xf = f"s,^,{prefix}/,"
             cmd = ["tar", "czf", str(out_abs), f"--transform={xf}", "-C", str(base), *members]
             print("+ " + " ".join(cmd), flush=True)

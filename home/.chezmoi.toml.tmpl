@@ -1,5 +1,5 @@
 {{/*
-  Interactive init questionnaire for dots-ai.
+  Interactive init questionnaire for agentic-workstation.
 
   Design goals:
     1. Unambiguous prompts — every boolean is asked through promptChoice
@@ -102,7 +102,7 @@
 {{- if $shouldAsk -}}
 
 {{/* ── banner ───────────────────────────────────────────────────────────── */}}
-{{-   $banner := "\n  ═══════════════════════════════════════════════════════════════\n  ║  dots-ai Workstation — Interactive setup\n  ║\n  ║  Each prompt shows your previous answer as the default in [brackets].\n  ║  Press Enter to keep it, or type a new value (e.g. yes / no /\n  ║  technical / custom). For unattended installs use\n  ║  WORKSTATION_PROFILE=… or --promptChoice / --promptString.\n  ╚══════════════════════════════════════════════════════════════" -}}
+{{-   $banner := "\n  ═══════════════════════════════════════════════════════════════\n  ║  agentic-workstation Workstation — Interactive setup\n  ║\n  ║  Each prompt shows your previous answer as the default in [brackets].\n  ║  Press Enter to keep it, or type a new value (e.g. yes / no /\n  ║  technical / custom). For unattended installs use\n  ║  WORKSTATION_PROFILE=… or --promptChoice / --promptString.\n  ╚══════════════════════════════════════════════════════════════" -}}
 
 {{/* ── Step 1: profile ──────────────────────────────────────────────────── */}}
 {{-   $profileChoices := list "technical" "non-technical" "ai" "node" "python" "data" "infra" "minimal" "custom" -}}
@@ -212,7 +212,7 @@
 {{- end -}}
 
 [data]
-  company = {{ (index . "company" | default "dots-ai") | quote }}
+  company = {{ (index . "company" | default "agentic-workstation") | quote }}
   profile = {{ $profile | quote }}
   init_questionnaire_completed = {{ $done }}
 

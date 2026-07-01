@@ -3,7 +3,7 @@ set -euo pipefail
 
 ## dots-security-audit
 ##
-## Performs shallow workstation security checks for dots-ai-managed machines.
+## Performs shallow workstation security checks for dots-workstation-managed machines.
 ## Default mode avoids deep secret scanning to keep output low-noise.
 ##
 ## Usage:
@@ -106,8 +106,8 @@ check_sensitive_files() {
 }
 
 check_baseline_dirs() {
-  for d in "$HOME/.local/share/dots-ai" "$HOME/.config/dots-ai"; do
-    [[ -d $d ]] || add_finding warn baseline_layout "expected dots-ai directory is missing" "$d"
+  for d in "$HOME/.local/share/agentic-workstation" "$HOME/.config/agentic-workstation"; do
+    [[ -d $d ]] || add_finding warn baseline_layout "expected agentic-workstation directory is missing" "$d"
   done
 }
 
@@ -133,7 +133,7 @@ import json, os
 findings = json.loads(os.environ["FINDINGS_JSON"])
 print(json.dumps({
   "schema_version": 1,
-  "scope": "dots-ai",
+  "scope": "agentic-workstation",
   "failures": int(os.environ["FAILURES"]),
   "compliant": int(os.environ["FAILURES"]) == 0,
   "findings": findings,
@@ -142,7 +142,7 @@ PY
 elif [[ ${MODE} == "issue" ]]; then
   FINDINGS_JSON="$findings_json" python3 - <<'PY'
 import json, os
-print("## dots-ai security audit\n")
+print("## agentic-workstation security audit\n")
 for f in json.loads(os.environ["FINDINGS_JSON"]):
     marker = "[ ]" if f["level"] == "fail" else "[-]"
     path = f" (`{f['path']}`)" if f.get("path") else ""

@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-The dots-ai workstation must support multiple AI tools simultaneously:
+The agentic-workstation workstation must support multiple AI tools simultaneously:
 
 - Claude Code, OpenCode, Cursor, GitHub Copilot CLI, pi agent, Windsurf
 - Each tool has its own config directory and skill loading mechanism
@@ -23,7 +23,7 @@ Maintaining separate copies of skills and agents for each tool would be:
 
 Use **symlinks** as the primary portability mechanism:
 
-- Skills are stored once in `~/.local/share/dots-ai/skills/` and symlinked to each tool's directory by `dots-skills sync`
+- Skills are stored once in `~/.local/share/agentic-workstation/skills/` and symlinked to each tool's directory by `dots-skills sync`
 - Agent instructions are symlinked between tools (e.g. `CLAUDE.md` → `AGENTS.md`, `copilot-instructions.md` → `AGENTS.md`)
 - Per-tool **thin adapters** handle format differences (e.g. Claude Code's `allowed-tools` frontmatter)
 

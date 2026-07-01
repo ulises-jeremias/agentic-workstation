@@ -1,6 +1,6 @@
 # Platform Support
 
-> Supported platforms, shells, and install paths for dots-ai.
+> Supported platforms, shells, and install paths for agentic-workstation.
 
 ---
 
@@ -8,13 +8,13 @@
 
 | Platform | Shell | Install path | Status |
 |----------|-------|-------------|--------|
-| **Linux** | `bash` (≥4.0), `sh` | `~/.local/bin/`, `~/.local/share/dots-ai/` | ✅ Full support |
+| **Linux** | `bash` (≥4.0), `sh` | `~/.local/bin/`, `~/.local/share/agentic-workstation/` | ✅ Full support |
 | **macOS** | `bash` (via Homebrew, ≥4.0), `zsh`, `sh` | Same as Linux | ✅ Full support |
 | **Windows (WSL2)** | `bash` in Ubuntu subsystem | Same as Linux | ✅ Supported |
 | **Windows (Git Bash)** | `bash` in Git for Windows | Same as Linux | ✅ Supported (`install-skills.sh`) |
-| **Windows (PowerShell)** | PowerShell 5.1+ or Core | `~\AppData\Local\dots-ai\` | ✅ `install-skills.ps1` |
+| **Windows (PowerShell)** | PowerShell 5.1+ or Core | `~\AppData\Local\agentic-workstation\` | ✅ `install-skills.ps1` |
 
-> **macOS built-in bash (3.2)**: dots-ai requires bash 4.0+ (for associative arrays in `dots-skills`).
+> **macOS built-in bash (3.2)**: agentic-workstation requires bash 4.0+ (for associative arrays in `dots-skills`).
 > Install a newer bash: `brew install bash`.
 
 ---
@@ -25,7 +25,7 @@
 
 ```bash
 # Download and run (latest release)
-curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/latest/download/install-skills.sh | sh
+curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | sh
 
 # Flags
 --tool <claude|opencode|cursor|windsurf|copilot|all>   Install for a specific AI tool (default: all)
@@ -37,7 +37,7 @@ curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/latest/download/i
 
 ```powershell
 # Download and run (latest release)
-irm https://github.com/ulises-jeremias/dots-ai/releases/latest/download/install-skills.ps1 | iex
+irm https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.ps1 | iex
 
 # Parameters
 -Tool <claude|opencode|cursor|windsurf|copilot|all>    Install for a specific AI tool (default: all)

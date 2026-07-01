@@ -3,7 +3,7 @@ set -eo pipefail
 
 ## dots-doctor
 ##
-## Runs baseline health checks for dots-ai workstation tooling and prints
+## Runs baseline health checks for agentic-workstation workstation tooling and prints
 ## a system / install snapshot useful for support tickets.
 ##
 ## Usage:
@@ -20,9 +20,9 @@ set -eo pipefail
 ##     drift                   Compare skill registry versions against deployed skill.json
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && pwd || true)"
-DOTS_AI_LIB_DIR="${DOTS_AI_LIB_DIR:-${DEFAULT_DOTS_AI_LIB_DIR:-$HOME/.local/lib/dots-ai}}"
-EASY_OPTIONS_LIB="${DOTS_AI_LIB_DIR}/easy-options/easyoptions.sh"
+DEFAULT_DOTS_WORKSTATION_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/agentic-workstation" 2>/dev/null && pwd || true)"
+DOTS_WORKSTATION_LIB_DIR="${DOTS_WORKSTATION_LIB_DIR:-${DEFAULT_DOTS_WORKSTATION_LIB_DIR:-$HOME/.local/lib/agentic-workstation}}"
+EASY_OPTIONS_LIB="${DOTS_WORKSTATION_LIB_DIR}/easy-options/easyoptions.sh"
 
 if [[ ! -f ${EASY_OPTIONS_LIB} ]]; then
   echo "[dots-doctor] Missing dependency: ${EASY_OPTIONS_LIB}" >&2
@@ -45,7 +45,7 @@ case "${_SUBCOMMAND}" in
     if [[ -f $_DRIFT_SCRIPT ]]; then
       exec python3 "$_DRIFT_SCRIPT" "$@"
     else
-      echo "[dots-doctor] drift script not found. Is dots-ai installed correctly?" >&2
+      echo "[dots-doctor] drift script not found. Is agentic-workstation installed correctly?" >&2
       exit 1
     fi
     ;;
@@ -150,7 +150,7 @@ _df_home_line() {
 }
 
 _skill_bundle_count() {
-  local root="${HOME}/.local/share/dots-ai/skills"
+  local root="${HOME}/.local/share/agentic-workstation/skills"
   [[ -d $root ]] || return
   find "$root" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' '
 }
@@ -204,7 +204,7 @@ _chezmoi_meta() {
 }
 
 _ai_workspace_hint() {
-  local w="${DOTS_AI_AI_WORKSPACE:-/.ai-workspace}"
+  local w="${DOTS_WORKSTATION_AI_WORKSPACE:-/.ai-workspace}"
   [[ -d $w ]] || return
   local br sha
   br="$(git -C "$w" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "n/a")"
@@ -213,10 +213,10 @@ _ai_workspace_hint() {
 }
 
 _dots_ai_envd_dir() {
-  printf '%s' "${DOTS_AI_ENVD_DIR:-${HOME}/.config/dots-ai/env.d}"
+  printf '%s' "${DOTS_WORKSTATION_ENVD_DIR:-${HOME}/.config/agentic-workstation/env.d}"
 }
 
-# Summarize ~/.config/dots-ai/env.d/*.env (names only; never values).
+# Summarize ~/.config/agentic-workstation/env.d/*.env (names only; never values).
 _integration_envd_summary() {
   local d
   d="$(_dots_ai_envd_dir)"
@@ -341,10 +341,10 @@ _integration_glab_auth_hint() {
 }
 
 _collect_integrations_for_json() {
-  DOTS_AI_DOC_INTG_ENVD="$(_integration_envd_summary)"
-  DOTS_AI_DOC_INTG_GH="$(_integration_gh_auth_state)"
-  DOTS_AI_DOC_INTG_CLICKUP="$(_integration_clickup_auth_state)"
-  DOTS_AI_DOC_INTG_GLAB="$(_integration_glab_auth_state)"
+  DOTS_WORKSTATION_DOC_INTG_ENVD="$(_integration_envd_summary)"
+  DOTS_WORKSTATION_DOC_INTG_GH="$(_integration_gh_auth_state)"
+  DOTS_WORKSTATION_DOC_INTG_CLICKUP="$(_integration_clickup_auth_state)"
+  DOTS_WORKSTATION_DOC_INTG_GLAB="$(_integration_glab_auth_state)"
 }
 
 print_integrations_default() {
@@ -377,11 +377,11 @@ print_integrations_default() {
   else
     dim "  glab: CLI not installed (skip)"
   fi
-  if [[ ${DOTS_AI_DOCTOR_SKILL_JIRA:-false} == true && ! -f $(_dots_ai_envd_dir)/jira.env ]]; then
-    warn "JIRA skill enabled in profile but ~/.config/dots-ai/env.d/jira.env missing (see CREDENTIALS_SETUP.md)"
+  if [[ ${DOTS_WORKSTATION_DOCTOR_SKILL_JIRA:-false} == true && ! -f $(_dots_ai_envd_dir)/jira.env ]]; then
+    warn "JIRA skill enabled in profile but ~/.config/agentic-workstation/env.d/jira.env missing (see CREDENTIALS_SETUP.md)"
   fi
-  if [[ ${DOTS_AI_DOCTOR_SKILL_CONFLUENCE:-false} == true && ! -f $(_dots_ai_envd_dir)/confluence.env ]]; then
-    warn "Confluence skill enabled in profile but ~/.config/dots-ai/env.d/confluence.env missing (see CREDENTIALS_SETUP.md)"
+  if [[ ${DOTS_WORKSTATION_DOCTOR_SKILL_CONFLUENCE:-false} == true && ! -f $(_dots_ai_envd_dir)/confluence.env ]]; then
+    warn "Confluence skill enabled in profile but ~/.config/agentic-workstation/env.d/confluence.env missing (see CREDENTIALS_SETUP.md)"
   fi
 }
 
@@ -417,10 +417,10 @@ print_integrations_issue() {
   else
     printf -- "- **glab CLI:** not installed\n"
   fi
-  if [[ ${DOTS_AI_DOCTOR_SKILL_JIRA:-false} == true && ! -f $(_dots_ai_envd_dir)/jira.env ]]; then
+  if [[ ${DOTS_WORKSTATION_DOCTOR_SKILL_JIRA:-false} == true && ! -f $(_dots_ai_envd_dir)/jira.env ]]; then
     printf -- "- [ ] **JIRA env:** profile expects skill but \`jira.env\` missing\n"
   fi
-  if [[ ${DOTS_AI_DOCTOR_SKILL_CONFLUENCE:-false} == true && ! -f $(_dots_ai_envd_dir)/confluence.env ]]; then
+  if [[ ${DOTS_WORKSTATION_DOCTOR_SKILL_CONFLUENCE:-false} == true && ! -f $(_dots_ai_envd_dir)/confluence.env ]]; then
     printf -- "- [ ] **Confluence env:** profile expects skill but \`confluence.env\` missing\n"
   fi
 }
@@ -431,12 +431,12 @@ print_snapshot_default() {
   dim "  os: $(_os_pretty) | kernel: $(uname -r 2>/dev/null || echo "?") | arch: $(uname -m 2>/dev/null || echo "?") | WSL: $(_wsl_hint)"
   dim "  shell: ${SHELL:-?} | lang: ${LC_ALL:-${LANG:-unset}}"
   dim "  disk (home mount): $(_df_home_line)"
-  if [[ -f ${HOME}/.config/dots-ai/profile.env ]]; then
-    dim "  profile: DOTS_AI_DOCTOR_PROFILE=${DOTS_AI_DOCTOR_PROFILE:-?} | groups core/node/python/docker/ai/productivity = ${DOTS_AI_DOCTOR_GROUP_CORE:-?}/${DOTS_AI_DOCTOR_GROUP_NODE:-?}/${DOTS_AI_DOCTOR_GROUP_PYTHON:-?}/${DOTS_AI_DOCTOR_GROUP_DOCKER:-?}/${DOTS_AI_DOCTOR_GROUP_AI:-?}/${DOTS_AI_DOCTOR_GROUP_SKILLS_PRODUCTIVITY:-?} | jira/confluence skills = ${DOTS_AI_DOCTOR_SKILL_JIRA:-?}/${DOTS_AI_DOCTOR_SKILL_CONFLUENCE:-?}"
+  if [[ -f ${HOME}/.config/agentic-workstation/profile.env ]]; then
+    dim "  profile: DOTS_WORKSTATION_DOCTOR_PROFILE=${DOTS_WORKSTATION_DOCTOR_PROFILE:-?} | groups core/node/python/docker/ai/productivity = ${DOTS_WORKSTATION_DOCTOR_GROUP_CORE:-?}/${DOTS_WORKSTATION_DOCTOR_GROUP_NODE:-?}/${DOTS_WORKSTATION_DOCTOR_GROUP_PYTHON:-?}/${DOTS_WORKSTATION_DOCTOR_GROUP_DOCKER:-?}/${DOTS_WORKSTATION_DOCTOR_GROUP_AI:-?}/${DOTS_WORKSTATION_DOCTOR_GROUP_SKILLS_PRODUCTIVITY:-?} | jira/confluence skills = ${DOTS_WORKSTATION_DOCTOR_SKILL_JIRA:-?}/${DOTS_WORKSTATION_DOCTOR_SKILL_CONFLUENCE:-?}"
   else
-    dim "  profile: ~/.config/dots-ai/profile.env not found (using dots-doctor defaults)"
+    dim "  profile: ~/.config/agentic-workstation/profile.env not found (using dots-doctor defaults)"
   fi
-  dim "  bundled skill dirs under ~/.local/share/dots-ai/skills: $(_skill_bundle_count)"
+  dim "  bundled skill dirs under ~/.local/share/agentic-workstation/skills: $(_skill_bundle_count)"
   if command -v node >/dev/null 2>&1; then
     dim "  node: $(node --version 2>/dev/null | head -1 || echo "?")"
   fi
@@ -451,14 +451,14 @@ print_snapshot_default() {
   if [[ -n $ws ]]; then
     dim "  ai workspace: ${ws}"
   fi
-  dim "  legacy workflow-* symlinks (should point at dots-ai-*): $(_legacy_workflow_symlinks)"
-  if [[ ${DOTS_AI_DOCTOR_GROUP_AI:-false} == true ]]; then
+  dim "  legacy workflow-* symlinks (should point at dots-workstation-*): $(_legacy_workflow_symlinks)"
+  if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_AI:-false} == true ]]; then
     dim "  llm env (presence only): ANTHROPIC_API_KEY=$(_env_flag ANTHROPIC_API_KEY) OPENAI_API_KEY=$(_env_flag OPENAI_API_KEY) GEMINI_API_KEY=$(_env_flag GEMINI_API_KEY)"
   fi
 }
 
 print_snapshot_issue() {
-  printf "## dots-ai workstation diagnostics\n\n"
+  printf "## agentic-workstation workstation diagnostics\n\n"
   printf "_Generated: \`%s\` (UTC) — paste this block into a GitHub issue or thread._\n\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || echo "?")"
   printf "### Identity\n"
   printf -- "- **hostname:** \`%s\`\n" "$(_sanitize_one_line "$(hostname 2>/dev/null)")"
@@ -473,13 +473,13 @@ print_snapshot_issue() {
   printf -- "- **locale:** \`%s\`\n" "$(_sanitize_one_line "${LC_ALL:-${LANG:-unset}}")"
   printf -- "- **disk (home mount):** \`%s\`\n" "$(_sanitize_one_line "$(_df_home_line)")"
   printf "\n### Workstation profile\n"
-  if [[ -f ${HOME}/.config/dots-ai/profile.env ]]; then
-    printf -- "- **DOTS_AI_DOCTOR_PROFILE:** \`%s\`\n" "$(_sanitize_one_line "${DOTS_AI_DOCTOR_PROFILE:-}")"
+  if [[ -f ${HOME}/.config/agentic-workstation/profile.env ]]; then
+    printf -- "- **DOTS_WORKSTATION_DOCTOR_PROFILE:** \`%s\`\n" "$(_sanitize_one_line "${DOTS_WORKSTATION_DOCTOR_PROFILE:-}")"
     printf -- '- **check groups:** core=%s node=%s python=%s docker=%s ai=%s productivity=%s\n' \
-      "${DOTS_AI_DOCTOR_GROUP_CORE:-}" "${DOTS_AI_DOCTOR_GROUP_NODE:-}" "${DOTS_AI_DOCTOR_GROUP_PYTHON:-}" "${DOTS_AI_DOCTOR_GROUP_DOCKER:-}" "${DOTS_AI_DOCTOR_GROUP_AI:-}" "${DOTS_AI_DOCTOR_GROUP_SKILLS_PRODUCTIVITY:-}"
-    printf -- '- **optional skills:** jira=%s confluence=%s\n' "${DOTS_AI_DOCTOR_SKILL_JIRA:-}" "${DOTS_AI_DOCTOR_SKILL_CONFLUENCE:-}"
+      "${DOTS_WORKSTATION_DOCTOR_GROUP_CORE:-}" "${DOTS_WORKSTATION_DOCTOR_GROUP_NODE:-}" "${DOTS_WORKSTATION_DOCTOR_GROUP_PYTHON:-}" "${DOTS_WORKSTATION_DOCTOR_GROUP_DOCKER:-}" "${DOTS_WORKSTATION_DOCTOR_GROUP_AI:-}" "${DOTS_WORKSTATION_DOCTOR_GROUP_SKILLS_PRODUCTIVITY:-}"
+    printf -- '- **optional skills:** jira=%s confluence=%s\n' "${DOTS_WORKSTATION_DOCTOR_SKILL_JIRA:-}" "${DOTS_WORKSTATION_DOCTOR_SKILL_CONFLUENCE:-}"
   else
-    printf -- "- **profile.env:** missing (\`~/.config/dots-ai/profile.env\`)\n"
+    printf -- "- **profile.env:** missing (\`~/.config/agentic-workstation/profile.env\`)\n"
   fi
   printf -- "- **bundled skill directories:** \`%s\`\n" "$(_skill_bundle_count)"
   printf -- "- **legacy workflow symlinks:** \`%s\`\n" "$(_sanitize_one_line "$(_legacy_workflow_symlinks)")"
@@ -491,7 +491,7 @@ print_snapshot_issue() {
   local ws
   ws="$(_ai_workspace_hint)"
   [[ -n $ws ]] && printf -- "- **ai workspace:** \`%s\`\n" "$ws"
-  if [[ ${DOTS_AI_DOCTOR_GROUP_AI:-false} == true ]]; then
+  if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_AI:-false} == true ]]; then
     printf "\n### LLM / API environment (presence only — never paste secrets)\n"
     printf -- "- **ANTHROPIC_API_KEY:** %s\n" "$(_env_flag ANTHROPIC_API_KEY)"
     printf -- "- **OPENAI_API_KEY:** %s\n" "$(_env_flag OPENAI_API_KEY)"
@@ -504,37 +504,37 @@ emit_json_line() {
     printf '%s\n' '{"error":"python3 required for --json"}'
     return 1
   fi
-  DOTS_AI_DOC_HOSTNAME="$(hostname 2>/dev/null || true)" \
-  DOTS_AI_DOC_USER="$(whoami 2>/dev/null || true)" \
-  DOTS_AI_DOC_OS="$(_os_pretty)" \
-  DOTS_AI_DOC_KERNEL="$(uname -r 2>/dev/null || true)" \
-  DOTS_AI_DOC_ARCH="$(uname -m 2>/dev/null || true)" \
-  DOTS_AI_DOC_WSL="$(_wsl_hint)" \
-  DOTS_AI_DOC_PROFILE="${DOTS_AI_DOCTOR_PROFILE:-}" \
-  DOTS_AI_DOC_PASSED="$passed" \
-  DOTS_AI_DOC_CHECKS="$checks" \
-  DOTS_AI_DOC_ERRORS="$errors" \
-  DOTS_AI_DOC_INTG_ENVD="${DOTS_AI_DOC_INTG_ENVD:-}" \
-  DOTS_AI_DOC_INTG_GH="${DOTS_AI_DOC_INTG_GH:-}" \
-  DOTS_AI_DOC_INTG_CLICKUP="${DOTS_AI_DOC_INTG_CLICKUP:-}" \
-  DOTS_AI_DOC_INTG_GLAB="${DOTS_AI_DOC_INTG_GLAB:-}" \
+  DOTS_WORKSTATION_DOC_HOSTNAME="$(hostname 2>/dev/null || true)" \
+  DOTS_WORKSTATION_DOC_USER="$(whoami 2>/dev/null || true)" \
+  DOTS_WORKSTATION_DOC_OS="$(_os_pretty)" \
+  DOTS_WORKSTATION_DOC_KERNEL="$(uname -r 2>/dev/null || true)" \
+  DOTS_WORKSTATION_DOC_ARCH="$(uname -m 2>/dev/null || true)" \
+  DOTS_WORKSTATION_DOC_WSL="$(_wsl_hint)" \
+  DOTS_WORKSTATION_DOC_PROFILE="${DOTS_WORKSTATION_DOCTOR_PROFILE:-}" \
+  DOTS_WORKSTATION_DOC_PASSED="$passed" \
+  DOTS_WORKSTATION_DOC_CHECKS="$checks" \
+  DOTS_WORKSTATION_DOC_ERRORS="$errors" \
+  DOTS_WORKSTATION_DOC_INTG_ENVD="${DOTS_WORKSTATION_DOC_INTG_ENVD:-}" \
+  DOTS_WORKSTATION_DOC_INTG_GH="${DOTS_WORKSTATION_DOC_INTG_GH:-}" \
+  DOTS_WORKSTATION_DOC_INTG_CLICKUP="${DOTS_WORKSTATION_DOC_INTG_CLICKUP:-}" \
+  DOTS_WORKSTATION_DOC_INTG_GLAB="${DOTS_WORKSTATION_DOC_INTG_GLAB:-}" \
     python3 -c "import json,os;d=os.environ;print(json.dumps({
-    'hostname': d.get('DOTS_AI_DOC_HOSTNAME') or None,
-    'user': d.get('DOTS_AI_DOC_USER') or None,
-    'os': d.get('DOTS_AI_DOC_OS') or None,
-    'kernel': d.get('DOTS_AI_DOC_KERNEL') or None,
-    'arch': d.get('DOTS_AI_DOC_ARCH') or None,
-    'wsl': d.get('DOTS_AI_DOC_WSL') == 'yes',
-    'profile': d.get('DOTS_AI_DOC_PROFILE') or None,
-    'checks_passed': int(d.get('DOTS_AI_DOC_PASSED', '0')),
-    'checks_total': int(d.get('DOTS_AI_DOC_CHECKS', '0')),
-    'failures': int(d.get('DOTS_AI_DOC_ERRORS', '0')),
-    'compliant': int(d.get('DOTS_AI_DOC_ERRORS', '0')) == 0,
+    'hostname': d.get('DOTS_WORKSTATION_DOC_HOSTNAME') or None,
+    'user': d.get('DOTS_WORKSTATION_DOC_USER') or None,
+    'os': d.get('DOTS_WORKSTATION_DOC_OS') or None,
+    'kernel': d.get('DOTS_WORKSTATION_DOC_KERNEL') or None,
+    'arch': d.get('DOTS_WORKSTATION_DOC_ARCH') or None,
+    'wsl': d.get('DOTS_WORKSTATION_DOC_WSL') == 'yes',
+    'profile': d.get('DOTS_WORKSTATION_DOC_PROFILE') or None,
+    'checks_passed': int(d.get('DOTS_WORKSTATION_DOC_PASSED', '0')),
+    'checks_total': int(d.get('DOTS_WORKSTATION_DOC_CHECKS', '0')),
+    'failures': int(d.get('DOTS_WORKSTATION_DOC_ERRORS', '0')),
+    'compliant': int(d.get('DOTS_WORKSTATION_DOC_ERRORS', '0')) == 0,
     'integrations': {
-      'dots_ai_loadenv_summary': d.get('DOTS_AI_DOC_INTG_ENVD') or None,
-      'gh_auth': d.get('DOTS_AI_DOC_INTG_GH') or None,
-      'clickup_auth': d.get('DOTS_AI_DOC_INTG_CLICKUP') or None,
-      'glab_auth': d.get('DOTS_AI_DOC_INTG_GLAB') or None,
+      'dots_ai_loadenv_summary': d.get('DOTS_WORKSTATION_DOC_INTG_ENVD') or None,
+      'gh_auth': d.get('DOTS_WORKSTATION_DOC_INTG_GH') or None,
+      'clickup_auth': d.get('DOTS_WORKSTATION_DOC_INTG_CLICKUP') or None,
+      'glab_auth': d.get('DOTS_WORKSTATION_DOC_INTG_GLAB') or None,
     },
     }))"
 }
@@ -618,20 +618,20 @@ check_dir_quiet() {
 
 # --- main ---
 
-profile_env_file="${HOME}/.config/dots-ai/profile.env"
+profile_env_file="${HOME}/.config/agentic-workstation/profile.env"
 if [[ -f ${profile_env_file} ]]; then
   # shellcheck disable=SC1090
   source "${profile_env_file}"
 fi
 
-: "${DOTS_AI_DOCTOR_GROUP_CORE:=true}"
-: "${DOTS_AI_DOCTOR_GROUP_NODE:=true}"
-: "${DOTS_AI_DOCTOR_GROUP_PYTHON:=true}"
-: "${DOTS_AI_DOCTOR_GROUP_DOCKER:=true}"
-: "${DOTS_AI_DOCTOR_GROUP_AI:=true}"
-: "${DOTS_AI_DOCTOR_GROUP_SKILLS_PRODUCTIVITY:=false}"
-: "${DOTS_AI_DOCTOR_SKILL_JIRA:=false}"
-: "${DOTS_AI_DOCTOR_SKILL_CONFLUENCE:=false}"
+: "${DOTS_WORKSTATION_DOCTOR_GROUP_CORE:=true}"
+: "${DOTS_WORKSTATION_DOCTOR_GROUP_NODE:=true}"
+: "${DOTS_WORKSTATION_DOCTOR_GROUP_PYTHON:=true}"
+: "${DOTS_WORKSTATION_DOCTOR_GROUP_DOCKER:=true}"
+: "${DOTS_WORKSTATION_DOCTOR_GROUP_AI:=true}"
+: "${DOTS_WORKSTATION_DOCTOR_GROUP_SKILLS_PRODUCTIVITY:=false}"
+: "${DOTS_WORKSTATION_DOCTOR_SKILL_JIRA:=false}"
+: "${DOTS_WORKSTATION_DOCTOR_SKILL_CONFLUENCE:=false}"
 
 if [[ ${MODE} == "issue" ]]; then
   print_snapshot_issue
@@ -644,7 +644,7 @@ elif [[ ${MODE} == "json" ]]; then
   fi
   _collect_integrations_for_json
 else
-  info "starting dots-ai workstation health checks"
+  info "starting agentic-workstation workstation health checks"
   if [[ ${SNAPSHOT} -eq 1 ]]; then
     print_snapshot_default
     print_integrations_default
@@ -656,7 +656,7 @@ node_cmds=(fnm node)
 python_cmds=(uv python3)
 docker_cmds=(docker)
 
-if [[ ${DOTS_AI_DOCTOR_GROUP_CORE} == true ]]; then
+if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_CORE} == true ]]; then
   for cmd in "${core_cmds[@]}"; do
     if [[ ${MODE} == "issue" ]]; then
       check_cmd_issue "$cmd"
@@ -667,7 +667,7 @@ if [[ ${DOTS_AI_DOCTOR_GROUP_CORE} == true ]]; then
     fi
   done
 fi
-if [[ ${DOTS_AI_DOCTOR_GROUP_NODE} == true ]]; then
+if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_NODE} == true ]]; then
   for cmd in "${node_cmds[@]}"; do
     if [[ ${MODE} == "issue" ]]; then
       check_cmd_issue "$cmd"
@@ -678,7 +678,7 @@ if [[ ${DOTS_AI_DOCTOR_GROUP_NODE} == true ]]; then
     fi
   done
 fi
-if [[ ${DOTS_AI_DOCTOR_GROUP_PYTHON} == true ]]; then
+if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_PYTHON} == true ]]; then
   for cmd in "${python_cmds[@]}"; do
     if [[ ${MODE} == "issue" ]]; then
       check_cmd_issue "$cmd"
@@ -689,7 +689,7 @@ if [[ ${DOTS_AI_DOCTOR_GROUP_PYTHON} == true ]]; then
     fi
   done
 fi
-if [[ ${DOTS_AI_DOCTOR_GROUP_DOCKER} == true ]]; then
+if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_DOCKER} == true ]]; then
   for cmd in "${docker_cmds[@]}"; do
     if [[ ${MODE} == "issue" ]]; then
       check_cmd_issue "$cmd"
@@ -702,29 +702,29 @@ if [[ ${DOTS_AI_DOCTOR_GROUP_DOCKER} == true ]]; then
 fi
 
 if [[ ${MODE} == "issue" ]]; then
-  check_dir_issue "${HOME}/.local/share/dots-ai/prompts"
-  check_dir_issue "${HOME}/.local/share/dots-ai/skills"
-  check_dir_issue "${HOME}/.local/share/dots-ai/templates"
-  check_dir_issue "${HOME}/.local/share/dots-ai/mcp/github"
-  check_dir_issue "${HOME}/.local/share/dots-ai/mcp/clickup"
-  check_dir_issue "${HOME}/.local/share/dots-ai/mcp/notion"
-  check_dir_issue "${HOME}/.local/share/dots-ai/mcp/slack"
+  check_dir_issue "${HOME}/.local/share/agentic-workstation/prompts"
+  check_dir_issue "${HOME}/.local/share/agentic-workstation/skills"
+  check_dir_issue "${HOME}/.local/share/agentic-workstation/templates"
+  check_dir_issue "${HOME}/.local/share/agentic-workstation/mcp/github"
+  check_dir_issue "${HOME}/.local/share/agentic-workstation/mcp/clickup"
+  check_dir_issue "${HOME}/.local/share/agentic-workstation/mcp/notion"
+  check_dir_issue "${HOME}/.local/share/agentic-workstation/mcp/slack"
 elif [[ ${MODE} == "json" ]]; then
-  check_dir_quiet "${HOME}/.local/share/dots-ai/prompts"
-  check_dir_quiet "${HOME}/.local/share/dots-ai/skills"
-  check_dir_quiet "${HOME}/.local/share/dots-ai/templates"
-  check_dir_quiet "${HOME}/.local/share/dots-ai/mcp/github"
-  check_dir_quiet "${HOME}/.local/share/dots-ai/mcp/clickup"
-  check_dir_quiet "${HOME}/.local/share/dots-ai/mcp/notion"
-  check_dir_quiet "${HOME}/.local/share/dots-ai/mcp/slack"
+  check_dir_quiet "${HOME}/.local/share/agentic-workstation/prompts"
+  check_dir_quiet "${HOME}/.local/share/agentic-workstation/skills"
+  check_dir_quiet "${HOME}/.local/share/agentic-workstation/templates"
+  check_dir_quiet "${HOME}/.local/share/agentic-workstation/mcp/github"
+  check_dir_quiet "${HOME}/.local/share/agentic-workstation/mcp/clickup"
+  check_dir_quiet "${HOME}/.local/share/agentic-workstation/mcp/notion"
+  check_dir_quiet "${HOME}/.local/share/agentic-workstation/mcp/slack"
 else
-  check_dir "${HOME}/.local/share/dots-ai/prompts"
-  check_dir "${HOME}/.local/share/dots-ai/skills"
-  check_dir "${HOME}/.local/share/dots-ai/templates"
-  check_dir "${HOME}/.local/share/dots-ai/mcp/github"
-  check_dir "${HOME}/.local/share/dots-ai/mcp/clickup"
-  check_dir "${HOME}/.local/share/dots-ai/mcp/notion"
-  check_dir "${HOME}/.local/share/dots-ai/mcp/slack"
+  check_dir "${HOME}/.local/share/agentic-workstation/prompts"
+  check_dir "${HOME}/.local/share/agentic-workstation/skills"
+  check_dir "${HOME}/.local/share/agentic-workstation/templates"
+  check_dir "${HOME}/.local/share/agentic-workstation/mcp/github"
+  check_dir "${HOME}/.local/share/agentic-workstation/mcp/clickup"
+  check_dir "${HOME}/.local/share/agentic-workstation/mcp/notion"
+  check_dir "${HOME}/.local/share/agentic-workstation/mcp/slack"
 fi
 
 if [[ ${MODE} != "issue" && ${MODE} != "json" ]]; then
@@ -738,7 +738,7 @@ if [[ ${errors} -gt 0 ]]; then
     emit_json_line
   else
     warn "result: NON-COMPLIANT (${errors} failures)"
-    echo "Your workstation environment appears to be out of compliance with the dots-ai baseline. Please contact the Technology team."
+    echo "Your workstation environment appears to be out of compliance with the agentic-workstation baseline. Please contact the Technology team."
   fi
   exit 1
 fi
@@ -749,6 +749,6 @@ elif [[ ${MODE} == "json" ]]; then
   emit_json_line
 else
   info "result: COMPLIANT"
-  echo "Workstation looks compliant with dots-ai baseline."
+  echo "Workstation looks compliant with agentic-workstation baseline."
 fi
 exit 0

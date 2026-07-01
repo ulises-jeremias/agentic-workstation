@@ -1,0 +1,12 @@
+[Unit]
+Description=Timer for agentic-workstation dev companion worker
+Requires=dots-workstation-dev-companion-worker.service
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Unit=dots-workstation-dev-companion-worker.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,6 +1,6 @@
-# dots-ai AI Coding Standards
+# agentic-workstation AI Coding Standards
 
-These rules apply globally across all workspaces for dots-ai engineers.
+These rules apply globally across all workspaces for agentic-workstation engineers.
 
 ## Repository inspection order
 Before writing any code in a new repository, read in this order:
@@ -13,7 +13,7 @@ Before writing any code in a new repository, read in this order:
 
 Always cite which file a convention comes from.
 
-## dots-ai development standards
+## agentic-workstation development standards
 
 ### Shell scripts
 - Always use `set -euo pipefail`
@@ -52,20 +52,20 @@ Always cite which file a convention comes from.
 ## Available AI subagents (OpenCode / Claude Code)
 These specialized agents are available via @mention:
 
-- **@dots-ai-architect** — System design and technical trade-off analysis
-- **@dots-ai-build-error-resolver** — Fix compilation and TypeScript errors
-- **@dots-ai-code-reviewer** — Code quality, security, and maintainability review
-- **@dots-ai-database-reviewer** — PostgreSQL schema, query optimization, migrations
-- **@dots-ai-docs-lookup** — Framework and library documentation search
-- **@dots-ai-e2e-runner** — Playwright end-to-end test writing and debugging
-- **@dots-ai-assistant** — dots-ai conventions and standards enforcement
-- **@dots-ai-performance-optimizer** — Profiling and performance analysis
-- **@dots-ai-planner** — Feature breakdown and risk analysis before implementation
-- **@dots-ai-refactor-cleaner** — Dead code removal and code simplification
-- **@dots-ai-reference-lookup** — public examples examples and dots-ai patterns
-- **@dots-ai-security-reviewer** — Vulnerability detection before deployment
-- **@dots-ai-tdd-guide** — Test-driven development cycle enforcement
-- **@dots-ai-typescript-reviewer** — TypeScript type safety and modern patterns
+- **@dots-workstation-architect** — System design and technical trade-off analysis
+- **@dots-workstation-build-error-resolver** — Fix compilation and TypeScript errors
+- **@dots-workstation-code-reviewer** — Code quality, security, and maintainability review
+- **@dots-workstation-database-reviewer** — PostgreSQL schema, query optimization, migrations
+- **@dots-workstation-docs-lookup** — Framework and library documentation search
+- **@dots-workstation-e2e-runner** — Playwright end-to-end test writing and debugging
+- **@dots-workstation-assistant** — agentic-workstation conventions and standards enforcement
+- **@dots-workstation-performance-optimizer** — Profiling and performance analysis
+- **@dots-workstation-planner** — Feature breakdown and risk analysis before implementation
+- **@dots-workstation-refactor-cleaner** — Dead code removal and code simplification
+- **@dots-workstation-reference-lookup** — public examples examples and agentic-workstation patterns
+- **@dots-workstation-security-reviewer** — Vulnerability detection before deployment
+- **@dots-workstation-tdd-guide** — Test-driven development cycle enforcement
+- **@dots-workstation-typescript-reviewer** — TypeScript type safety and modern patterns
 
 ## Git and delivery
 - Commit messages: present tense, imperative, concise (`add user auth`, not `added user auth`)

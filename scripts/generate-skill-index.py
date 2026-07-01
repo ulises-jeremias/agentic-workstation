@@ -16,9 +16,9 @@ except ImportError:
     yaml = None
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-CATALOG_REPO = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills" / "skill-catalog.yaml"
-CATALOG_USER = pathlib.Path.home() / ".local" / "share" / "dots-ai" / "skills" / "skill-catalog.yaml"
-SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills"
+CATALOG_REPO = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills" / "skill-catalog.yaml"
+CATALOG_USER = pathlib.Path.home() / ".local" / "share" / "agentic-workstation" / "skills" / "skill-catalog.yaml"
+SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills"
 OUTPUT_DIR = REPO_ROOT / "docs" / "skills"
 OUTPUT_FILE = OUTPUT_DIR / "index.html"
 
@@ -117,7 +117,7 @@ def generate_html(skills: list[dict[str, Any]]) -> str:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>dots-ai Skill Catalog</title>
+  <title>agentic-workstation Skill Catalog</title>
   <style>
     :root {{
       --bg: #0d1117;
@@ -272,7 +272,7 @@ def generate_html(skills: list[dict[str, Any]]) -> str:
 <body>
   <div class="container">
     <header>
-      <h1>dots-ai Skill Catalog</h1>
+      <h1>agentic-workstation Skill Catalog</h1>
       <p class="subtitle">{len(skills)} skills indexed</p>
     </header>
 

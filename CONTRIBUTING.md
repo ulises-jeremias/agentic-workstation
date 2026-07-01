@@ -1,6 +1,6 @@
-# Contributing to dots-ai
+# Contributing to agentic-workstation
 
-Thanks for helping improve the dots-ai platform.
+Thanks for helping improve the agentic-workstation platform.
 
 ## Scope
 

@@ -1,11 +1,11 @@
 #!/bin/sh
-# dots-ai AI install — prerequisite checker (POSIX / macOS / Linux / WSL2)
+# agentic-workstation AI install — prerequisite checker (POSIX / macOS / Linux / WSL2)
 #
 # Read-only script: verifies that a machine is ready to run
 # `install-skills.sh` and reports whether the AI layer is already installed.
 #
 # Usage:
-#   bash <(curl -fsSL https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/scripts/check-ai-install-prereqs.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/scripts/check-ai-install-prereqs.sh)
 #   ./scripts/check-ai-install-prereqs.sh
 #
 # Exit codes:
@@ -123,7 +123,7 @@ else
 fi
 
 # ---- Existing AI install footprint (informational) ----------------------
-SKILLS_DIR="${HOME:-}/.local/share/dots-ai/skills"
+SKILLS_DIR="${HOME:-}/.local/share/agentic-workstation/skills"
 if [ -d "$SKILLS_DIR" ]; then
   count=$(find "$SKILLS_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
   ok "existing skills install detected: ${SKILLS_DIR} (${count} top-level entries)"

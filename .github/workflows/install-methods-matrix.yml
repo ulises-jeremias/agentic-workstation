@@ -193,9 +193,9 @@ jobs:
           set -euo pipefail
           export PATH="$HOME/.local/bin:$PATH"
           cd source-clone
-          chezmoi init --source=. -c ~/.config/chezmoi/dots-ai.toml
-          chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml --dry-run
-          chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml --force
+          chezmoi init --source=. -c ~/.config/chezmoi/agentic-workstation.toml
+          chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml --dry-run
+          chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml --force
 
       - name: Assert chezmoi-style layout
         shell: bash
@@ -209,7 +209,7 @@ jobs:
     if: github.event_name != 'schedule'
     needs: build-release-artifacts
     env:
-      DOTS_AI_SKILLS_VERSION: ${{ needs.build-release-artifacts.outputs.version }}
+      DOTS_WORKSTATION_SKILLS_VERSION: ${{ needs.build-release-artifacts.outputs.version }}
     strategy:
       fail-fast: false
       matrix:
@@ -236,8 +236,8 @@ jobs:
           VERSION: ${{ needs.build-release-artifacts.outputs.version }}
           PORT: ${{ env.HERMETIC_PORT }}
         run: |
-          curl -fsSI "http://127.0.0.1:${PORT}/dots-ai-skills-${VERSION}.zip" >/dev/null
-          curl -fsSI "http://127.0.0.1:${PORT}/dots-ai-agents-cursor-${VERSION}.zip" >/dev/null
+          curl -fsSI "http://127.0.0.1:${PORT}/dots-workstation-skills-${VERSION}.zip" >/dev/null
+          curl -fsSI "http://127.0.0.1:${PORT}/dots-workstation-agents-cursor-${VERSION}.zip" >/dev/null
 
       - name: Dry-run installer
         shell: bash
@@ -271,7 +271,7 @@ jobs:
     needs: build-release-artifacts
     runs-on: windows-latest
     env:
-      DOTS_AI_SKILLS_VERSION: ${{ needs.build-release-artifacts.outputs.version }}
+      DOTS_WORKSTATION_SKILLS_VERSION: ${{ needs.build-release-artifacts.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -291,7 +291,7 @@ jobs:
         env:
           VERSION: ${{ needs.build-release-artifacts.outputs.version }}
         run: |
-          $url = "http://127.0.0.1:${{ env.HERMETIC_PORT }}/dots-ai-skills-$env:VERSION.zip"
+          $url = "http://127.0.0.1:${{ env.HERMETIC_PORT }}/dots-workstation-skills-$env:VERSION.zip"
           Invoke-WebRequest -Uri $url -Method Head -UseBasicParsing -TimeoutSec 10 | Out-Null
           Write-Host "OK: $url reachable"
 
@@ -302,7 +302,7 @@ jobs:
         run: |
           $content = Get-Content install.ps1 -Raw
           # Re-point both the release-skills download and the install-skills.ps1 fetch.
-          $content = $content -replace 'https://github\.com/ulises-jeremias/dots-ai/releases/latest/download', "http://127.0.0.1:$env:PORT"
+          $content = $content -replace 'https://github\.com/ulises-jeremias/agentic-workstation/releases/latest/download', "http://127.0.0.1:$env:PORT"
           $content = $content -replace '\$RepoUrl/releases/latest/download', "http://127.0.0.1:$env:PORT"
           Set-Content -Path install-local.ps1 -Value $content -Encoding utf8
           Write-Host "Rewritten install.ps1 -> install-local.ps1"
@@ -321,7 +321,7 @@ jobs:
       - name: Run install.ps1 -Mode GitBash (workspace checkout)
         shell: pwsh
         env:
-          DOTS_AI_GITBASH_REPO_ROOT: ${{ github.workspace }}
+          DOTS_WORKSTATION_GITBASH_REPO_ROOT: ${{ github.workspace }}
         # Private org repos return 404 for unauthenticated archive URLs; CI uses
         # the checkout path so we still exercise the GitBash install path end-to-end.
         run: |

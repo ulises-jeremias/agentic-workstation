@@ -4,7 +4,7 @@
 # dependencies = []
 # ///
 """
-scripts/skill-graph.py — Skill dependency graph tool for dots-ai.
+scripts/skill-graph.py — Skill dependency graph tool for agentic-workstation.
 
 Commands:
     deps <skill>          Show transitive dependencies of a skill (tree)
@@ -14,10 +14,10 @@ Commands:
     install <skill>       Print install order for a skill and all its dependencies
 
 Usage:
-    python3 scripts/skill-graph.py deps dots-ai-assistant
+    python3 scripts/skill-graph.py deps dots-workstation-assistant
     python3 scripts/skill-graph.py check-cycles
     python3 scripts/skill-graph.py check-versions
-    python3 scripts/skill-graph.py install dots-ai-workflow-generic-project
+    python3 scripts/skill-graph.py install dots-workstation-workflow-generic-project
 """
 from __future__ import annotations
 
@@ -34,8 +34,8 @@ except ImportError:
     _YAML = False
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-CATALOG_PATH = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills" / "skill-catalog.yaml"
-REGISTRY_PATH = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills-registry.yaml"
+CATALOG_PATH = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills" / "skill-catalog.yaml"
+REGISTRY_PATH = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills-registry.yaml"
 
 # ── semver helpers ───────────────────────────────────────────────────────────
 

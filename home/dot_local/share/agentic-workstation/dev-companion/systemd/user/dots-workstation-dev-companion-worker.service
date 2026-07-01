@@ -1,0 +1,5 @@
+[Unit]
+Description=agentic-workstation dev companion queue worker (oneshot)
+[Service]
+Type=oneshot
+ExecStart=%h/.local/share/agentic-workstation/dev-companion/worker.sh

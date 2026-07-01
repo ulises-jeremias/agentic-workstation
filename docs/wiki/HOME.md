@@ -1,14 +1,14 @@
-# dots-ai Wiki
+# agentic-workstation Wiki
 
-> dots-ai private workstation platform — bootstrap, AI skills, agents, CLI helpers, and dev companion.
+> agentic-workstation private workstation platform — bootstrap, AI skills, agents, CLI helpers, and dev companion.
 
-Welcome to the **dots-ai** knowledge base. This wiki covers installation, configuration, AI tooling, and operations for dots-ai developers.
+Welcome to the **agentic-workstation** knowledge base. This wiki covers installation, configuration, AI tooling, and operations for agentic-workstation developers.
 
 ---
 
-## What is dots-ai?
+## What is agentic-workstation?
 
-`dots-ai` standardizes AI developer tooling for developers across **Linux**, **macOS**, and **Windows**. It provisions:
+`agentic-workstation` standardizes AI developer tooling for developers across **Linux**, **macOS**, and **Windows**. It provisions:
 
 For persistent workspace memory, project packs, personas, and indexed repository
 context, pair this workstation layer with
@@ -64,4 +64,4 @@ context, pair this workstation layer with
 
 ## Canonical documentation
 
-> **Note:** This wiki provides user-friendly summaries. The canonical (full-depth) documentation lives in the [`docs/`](https://github.com/ulises-jeremias/dots-ai/tree/main/docs) directory of the repository.
+> **Note:** This wiki provides user-friendly summaries. The canonical (full-depth) documentation lives in the [`docs/`](https://github.com/ulises-jeremias/agentic-workstation/tree/main/docs) directory of the repository.

@@ -1,18 +1,18 @@
-# dots-ai — Windows Installer
+# agentic-workstation — Windows Installer
 #
 # Supports two modes:
 #   1. WSL2 (recommended) — Full workstation setup inside Ubuntu on WSL2
 #   2. Git Bash only       — dots-* scripts available in Git Bash without full toolchain
 #
 # Usage (run in PowerShell as Administrator):
-#   irm https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/install.ps1 | iex
 #
 # Or clone and run locally:
 #   .\install.ps1
 #   .\install.ps1 -Mode GitBash
 #   .\install.ps1 -Mode WSL2
 #
-# Git Bash mode against a private GitHub repo: set DOTS_AI_GITBASH_REPO_ROOT to
+# Git Bash mode against a private GitHub repo: set DOTS_WORKSTATION_GITBASH_REPO_ROOT to
 # a local clone path (must contain home\dot_local\bin), or run with GITHUB_TOKEN
 # so the installer can fall back to the GitHub zipball API.
 
@@ -24,17 +24,17 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$RepoUrl = "https://github.com/ulises-jeremias/dots-ai"
-$RawBase  = "https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main"
+$RepoUrl = "https://github.com/ulises-jeremias/agentic-workstation"
+$RawBase  = "https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main"
 
-function Write-Log  { param($msg) Write-Host "[dots-ai-install] $msg" }
-function Write-Ok   { param($msg) Write-Host "[dots-ai-install] OK: $msg" -ForegroundColor Green }
-function Write-Warn { param($msg) Write-Warning "[dots-ai-install] $msg" }
-function Write-Fail { param($msg) Write-Host "[dots-ai-install] ERROR: $msg" -ForegroundColor Red; exit 1 }
+function Write-Log  { param($msg) Write-Host "[dots-workstation-install] $msg" }
+function Write-Ok   { param($msg) Write-Host "[dots-workstation-install] OK: $msg" -ForegroundColor Green }
+function Write-Warn { param($msg) Write-Warning "[dots-workstation-install] $msg" }
+function Write-Fail { param($msg) Write-Host "[dots-workstation-install] ERROR: $msg" -ForegroundColor Red; exit 1 }
 function Write-Sep  { Write-Host ("-" * 60) }
 
 Write-Sep
-Write-Log "dots-ai — Windows Setup"
+Write-Log "agentic-workstation — Windows Setup"
 Write-Sep
 
 # ---------------------------------------------------------------------------
@@ -148,27 +148,27 @@ function Install-ViaGitBash {
     }
 
     $LocalBin    = "${env:USERPROFILE}\.local\bin"
-    $LocalLib    = "${env:USERPROFILE}\.local\lib\dots-ai\easy-options"
-    $dots-aiShare = "${env:USERPROFILE}\.local\share\dots-ai"
+    $LocalLib    = "${env:USERPROFILE}\.local\lib\agentic-workstation\easy-options"
+    $agentic-workstationShare = "${env:USERPROFILE}\.local\share\agentic-workstation"
 
     New-Item -ItemType Directory -Force -Path $LocalBin    | Out-Null
     New-Item -ItemType Directory -Force -Path $LocalLib    | Out-Null
-    New-Item -ItemType Directory -Force -Path $dots-aiShare | Out-Null
+    New-Item -ItemType Directory -Force -Path $agentic-workstationShare | Out-Null
 
-    Write-Log "Resolving dots-ai repository source..."
+    Write-Log "Resolving agentic-workstation repository source..."
 
-    $TempDir = Join-Path $env:TEMP "dots-ai-gitbash-install"
+    $TempDir = Join-Path $env:TEMP "dots-workstation-gitbash-install"
     New-Item -ItemType Directory -Force -Path $TempDir | Out-Null
 
     $RepoPath = $null
-    $checkoutHint = $env:DOTS_AI_GITBASH_REPO_ROOT
+    $checkoutHint = $env:DOTS_WORKSTATION_GITBASH_REPO_ROOT
     $homeBinProbe = if ($checkoutHint) { Join-Path $checkoutHint "home\dot_local\bin" } else { $null }
     if ($checkoutHint -and (Test-Path -LiteralPath $homeBinProbe)) {
         $RepoPath = (Resolve-Path -LiteralPath $checkoutHint).Path
-        Write-Log "Using DOTS_AI_GITBASH_REPO_ROOT (no zip download): $RepoPath"
+        Write-Log "Using DOTS_WORKSTATION_GITBASH_REPO_ROOT (no zip download): $RepoPath"
     } else {
         # Default: GitHub archive of main (public repos). Private repos: set
-        # DOTS_AI_GITBASH_REPO_ROOT to a checkout, or run with GITHUB_TOKEN so
+        # DOTS_WORKSTATION_GITBASH_REPO_ROOT to a checkout, or run with GITHUB_TOKEN so
         # the zipball fallback below can authenticate.
         $RepoZipUrl = "${RepoUrl}/archive/refs/heads/main.zip"
         $RepoZip = Join-Path $TempDir "repo.zip"
@@ -209,7 +209,7 @@ function Install-ViaGitBash {
         Write-Fail "Could not resolve repository path"
     }
     $DotsBinDir = Join-Path $RepoPath "home\dot_local\bin"
-    $DotsLibDir = Join-Path $RepoPath "home\dot_local\lib\dots-ai\easy-options"
+    $DotsLibDir = Join-Path $RepoPath "home\dot_local\lib\agentic-workstation\easy-options"
 
     # Copy dots-* scripts (strip executable_ prefix)
     Get-ChildItem -Path $DotsBinDir -Filter "executable_dots-*" | ForEach-Object {
@@ -225,11 +225,11 @@ function Install-ViaGitBash {
         Write-Ok "installed: easy-options library"
     }
 
-    # Copy dots-ai AI assets (skills, prompts, templates)
-    $dots-aiAssets = Join-Path $RepoPath "home\dot_local\share\dots-ai"
-    if (Test-Path $dots-aiAssets) {
-        Copy-Item -Path "$dots-aiAssets\*" -Destination $dots-aiShare -Force -Recurse
-        Write-Ok "installed: dots-ai AI assets (skills, prompts, templates)"
+    # Copy agentic-workstation AI assets (skills, prompts, templates)
+    $agentic-workstationAssets = Join-Path $RepoPath "home\dot_local\share\agentic-workstation"
+    if (Test-Path $agentic-workstationAssets) {
+        Copy-Item -Path "$agentic-workstationAssets\*" -Destination $agentic-workstationShare -Force -Recurse
+        Write-Ok "installed: agentic-workstation AI assets (skills, prompts, templates)"
     }
 
     # Add ~/.local/bin to PATH if not already there
@@ -260,10 +260,10 @@ function Install-ViaGitBash {
 # Skills-only mode (no toolchain, just AI skills/agents)
 # ---------------------------------------------------------------------------
 function Install-SkillsOnly {
-    Write-Log "Installing dots-ai AI skills and agents only..."
+    Write-Log "Installing agentic-workstation AI skills and agents only..."
     Write-Log "Downloading install-skills.ps1..."
 
-    $TempScript = Join-Path $env:TEMP "dots-ai-install-skills.ps1"
+    $TempScript = Join-Path $env:TEMP "dots-workstation-install-skills.ps1"
     try {
         Invoke-WebRequest -Uri "$RepoUrl/releases/latest/download/install-skills.ps1" `
             -OutFile $TempScript -UseBasicParsing

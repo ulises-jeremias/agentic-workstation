@@ -1,6 +1,6 @@
 # Agentic Harness
 
-> Three-layer architecture for AI-assisted development at dots-ai.
+> Three-layer architecture for AI-assisted development at agentic-workstation.
 
 ---
 
@@ -64,4 +64,4 @@ Packs bundle context for a specific client or project:
 
 ---
 
-**Canonical doc:** [`docs/AGENTIC_HARNESS.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/AGENTIC_HARNESS.md)
+**Canonical doc:** [`docs/AGENTIC_HARNESS.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/AGENTIC_HARNESS.md)

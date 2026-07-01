@@ -64,8 +64,8 @@
       "model": "sonnet"
     },
     "reference-lookup": {
-      "description": "Lookup dots-ai reference examples from public examples",
-      "prompt": "You are a reference lookup specialist. Find dots-ai examples from public examples repository.",
+      "description": "Lookup agentic-workstation reference examples from public examples",
+      "prompt": "You are a reference lookup specialist. Find agentic-workstation examples from public examples repository.",
       "model": "haiku"
     },
     "security-reviewer": {

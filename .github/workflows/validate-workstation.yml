@@ -57,7 +57,7 @@ jobs:
         run: |
           python3 -m compileall \
             scripts \
-            home/dot_local/share/dots-ai/dev-companion/runner
+            home/dot_local/share/agentic-workstation/dev-companion/runner
 
       - name: Install PyYAML and jsonschema for skill tools
         run: pip install PyYAML jsonschema
@@ -108,8 +108,8 @@ jobs:
       - name: Package AI assets
         uses: actions/upload-artifact@v7
         with:
-          name: dots-ai-ai-assets
-          path: home/private_dot_local/share/dots-ai
+          name: dots-workstation-ai-assets
+          path: home/private_dot_local/share/agentic-workstation
 
   test-scripts-linux:
     needs: validate
@@ -128,7 +128,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$HOME/.local/bin"
-          mkdir -p "$HOME/.local/lib/dots-ai/easy-options"
+          mkdir -p "$HOME/.local/lib/agentic-workstation/easy-options"
           # chezmoi prefixes executables with "executable_" in source state
           # We need to strip this prefix when copying for direct script testing
           for f in home/dot_local/bin/executable_dots-*; do
@@ -138,7 +138,7 @@ jobs:
               chmod +x "$HOME/.local/bin/$base"
             fi
           done
-          cp home/dot_local/lib/dots-ai/easy-options/* "$HOME/.local/lib/dots-ai/easy-options/" 2>/dev/null || true
+          cp home/dot_local/lib/agentic-workstation/easy-options/* "$HOME/.local/lib/agentic-workstation/easy-options/" 2>/dev/null || true
 
       - name: Add to PATH
         shell: bash
@@ -224,7 +224,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$HOME/.local/bin"
-          mkdir -p "$HOME/.local/lib/dots-ai/easy-options"
+          mkdir -p "$HOME/.local/lib/agentic-workstation/easy-options"
           # chezmoi prefixes executables with "executable_" in source state
           # We need to strip this prefix when copying for direct script testing
           for f in home/dot_local/bin/executable_dots-*; do
@@ -234,7 +234,7 @@ jobs:
               chmod +x "$HOME/.local/bin/$base"
             fi
           done
-          cp home/dot_local/lib/dots-ai/easy-options/* "$HOME/.local/lib/dots-ai/easy-options/" 2>/dev/null || true
+          cp home/dot_local/lib/agentic-workstation/easy-options/* "$HOME/.local/lib/agentic-workstation/easy-options/" 2>/dev/null || true
 
       - name: Add to PATH
         shell: bash

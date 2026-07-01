@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/lib/schemas/skill.schema.json",
-  "title": "dots-ai Skill Manifest",
-  "description": "Schema for skill.json — the universal skill manifest for dots-ai AI tools",
+  "$id": "https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/lib/schemas/skill.schema.json",
+  "title": "agentic-workstation Skill Manifest",
+  "description": "Schema for skill.json — the universal skill manifest for agentic-workstation AI tools",
   "type": "object",
   "required": ["name", "version", "description", "source", "compatibility"],
   "additionalProperties": false,

@@ -14,10 +14,10 @@
 | `dots-skills install <name>` | Install a skill from the registry |
 | `dots-devcompanion enqueue <id>` | Queue a background job for the LLM runner |
 | `dots-devcompanion run-once` | Process the next queued job |
-| `dots-loadenv` | Load environment variables from `~/.config/dots-ai/env.d/` |
+| `dots-loadenv` | Load environment variables from `~/.config/agentic-workstation/env.d/` |
 | `dots-update-check` | Check if the local baseline is behind origin/main |
 | `dots-bootstrap` | Re-run `chezmoi apply` with dry-run preview |
-| `dots-ai-audit` | Inventory AI tool installs, auth hints, and privacy/config metadata without printing secrets |
+| `dots-workstation-audit` | Inventory AI tool installs, auth hints, and privacy/config metadata without printing secrets |
 | `dots-security-audit` | Run shallow workstation security checks for sensitive permissions and baseline paths |
 
 ---
@@ -68,16 +68,16 @@ glab auth status
 ### Audit AI tools and workstation security
 
 ```bash
-dots-ai-audit --issue
-dots-ai-audit --json
+dots-workstation-audit --issue
+dots-workstation-audit --json
 dots-security-audit --issue
 dots-security-audit --json
 ```
 
-`dots-ai-audit` reports safe metadata for local AI tools such as Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, Windsurf, and Gemini. It never prints token values, raw auth files, prompt history, chat logs, or memory contents. Vendor subscription details are best-effort locally; authoritative plan ownership usually requires the vendor's admin console or API.
+`dots-workstation-audit` reports safe metadata for local AI tools such as Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, Windsurf, and Gemini. It never prints token values, raw auth files, prompt history, chat logs, or memory contents. Vendor subscription details are best-effort locally; authoritative plan ownership usually requires the vendor's admin console or API.
 
-`dots-security-audit` runs low-noise checks for sensitive file permissions, AI auth file permissions, and expected dots-ai directories. Deep secret scanning is skipped by default.
+`dots-security-audit` runs low-noise checks for sensitive file permissions, AI auth file permissions, and expected agentic-workstation directories. Deep secret scanning is skipped by default.
 
 ---
 
-**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/README.md)
+**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/README.md)

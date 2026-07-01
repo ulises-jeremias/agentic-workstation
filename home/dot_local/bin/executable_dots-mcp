@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# dots-mcp — MCP provider setup wizard and health checker for dots-ai.
+# dots-mcp — MCP provider setup wizard and health checker for agentic-workstation.
 #
-# Discovers available MCP templates under ~/.local/share/dots-ai/mcp/ and
+# Discovers available MCP templates under ~/.local/share/agentic-workstation/mcp/ and
 # guides users through environment variable configuration.
 #
 # Usage:
@@ -18,8 +18,8 @@
 
 set -euo pipefail
 
-DOTS_AI_SHARE="${HOME}/.local/share/dots-ai"
-MCP_DIR="${DOTS_AI_SHARE}/mcp"
+DOTS_WORKSTATION_SHARE="${HOME}/.local/share/agentic-workstation"
+MCP_DIR="${DOTS_WORKSTATION_SHARE}/mcp"
 
 if [[ -t 1 && -z ${NO_COLOR:-} ]]; then
   c_reset=$'\033[0m'
@@ -47,7 +47,7 @@ die() {
 list_providers() {
   if [[ ! -d ${MCP_DIR} ]]; then
     echo "No MCP templates found at ${MCP_DIR}" >&2
-    echo "Install dots-ai and run: chezmoi apply"
+    echo "Install agentic-workstation and run: chezmoi apply"
     return 1
   fi
   for d in "${MCP_DIR}"/*/; do
@@ -107,7 +107,7 @@ cmd_setup() {
       else
         warn "${var} is NOT set"
         echo ""
-        printf "  To set it, add to your AI tool's env or to %s:\n" "${HOME}/.config/dots-ai/env.d/${provider}.env"
+        printf "  To set it, add to your AI tool's env or to %s:\n" "${HOME}/.config/agentic-workstation/env.d/${provider}.env"
         printf "    export %s=\"your-value-here\"\n" "${var}"
         echo ""
       fi

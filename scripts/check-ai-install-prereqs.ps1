@@ -1,10 +1,10 @@
-# dots-ai AI install - prerequisite checker (Windows PowerShell)
+# agentic-workstation AI install - prerequisite checker (Windows PowerShell)
 #
 # Read-only script: verifies that a Windows machine is ready to run
 # install-skills.ps1 and reports whether the AI layer is already installed.
 #
 # Usage (remote):
-#   irm https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/scripts/check-ai-install-prereqs.ps1 | iex
+#   irm https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/scripts/check-ai-install-prereqs.ps1 | iex
 #
 # Usage (local):
 #   .\scripts\check-ai-install-prereqs.ps1
@@ -90,7 +90,7 @@ try {
     } elseif (-not (Test-Path $env:USERPROFILE)) {
         Write-NMiss ("USERPROFILE does not exist: {0}" -f $env:USERPROFILE)
     } else {
-        $probe = Join-Path $env:USERPROFILE (".dots-ai-prereq-probe-" + (Get-Random))
+        $probe = Join-Path $env:USERPROFILE (".dots-workstation-prereq-probe-" + (Get-Random))
         try {
             Set-Content -Path $probe -Value "probe" -ErrorAction Stop
             Remove-Item $probe -ErrorAction SilentlyContinue
@@ -101,7 +101,7 @@ try {
     }
 
     # ---- Existing AI install footprint (informational) ---------------------
-    $skillsDir = Join-Path $env:USERPROFILE ".local\share\dots-ai\skills"
+    $skillsDir = Join-Path $env:USERPROFILE ".local\share\agentic-workstation\skills"
     if (Test-Path $skillsDir) {
         $count = (Get-ChildItem -Path $skillsDir -Directory -ErrorAction SilentlyContinue | Measure-Object).Count
         Write-NOk ("existing skills install detected: {0} ({1} top-level entries)" -f $skillsDir, $count)

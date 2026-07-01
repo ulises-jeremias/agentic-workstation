@@ -1,12 +1,12 @@
 # AI Layer
 
-> How dots-ai provisions AI skills, agents, prompts, and templates.
+> How agentic-workstation provisions AI skills, agents, prompts, and templates.
 
 ---
 
 ## Overview
 
-AI resources are deployed to `~/.local/share/dots-ai/` during `chezmoi apply`:
+AI resources are deployed to `~/.local/share/agentic-workstation/` during `chezmoi apply`:
 
 | Directory | Contents |
 |-----------|----------|
@@ -60,9 +60,9 @@ The workstation implements a [Ralph Loop](https://ghuntley.com/loop/) pattern:
 | **Backing specifications** | `AGENTS.md` templates deployed to each repo/session |
 | **Context engineering** | Skills that prime each loop with domain context |
 | **Persistent memory** | `ai-workspace/knowledge/` knowledge base |
-| **Fix the loop** | `dots-ai-workspace-knowledge-sync` skill |
-| **Monolithic orchestrator** | `dots-ai-assistant` as single entry point |
+| **Fix the loop** | `dots-harness-knowledge-sync` skill |
+| **Monolithic orchestrator** | `dots-workstation-assistant` as single entry point |
 
 ---
 
-**Canonical doc:** [`docs/AI_LAYER.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/AI_LAYER.md)
+**Canonical doc:** [`docs/AI_LAYER.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/AI_LAYER.md)

@@ -1,6 +1,6 @@
 # Multi-Agent Orchestration (Optional)
 
-dots-ai Dev Companion policies are harness-agnostic; multi-agent runtimes are **optional**.
+agentic-workstation Dev Companion policies are harness-agnostic; multi-agent runtimes are **optional**.
 
 > [!NOTE]
 > Multi-agent is an advanced capability. Most delivery tasks are fully handled by the single-agent Dev Companion workflow. Only consider multi-agent when parallel work across components provides clear value.
@@ -15,9 +15,9 @@ dots-ai Dev Companion policies are harness-agnostic; multi-agent runtimes are **
 
 Why: file-based task store, auto-claim, messaging, worktrees, and hook/quality-gate support.
 
-### Suggested team topology (dots-ai)
+### Suggested team topology (agentic-workstation)
 
-- **Lead**: one orchestrator session that routes via `dots-ai-assistant` + packs.
+- **Lead**: one orchestrator session that routes via `dots-workstation-assistant` + packs.
 - **Workers (examples)**:
   - `data-validate` (dbt + snowflake validation evidence)
   - `forge-pr` (draft PR/MR + template)
@@ -113,7 +113,7 @@ worker:
 
 In a multi-agent setup, the lead agent loads the pack and propagates relevant context to workers via the shared task store.
 
-Pack structure: `~/.local/share/dots-ai/dev-companion/packs/accounts/<client>/pack.yaml`
+Pack structure: `~/.local/share/agentic-workstation/dev-companion/packs/accounts/<client>/pack.yaml`
 
 → See [DEV_COMPANION_PLATFORM.md](DEV_COMPANION_PLATFORM.md) for the full pack schema and multi-harness design.
 → See [AGENTIC_HARNESS.md](AGENTIC_HARNESS.md) for the full three-layer architecture.

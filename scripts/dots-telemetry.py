@@ -5,8 +5,8 @@
 # ///
 """
 scripts/dots-telemetry.py
-Local-only telemetry aggregator for dots-ai. Reads from
-~/.local/state/dots-ai/telemetry/*.jsonl and produces usage summaries.
+Local-only telemetry aggregator for agentic-workstation. Reads from
+~/.local/state/agentic-workstation/telemetry/*.jsonl and produces usage summaries.
 
 Commands:
     summary [--days N]    Usage summary (default: last 7 days)
@@ -22,8 +22,8 @@ import pathlib
 import sys
 from datetime import datetime, timezone, timedelta
 
-STATE_DIR = pathlib.Path.home() / ".local" / "state" / "dots-ai" / "telemetry"
-SHARE_DIR = pathlib.Path.home() / ".local" / "share" / "dots-ai"
+STATE_DIR = pathlib.Path.home() / ".local" / "state" / "agentic-workstation" / "telemetry"
+SHARE_DIR = pathlib.Path.home() / ".local" / "share" / "agentic-workstation"
 
 
 def _events(days: int = 7) -> list[dict]:
@@ -104,7 +104,7 @@ def cmd_drift() -> None:
     skills_dir = SHARE_DIR / "skills"
 
     if not registry_file.exists():
-        print("  Registry not found at ~/.local/share/dots-ai/skills-registry.yaml")
+        print("  Registry not found at ~/.local/share/agentic-workstation/skills-registry.yaml")
         return
 
     # Parse registry names (simple line-based)

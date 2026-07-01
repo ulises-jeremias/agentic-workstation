@@ -6,7 +6,7 @@
 
 ## What are MCP templates?
 
-MCP (Model Context Protocol) templates provide ready-to-use server configurations that let AI tools access external services. Templates are installed to `~/.local/share/dots-ai/mcp/`.
+MCP (Model Context Protocol) templates provide ready-to-use server configurations that let AI tools access external services. Templates are installed to `~/.local/share/agentic-workstation/mcp/`.
 
 ---
 
@@ -37,7 +37,7 @@ Each provider directory contains:
 
 ## Setup
 
-1. Navigate to the provider directory: `~/.local/share/dots-ai/mcp/<provider>/`
+1. Navigate to the provider directory: `~/.local/share/agentic-workstation/mcp/<provider>/`
 2. Copy `config.template.json` to `config.json`
 3. Fill in your credentials (API tokens, URLs)
 4. Configure your AI tool to use the MCP server
@@ -59,8 +59,8 @@ All integrations use **environment variables** for secrets — never hardcode to
 
 - Templates ship with **placeholder values only**
 - Actual credentials are **never committed** to the repository
-- Use `~/.config/dots-ai/env.d/` for persistent secrets
+- Use `~/.config/agentic-workstation/env.d/` for persistent secrets
 
 ---
 
-**Canonical doc:** [`docs/MCP_TEMPLATES.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/MCP_TEMPLATES.md)
+**Canonical doc:** [`docs/MCP_TEMPLATES.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/MCP_TEMPLATES.md)

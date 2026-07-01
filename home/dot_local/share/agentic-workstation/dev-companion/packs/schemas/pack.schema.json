@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "agentic-workstation Dev Companion Pack",
+  "type": "object",
+  "required": ["kind", "slug", "display_name", "triggers", "boundaries"],
+  "additionalProperties": false,
+  "properties": {
+    "kind": { "type": "string", "enum": ["account", "team"] },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "display_name": { "type": "string", "minLength": 1 },
+    "triggers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repo_path_prefixes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "ticket_key_prefixes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "required": ["allowed_paths"],
+      "additionalProperties": false,
+      "properties": {
+        "allowed_paths": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "required_env": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "tool_requirements": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "automation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "automation_level_default": {
+          "type": "string",
+          "enum": ["plan_only", "edit_no_push", "push_and_draft_pr"]
+        },
+        "allow_background_runner": { "type": "boolean", "default": false }
+      }
+    }
+  }
+}

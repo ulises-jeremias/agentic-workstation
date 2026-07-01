@@ -1,6 +1,6 @@
 # Chezmoi Workflow
 
-> How `dots-ai` uses chezmoi for idempotent machine configuration.
+> How `agentic-workstation` uses chezmoi for idempotent machine configuration.
 
 ---
 
@@ -28,8 +28,8 @@
 ### Initialize
 
 ```bash
-cd /path/to/dots-ai
-chezmoi init --source=. -c ~/.config/chezmoi/dots-ai.toml
+cd /path/to/agentic-workstation
+chezmoi init --source=. -c ~/.config/chezmoi/agentic-workstation.toml
 ```
 
 This reads `.chezmoidata/` and prompts for profile choices.
@@ -37,7 +37,7 @@ This reads `.chezmoidata/` and prompts for profile choices.
 ### Preview
 
 ```bash
-chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml --dry-run
+chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml --dry-run
 ```
 
 Shows what would change without making modifications.
@@ -45,7 +45,7 @@ Shows what would change without making modifications.
 ### Apply
 
 ```bash
-chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml
+chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml
 ```
 
 Creates/updates all files and runs installation scripts.
@@ -77,8 +77,8 @@ During `chezmoi init`, you choose profiles that control which packages and tools
 1. Create the file under `home/` using chezmoi naming conventions
 2. Use `.tmpl` extension if the file needs template logic
 3. Reference chezmoi data from `.chezmoidata/` as needed
-4. Test with `chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml --dry-run`
+4. Test with `chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml --dry-run`
 
 ---
 
-**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/README.md)
+**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/README.md)

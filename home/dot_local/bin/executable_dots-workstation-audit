@@ -1,0 +1,306 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+## dots-workstation-audit
+##
+## Audits local AI tool installation, authentication state, and configuration.
+## Uses vendor CLI commands where available; reads safe metadata files otherwise.
+## Never prints token values, raw auth files, prompt history, or chat contents.
+##
+## Usage:
+##     @script.name [options]
+##
+## Options:
+##     -h, --help              Show this help message.
+##     --json                  Emit a single JSON report.
+##     --issue, --paste        Emit a Markdown-friendly report.
+##     --no-network            Skip commands that contact vendor services.
+
+MODE="human"
+NO_NETWORK=0
+tools_json="[]"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h | --help)
+      sed -n '3,19p' "$0" | sed 's/^## \{0,1\}//'
+      exit 0
+      ;;
+    --json)
+      MODE="json"
+      shift
+      ;;
+    --issue | --paste)
+      MODE="issue"
+      shift
+      ;;
+    --no-network)
+      NO_NETWORK=1
+      shift
+      ;;
+    *)
+      echo "[dots-workstation-audit] unknown option: $1 (try --help)" >&2
+      exit 2
+      ;;
+  esac
+done
+
+if [[ -t 1 && -z ${NO_COLOR:-} && ${MODE} == "human" ]]; then
+  c_reset=$'\033[0m'
+  c_blue=$'\033[1;34m'
+  c_green=$'\033[1;32m'
+  c_yellow=$'\033[1;33m'
+else
+  c_reset=''
+  c_blue=''
+  c_green=''
+  c_yellow=''
+fi
+
+info() { [[ ${MODE} == "human" ]] && printf '%b[dots-workstation-audit]%b %s\n' "$c_blue" "$c_reset" "$*"; }
+ok() { [[ ${MODE} == "human" ]] && printf '  %b[OK]%b %s\n' "$c_green" "$c_reset" "$*"; }
+warn() { [[ ${MODE} == "human" ]] && printf '  %b[WARN]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
+
+sanitize() {
+  printf '%s' "${1:-}" |
+    sed -E \
+      -e 's/(sk-[A-Za-z0-9_-]{8,})/[REDACTED_TOKEN]/g' \
+      -e 's/(gh[pousr]_[A-Za-z0-9_]{8,})/[REDACTED_TOKEN]/g' \
+      -e 's/([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/[REDACTED_EMAIL]/g' |
+    tr '`' "'" | tr '\n\r' '  ' | head -c 300
+}
+
+append_tool() {
+  local json="$1"
+  tools_json=$(
+    TOOLS_JSON="$tools_json" TOOL_JSON="$json" python3 - <<'PY'
+import json, os
+items = json.loads(os.environ["TOOLS_JSON"])
+items.append(json.loads(os.environ["TOOL_JSON"]))
+print(json.dumps(items))
+PY
+  )
+}
+
+json_tool() {
+  local tool="$1" installed="$2" version="$3" auth_state="$4" identity="$5" subscription_state="$6" subscription_evidence="$7" warnings="$8" configs="$9" privacy="${10}"
+  TOOL="$tool" INSTALLED="$installed" VERSION="$version" AUTH_STATE="$auth_state" IDENTITY="$identity" SUB_STATE="$subscription_state" SUB_EVIDENCE="$subscription_evidence" WARNINGS="$warnings" CONFIGS="$configs" PRIVACY="$privacy" python3 - <<'PY'
+import json, os
+def split(v):
+    return [x for x in v.split('|') if x]
+print(json.dumps({
+    "tool": os.environ["TOOL"],
+    "installed": os.environ["INSTALLED"] == "true",
+    "version": os.environ["VERSION"] or None,
+    "auth": {
+        "state": os.environ["AUTH_STATE"] or "unknown",
+        "identity": os.environ["IDENTITY"] or None,
+        "identity_confidence": "medium" if os.environ["IDENTITY"] else "low",
+    },
+    "subscription": {
+        "state": os.environ["SUB_STATE"] or "unknown",
+        "evidence": os.environ["SUB_EVIDENCE"] or None,
+        "confidence": "low",
+    },
+    "config_files": split(os.environ["CONFIGS"]),
+    "privacy": split(os.environ["PRIVACY"]),
+    "warnings": split(os.environ["WARNINGS"]),
+}))
+PY
+}
+
+check_claude() {
+  local installed=false version="" auth="not installed" warnings="" configs="" privacy=""
+  local credentials="$HOME/.claude/.credentials.json"
+  local settings="$HOME/.claude/settings.json"
+  local mcp_auth="$HOME/.claude/mcp-needs-auth-cache.json"
+
+  if command -v claude >/dev/null 2>&1; then
+    installed=true
+    version="$(claude --version 2>/dev/null | head -n 1 || true)"
+    if [[ -f $credentials ]]; then
+      auth="credentials file present"
+    elif [[ -f $settings ]]; then
+      auth="settings file present"
+    fi
+  fi
+
+  for p in "$settings" "$credentials" "$mcp_auth" "$HOME/.claude.json" "/etc/claude-code/managed-settings.json"; do
+    [[ -e $p ]] && configs="${configs}|${p}"
+  done
+
+  [[ -f $credentials ]] && privacy="${privacy}|.credentials.json present; auth token not read"
+  [[ -f $mcp_auth ]] && warnings="${warnings}|MCP auth cache present"
+
+  append_tool "$(json_tool claude "$installed" "$version" "$auth" "" unknown "Claude subscription is server-side" "$warnings" "$configs" "$privacy")"
+}
+
+check_cursor() {
+  local installed=false version="" auth="unknown" warnings="" configs="" privacy=""
+  local settings="$HOME/.config/Cursor/User/settings.json"
+  local global_storage="$HOME/.config/Cursor/User/globalStorage/state.vscdb"
+
+  if command -v cursor >/dev/null 2>&1; then
+    installed=true
+    version="$(cursor --version 2>/dev/null | head -n 1 || true)"
+  fi
+
+  for p in "$HOME/.cursor" "$HOME/.cursor/mcp.json" "$settings" "$global_storage"; do
+    [[ -e $p ]] && configs="${configs}|${p}"
+  done
+
+  [[ -f $settings ]] && privacy="${privacy}|Cursor user settings present"
+  [[ -f $global_storage ]] && warnings="${warnings}|Cursor globalStorage SQLite present; auth state not readable without DB inspection"
+
+  append_tool "$(json_tool cursor "$installed" "$version" "$auth" "" unknown "Cursor account/subscription is app-managed" "$warnings" "$configs" "$privacy")"
+}
+
+check_copilot() {
+  local installed=false version="" auth="unknown" identity="" warnings="" configs="" privacy=""
+
+  if command -v gh >/dev/null 2>&1; then
+    version="$(gh copilot --version 2>/dev/null | head -n 1 || true)"
+    if [[ ${NO_NETWORK} -eq 0 ]]; then
+      identity="$(gh api user --jq .email 2>/dev/null | head -n 1 || true)"
+      auth="$(gh auth status 2>&1 | head -n 1 || true)"
+    fi
+  fi
+
+  if command -v code >/dev/null 2>&1 && [[ -f $HOME/.config/Code/User/settings.json ]]; then
+    if grep -qi 'github.copilot' "$HOME/.config/Code/User/settings.json" 2>/dev/null; then
+      installed=true
+    fi
+  fi
+
+  for p in "$HOME/.config/Code/User/settings.json" "$HOME/.config/gh/hosts.yml" "$HOME/.github/copilot-instructions.md"; do
+    [[ -e $p ]] && configs="${configs}|${p}"
+  done
+
+  [[ -f $HOME/.config/Code/User/settings.json ]] && privacy="${privacy}|VS Code Copilot settings may be present"
+  [[ -n $identity ]] && warnings="${warnings}|identity from GitHub API"
+
+  append_tool "$(json_tool copilot "$installed" "$version" "$auth" "$identity" unknown "Use GitHub org/user admin APIs for entitlement" "$warnings" "$configs" "$privacy")"
+}
+
+check_opencode() {
+  local installed=false version="" auth="unknown" warnings="" configs="" privacy=""
+  local n=0
+
+  if command -v opencode >/dev/null 2>&1; then
+    installed=true
+    version="$(opencode --version 2>/dev/null | head -n 1 || true)"
+    if [[ ${NO_NETWORK} -eq 0 ]]; then
+      n=$({ opencode providers list 2>/dev/null | grep -c '● ' || true; } | tr -d ' ')
+      [[ $n -gt 0 ]] && auth="configured providers: $n" || auth="no providers configured"
+    else
+      auth="--no-network active"
+    fi
+  fi
+
+  for p in "$HOME/.config/opencode/opencode.json" "$HOME/.config/opencode/tui.json" "$HOME/.local/share/opencode/auth.json"; do
+    [[ -e $p ]] && configs="${configs}|${p}"
+  done
+
+  [[ -f $HOME/.config/opencode/opencode.json ]] && privacy="${privacy}|Inspect share, permission, enabled_providers, disabled_providers"
+  [[ -f $HOME/.local/share/opencode/auth.json ]] && warnings="${warnings}|OpenCode auth.json present; not inspected"
+  [[ $n -gt 0 ]] && warnings="${warnings}|${n} provider(s) configured"
+
+  append_tool "$(json_tool opencode "$installed" "$version" "$auth" "" unknown "Provider-specific subscription" "$warnings" "$configs" "$privacy")"
+}
+
+check_codex() {
+  local installed=false version="" auth="unknown" evidence="" warnings="" configs="" privacy=""
+
+  if command -v codex >/dev/null 2>&1; then
+    installed=true
+    version="$(codex --version 2>/dev/null | head -n 1 || true)"
+    if [[ ${NO_NETWORK} -eq 0 ]]; then
+      auth="$(codex login status 2>/dev/null | head -n 1 || true)"
+      evidence="$auth"
+    else
+      [[ -f $HOME/.codex/auth.json ]] && auth="auth.json present; --no-network active"
+    fi
+  fi
+
+  for p in "$HOME/.codex/config.toml" "$HOME/.codex/auth.json"; do
+    [[ -e $p ]] && configs="${configs}|${p}"
+  done
+
+  [[ -f $HOME/.codex/config.toml ]] && privacy="${privacy}|Inspect analytics.enabled, feedback.enabled, history.persistence"
+  [[ -f $HOME/.codex/auth.json ]] && warnings="${warnings}|Codex auth.json present; not inspected"
+
+  append_tool "$(json_tool codex "$installed" "$version" "$auth" "" unknown "$evidence" "$warnings" "$configs" "$privacy")"
+}
+
+check_windsurf() {
+  local installed=false version="" auth="unknown" warnings="" configs="" privacy=""
+  local windsurf_dir="$HOME/.codeium/windsurf"
+  local rules="$HOME/.windsurf/rules"
+
+  if command -v windsurf >/dev/null 2>&1; then
+    installed=true
+    version="$(windsurf --version 2>/dev/null | head -n 1 || true)"
+  fi
+
+  for p in "$windsurf_dir" "$windsurf_dir/memories" "$rules"; do
+    [[ -e $p ]] && configs="${configs}|${p}"
+  done
+
+  [[ -d $windsurf_dir/memories ]] && warnings="${warnings}|Windsurf memories present; content not inspected"
+
+  append_tool "$(json_tool windsurf "$installed" "$version" "$auth" "" unknown "Windsurf account/subscription is app-managed" "$warnings" "$configs" "$privacy")"
+}
+
+check_gemini() {
+  local installed=false version="" auth="unknown" warnings="" configs="" privacy=""
+
+  if command -v gemini >/dev/null 2>&1; then
+    installed=true
+    version="$(gemini --version 2>/dev/null | head -n 1 || true)"
+  fi
+
+  [[ -f $HOME/.gemini/settings.json ]] && configs="${configs}|$HOME/.gemini/settings.json"
+
+  [[ -n ${GEMINI_API_KEY:-} || -n ${GOOGLE_API_KEY:-} ]] && warnings="${warnings}|Gemini/OpenAI-style API key env var present (value hidden)"
+
+  append_tool "$(json_tool gemini "$installed" "$version" "$auth" "" unknown "Google account/project state is server-side" "$warnings" "$configs" "$privacy")"
+}
+
+check_claude
+check_cursor
+check_copilot
+check_opencode
+check_codex
+check_windsurf
+check_gemini
+
+if [[ ${MODE} == "json" ]]; then
+  TOOLS_JSON="$tools_json" python3 - <<'PY'
+import json, os
+tools = json.loads(os.environ["TOOLS_JSON"])
+print(json.dumps({
+  "schema_version": 1,
+  "scope": "agentic-workstation",
+  "tools_detected": sum(1 for t in tools if t["installed"] or t["config_files"]),
+  "tools": tools,
+}, sort_keys=True))
+PY
+elif [[ ${MODE} == "issue" ]]; then
+  TOOLS_JSON="$tools_json" python3 - <<'PY'
+import json, os
+tools = json.loads(os.environ["TOOLS_JSON"])
+print("## agentic-workstation audit\n")
+print("_No token values, auth file contents, prompt history, or chat contents are included._\n")
+for t in tools:
+    marker = "[x]" if t["installed"] or t["config_files"] else "[ ]"
+    print(f"- {marker} **{t['tool']}** — auth: `{t['auth']['state']}`; identity: `{t['auth']['identity'] or 'unknown'}`; configs: {len(t['config_files'])}; warnings: {len(t['warnings'])}")
+PY
+else
+  info "AI tool audit"
+  TOOLS_JSON="$tools_json" python3 - <<'PY'
+import json, os
+for t in json.loads(os.environ["TOOLS_JSON"]):
+    label = "detected" if t["installed"] or t["config_files"] else "not detected"
+    print(f"  [{label}] {t['tool']}: auth={t['auth']['state']} identity={t['auth']['identity'] or 'unknown'} configs={len(t['config_files'])} warnings={len(t['warnings'])}")
+PY
+fi

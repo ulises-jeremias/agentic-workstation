@@ -1,17 +1,17 @@
-# dots-ai Dev Companion Platform
+# agentic-workstation Dev Companion Platform
 
 > Platform-level design for Dev Companion automation across multiple harnesses and client accounts.
 
 ---
 
-This document explains the **platform-level** design for dots-ai Dev Companion automation across **multiple harnesses** (Cursor, Claude Code, pi.dev, CLI), and across **multiple client accounts**.
+This document explains the **platform-level** design for agentic-workstation Dev Companion automation across **multiple harnesses** (Cursor, Claude Code, pi.dev, CLI), and across **multiple client accounts**.
 
-Authoritative, machine-installed assets live under `~/.local/share/dots-ai/` after `chezmoi apply`.
+Authoritative, machine-installed assets live under `~/.local/share/agentic-workstation/` after `chezmoi apply`.
 
 ## Goals
 
-- **Multi-harness**: users can keep their preferred harness; dots-ai ships consistent policies.
-- **Account separation**: dots-ai has multiple client accounts; not all workflows and access are generalizable.
+- **Multi-harness**: users can keep their preferred harness; agentic-workstation ships consistent policies.
+- **Account separation**: agentic-workstation has multiple client accounts; not all workflows and access are generalizable.
 - **Reliability**: background runs are bounded, observable, resumable, and safe by default.
 - **Portability**: policies are defined as files (skills/catalog/packs), not hardcoded in one IDE.
 
@@ -19,17 +19,17 @@ Authoritative, machine-installed assets live under `~/.local/share/dots-ai/` aft
 
 ### Policy (portable, stable)
 
-- Skills under `~/.local/share/dots-ai/skills/`:
-  - **Companion layers** (e.g. `dots-ai-dev-companion`)
-  - **Workflow skills** (WHAT) (e.g. `dots-ai-workflow-generic-project`)
+- Skills under `~/.local/share/agentic-workstation/skills/`:
+  - **Companion layers** (e.g. `dots-workstation-dev-companion`)
+  - **Workflow skills** (WHAT) (e.g. `dots-workstation-workflow-generic-project`)
   - **Tool skills** (HOW) (e.g. `github-cli-workflow`, `dbt-validation`, `snowflake-validation`)
-- Routing metadata: `~/.local/share/dots-ai/skills/skill-catalog.yaml`
-- Account/team packs: `~/.local/share/dots-ai/dev-companion/packs/` (see below)
+- Routing metadata: `~/.local/share/agentic-workstation/skills/skill-catalog.yaml`
+- Account/team packs: `~/.local/share/agentic-workstation/dev-companion/packs/` (see below)
 
 ### Runtime (pluggable, optional)
 
 - Interactive (default): Cursor or any harness that loads skills.
-- Background: systemd user timer + queue worker under `~/.local/share/dots-ai/dev-companion/`.
+- Background: systemd user timer + queue worker under `~/.local/share/agentic-workstation/dev-companion/`.
 - Multi-agent (optional): pi.dev teams or Claude Code agent teams/subagents.
 
 > [!NOTE]
@@ -37,12 +37,12 @@ Authoritative, machine-installed assets live under `~/.local/share/dots-ai/` aft
 
 ## Account/team packs
 
-Packs allow dots-ai to ship **account-specific** boundaries without forcing every engineer to enable everything.
+Packs allow agentic-workstation to ship **account-specific** boundaries without forcing every engineer to enable everything.
 
 Installed path:
 
 ```
-~/.local/share/dots-ai/dev-companion/packs/
+~/.local/share/agentic-workstation/dev-companion/packs/
   accounts/<accountSlug>/pack.yaml
   teams/<teamSlug>/pack.yaml
 ```
@@ -56,14 +56,14 @@ Each pack defines:
 - **automation_level**: defaults and guardrails (plan-only vs PR automation)
 
 > [!CAUTION]
-> Never store secrets in pack files. Use `required_env` to declare env var **names** only — actual values come from `~/.config/dots-ai/env.d/`.
+> Never store secrets in pack files. Use `required_env` to declare env var **names** only — actual values come from `~/.config/agentic-workstation/env.d/`.
 
-## Recommended defaults for dots-ai
+## Recommended defaults for agentic-workstation
 
 - **Per-developer local runtime by default**: skills + optional worker/timer; developers opt into multi-agent runtime.
 - **Per-account separation by allowlists first**:
   - `allowed_paths` prevents cross-account access on a single machine.
-  - Credentials stay in `~/.config/dots-ai/env.d/*.env` and are scoped by naming convention.
+  - Credentials stay in `~/.config/agentic-workstation/env.d/*.env` and are scoped by naming convention.
 - **Escalation-first**: if context is ambiguous, ask; if credentials missing, record "skipped" and stop.
 
 ## LLM Provider Abstraction
@@ -71,7 +71,7 @@ Each pack defines:
 The runner includes a **provider-agnostic LLM layer** for intelligent plan generation:
 
 ```
-~/.local/share/dots-ai/dev-companion/runner/
+~/.local/share/agentic-workstation/dev-companion/runner/
   providers/
     base.py              # Abstract LLMProvider interface
     opencode_provider.py # OpenCode (big-pickle, free)

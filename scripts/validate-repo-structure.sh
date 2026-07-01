@@ -90,7 +90,7 @@ required_paths=(
   "home/dot_local/bin/executable_dots-devcompanion"
   "home/dot_local/bin/executable_dots-update-check"
   "home/dot_local/bin/executable_dots-sync-ai"
-  "home/dot_local/lib/dots-ai/easy-options/easyoptions.sh"
+  "home/dot_local/lib/agentic-workstation/easy-options/easyoptions.sh"
 
   # CI workflows and scripts
   ".github/workflows/release-ai-assets.yml"

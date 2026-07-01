@@ -25,9 +25,9 @@ Some integrations require explicit opt-in flags, such as Jira and Confluence ass
 ## Re-run the questionnaire
 
 ```bash
-cd /path/to/dots-ai
-chezmoi init --source=. -c ~/.config/chezmoi/dots-ai.toml
-chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml
+cd /path/to/agentic-workstation
+chezmoi init --source=. -c ~/.config/chezmoi/agentic-workstation.toml
+chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml
 ```
 
 ## See also

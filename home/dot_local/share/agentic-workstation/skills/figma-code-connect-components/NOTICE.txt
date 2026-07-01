@@ -1,0 +1,18 @@
+figma-code-connect-components (agentic-workstation distribution)
+====================================================
+
+This skill is derived from the OpenAI "skills" repository, originally licensed
+under the Apache License 2.0:
+
+  https://github.com/openai/skills (skills/.curated/figma-code-connect-components)
+
+Modifications by agentic-workstation S.A. for distribution via agentic-workstation:
+
+- Removed the `agents/openai.yaml` manifest in favor of the agentic-workstation
+  `skill.json` schema.
+- Updated cross-references to point to the opt-in `figma-use` pack (see
+  `docs/SKILLS.md`) since it is not bundled by default.
+- Dropped vendor logo assets (`assets/figma*`).
+
+`scripts/normalize_node_id.py` and `references/mapping-checklist.md` are
+preserved unmodified. Original LICENSE.txt is preserved in this directory.

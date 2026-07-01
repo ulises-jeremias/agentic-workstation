@@ -1,6 +1,6 @@
 # Technical Quickstart
 
-> From zero to a compliant dots-ai workstation in 5 steps.
+> From zero to a compliant agentic-workstation workstation in 5 steps.
 
 ---
 
@@ -16,14 +16,14 @@
 ## Step 1 — Clone the repository
 
 ```bash
-git clone git@github.com:ulises-jeremias/dots-ai.git
-cd dots-ai
+git clone git@github.com:ulises-jeremias/agentic-workstation.git
+cd agentic-workstation
 ```
 
 ## Step 2 — Initialize chezmoi
 
 ```bash
-chezmoi init --source=. -c ~/.config/chezmoi/dots-ai.toml
+chezmoi init --source=. -c ~/.config/chezmoi/agentic-workstation.toml
 ```
 
 chezmoi will prompt you for profile choices (technical, AI tools, language stacks). Answer based on your role.
@@ -31,7 +31,7 @@ chezmoi will prompt you for profile choices (technical, AI tools, language stack
 ## Step 3 — Preview changes
 
 ```bash
-chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml --dry-run
+chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml --dry-run
 ```
 
 Review what will be created or modified in your home directory.
@@ -39,7 +39,7 @@ Review what will be created or modified in your home directory.
 ## Step 4 — Apply
 
 ```bash
-chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml
+chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml
 ```
 
 This installs all selected tools, skills, agents, CLI helpers, and MCP templates.
@@ -59,7 +59,7 @@ All checks should pass with `COMPLIANT`.
 ## One-liner alternative
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/install.sh)
 ```
 
 ---
@@ -86,4 +86,4 @@ dots-doctor          # re-validate
 
 ---
 
-**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/README.md)
+**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/README.md)

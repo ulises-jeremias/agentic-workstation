@@ -12,9 +12,9 @@ set -eo pipefail
 ##     -h, --help              Show this help message.
 ##
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && pwd || true)"
-DOTS_AI_LIB_DIR="${DOTS_AI_LIB_DIR:-${DEFAULT_DOTS_AI_LIB_DIR:-$HOME/.local/lib/dots-ai}}"
-EASY_OPTIONS_LIB="${DOTS_AI_LIB_DIR}/easy-options/easyoptions.sh"
+DEFAULT_DOTS_WORKSTATION_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/agentic-workstation" 2>/dev/null && pwd || true)"
+DOTS_WORKSTATION_LIB_DIR="${DOTS_WORKSTATION_LIB_DIR:-${DEFAULT_DOTS_WORKSTATION_LIB_DIR:-$HOME/.local/lib/agentic-workstation}}"
+EASY_OPTIONS_LIB="${DOTS_WORKSTATION_LIB_DIR}/easy-options/easyoptions.sh"
 
 if [[ ! -f ${EASY_OPTIONS_LIB} ]]; then
   echo "[dots-sync-ai] Missing dependency: ${EASY_OPTIONS_LIB}" >&2
@@ -38,7 +38,7 @@ info() { printf '%b[dots-sync-ai]%b %s\n' "$c_blue" "$c_reset" "$*"; }
 fail() { printf '%b[dots-sync-ai]%b %s\n' "$c_red" "$c_reset" "$*"; }
 ok() { printf '%b[dots-sync-ai]%b %s\n' "$c_green" "$c_reset" "$*"; }
 
-base="${HOME}/.local/share/dots-ai"
+base="${HOME}/.local/share/agentic-workstation"
 info "validating AI assets at ${base}"
 for dir in prompts skills templates; do
   if [[ ! -d "${base}/${dir}" ]]; then

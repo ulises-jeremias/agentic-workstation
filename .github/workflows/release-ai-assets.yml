@@ -27,7 +27,7 @@ jobs:
           # Apply for real so .tmpl files get rendered (e.g. SKILL.md.tmpl → SKILL.md)
           "$HOME/.local/bin/chezmoi" --source=. apply --force
           echo "=== chezmoi apply complete — deployed files ==="
-          ls "$HOME/.local/share/dots-ai/skills/" | head -20
+          ls "$HOME/.local/share/agentic-workstation/skills/" | head -20
 
       - name: Verify target state (dump smoke)
         env:
@@ -52,7 +52,7 @@ jobs:
           version="${{ steps.version.outputs.version }}"
           cp scripts/install-skills.sh dist/install-skills.sh
           sed -i \
-            "s|RELEASE_BASE=\"https://github.com/\${GITHUB_REPO}/releases/latest/download\"|RELEASE_BASE=\"https://github.com/ulises-jeremias/dots-ai/releases/download/${version}\"|" \
+            "s|RELEASE_BASE=\"https://github.com/\${GITHUB_REPO}/releases/latest/download\"|RELEASE_BASE=\"https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}\"|" \
             dist/install-skills.sh
           chmod +x dist/install-skills.sh
           bash -n dist/install-skills.sh
@@ -64,7 +64,7 @@ jobs:
           version="${{ steps.version.outputs.version }}"
           cp scripts/install-skills.ps1 dist/install-skills.ps1
           sed -i \
-            "s|ReleaseBase = \"https://github.com/\$GithubRepo/releases/latest/download\"|ReleaseBase = \"https://github.com/ulises-jeremias/dots-ai/releases/download/${version}\"|" \
+            "s|ReleaseBase = \"https://github.com/\$GithubRepo/releases/latest/download\"|ReleaseBase = \"https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}\"|" \
             dist/install-skills.ps1
           echo "=== Built install-skills.ps1 (version: ${version}) ==="
           head -5 dist/install-skills.ps1
@@ -79,16 +79,16 @@ jobs:
       - name: Generate release notes
         run: |
           version="${{ steps.version.outputs.version }}"
-          SKILLS=$(ls home/dot_local/share/dots-ai/skills/ | sed 's/^/- /')
+          SKILLS=$(ls home/dot_local/share/agentic-workstation/skills/ | sed 's/^/- /')
 
           cat > dist/RELEASE_NOTES.md << NOTES
-          ## dots-ai AI Assets ${version}
+          ## agentic-workstation AI Assets ${version}
 
-          Pre-built AI skills, agents, and tools for the dots-ai users.
+          Pre-built AI skills, agents, and tools for the agentic-workstation users.
           Install on any machine — no chezmoi required.
 
           **Non-developers:** follow the step-by-step guide at
-          [\`docs/wiki/GUIDED_AI_INSTALL.md\`](https://github.com/ulises-jeremias/dots-ai/blob/${version}/docs/wiki/GUIDED_AI_INSTALL.md).
+          [\`docs/wiki/GUIDED_AI_INSTALL.md\`](https://github.com/ulises-jeremias/agentic-workstation/blob/${version}/docs/wiki/GUIDED_AI_INSTALL.md).
 
           ### Included Skills
 
@@ -100,31 +100,31 @@ jobs:
 
           Install everything:
           \`\`\`bash
-          curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/download/${version}/install-skills.sh | sh
+          curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}/install-skills.sh | sh
           \`\`\`
 
           Install for a specific tool:
           \`\`\`bash
           # Claude Code / Claude Desktop
-          curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/download/${version}/install-skills.sh | sh -s -- --tool claude
+          curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}/install-skills.sh | sh -s -- --tool claude
 
           # OpenCode
-          curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/download/${version}/install-skills.sh | sh -s -- --tool opencode
+          curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}/install-skills.sh | sh -s -- --tool opencode
 
           # Cursor
-          curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/download/${version}/install-skills.sh | sh -s -- --tool cursor
+          curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}/install-skills.sh | sh -s -- --tool cursor
 
           # Windsurf
-          curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/download/${version}/install-skills.sh | sh -s -- --tool windsurf
+          curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}/install-skills.sh | sh -s -- --tool windsurf
 
           # GitHub Copilot (VS Code / custom instructions file)
-          curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/download/${version}/install-skills.sh | sh -s -- --tool copilot
+          curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}/install-skills.sh | sh -s -- --tool copilot
           \`\`\`
 
           ### Quick Install (Windows — PowerShell)
 
           \`\`\`powershell
-          irm https://github.com/ulises-jeremias/dots-ai/releases/download/${version}/install-skills.ps1 | iex
+          irm https://github.com/ulises-jeremias/agentic-workstation/releases/download/${version}/install-skills.ps1 | iex
           \`\`\`
 
           ---
@@ -133,53 +133,53 @@ jobs:
 
           #### Claude Desktop (macOS / Linux / Windows)
 
-          Extract \`dots-ai-agents-claude-${version}.zip\` and copy:
+          Extract \`dots-workstation-agents-claude-${version}.zip\` and copy:
           - \`dot_claude/agents/\` → \`~/.claude/agents/\` (macOS/Linux)
           - \`dot_claude/agents/\` → \`%USERPROFILE%\\.claude\\agents\\\` (Windows)
 
           #### OpenCode
 
-          Extract \`dots-ai-agents-opencode-${version}.zip\` and copy:
+          Extract \`dots-workstation-agents-opencode-${version}.zip\` and copy:
           - \`dot_config/opencode/agents/\` → \`~/.config/opencode/agents/\`
           - \`dot_config/opencode/skills/\` → \`~/.config/opencode/skills/\`
 
           #### Cursor
 
-          Extract \`dots-ai-agents-cursor-${version}.zip\` and copy:
+          Extract \`dots-workstation-agents-cursor-${version}.zip\` and copy:
           - \`dot_cursor/rules/\` → \`~/.cursor/rules/\`
           - \`dot_cursor/skills/\` → \`~/.cursor/skills/\`
 
           #### Windsurf
 
-          Extract \`dots-ai-agents-windsurf-${version}.zip\` and copy:
+          Extract \`dots-workstation-agents-windsurf-${version}.zip\` and copy:
           - \`dot_windsurf/rules/\` → \`~/.windsurf/rules/\`
 
           #### GitHub Copilot
 
-          Extract \`dots-ai-agents-copilot-${version}.zip\` and copy:
+          Extract \`dots-workstation-agents-copilot-${version}.zip\` and copy:
           - \`dot_github/copilot-instructions.md\` → \`~/.github/copilot-instructions.md\` (macOS/Linux)
           - \`dot_github/copilot-instructions.md\` → \`%USERPROFILE%\\.github\\copilot-instructions.md\` (Windows)
 
           #### Skills only (any tool)
 
-          Extract \`dots-ai-skills-${version}.zip\` and copy the \`skills/\` directory:
-          - macOS/Linux: \`~/.local/share/dots-ai/skills/\`
-          - Windows: \`%USERPROFILE%\\.local\\share\\dots-ai\\skills\\\`
+          Extract \`dots-workstation-skills-${version}.zip\` and copy the \`skills/\` directory:
+          - macOS/Linux: \`~/.local/share/agentic-workstation/skills/\`
+          - Windows: \`%USERPROFILE%\\.local\\share\\agentic-workstation\\skills\\\`
 
           ---
 
           ### Full Workstation Setup
 
-          For a complete dots-ai workstation setup (toolchain + AI agents):
+          For a complete agentic-workstation workstation setup (toolchain + AI agents):
 
           \`\`\`bash
           # macOS / Linux / WSL2
-          bash <(curl -fsSL https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/install.sh)
+          bash <(curl -fsSL https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/install.sh)
           \`\`\`
 
           \`\`\`powershell
           # Windows (auto-detects WSL2)
-          irm https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/install.ps1 | iex
+          irm https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/install.ps1 | iex
           \`\`\`
 
           ---

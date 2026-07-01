@@ -11,12 +11,12 @@ Use the Figma MCP template plus the bundled Figma skill family.
 ## Setup
 
 ```bash
-mkdir -p ~/.config/dots-ai/env.d
-cat >> ~/.config/dots-ai/env.d/figma.env <<'EOF'
+mkdir -p ~/.config/agentic-workstation/env.d
+cat >> ~/.config/agentic-workstation/env.d/figma.env <<'EOF'
 export FIGMA_OAUTH_TOKEN="<paste-token-here>"
 export FIGMA_REGION="us-east-1"
 EOF
-chmod 600 ~/.config/dots-ai/env.d/figma.env
+chmod 600 ~/.config/agentic-workstation/env.d/figma.env
 ```
 
 ## Register the MCP server

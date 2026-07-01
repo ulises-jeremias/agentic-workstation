@@ -10,7 +10,7 @@ lib/schemas/skill-md-frontmatter.schema.json.
 
 Usage:
     python3 scripts/validate-skill-frontmatter.py
-    python3 scripts/validate-skill-frontmatter.py --skill dots-ai-assistant
+    python3 scripts/validate-skill-frontmatter.py --skill dots-workstation-assistant
 """
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ except ImportError:
     _SCHEMA = False
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills"
+SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills"
 SCHEMA_PATH = REPO_ROOT / "lib" / "schemas" / "skill-md-frontmatter.schema.json"
 
 

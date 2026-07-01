@@ -18,7 +18,7 @@ The Dev Companion is a background job system that uses AI models to generate int
 4. A plan is generated and written as artifacts (or a `policy_violation` artifact if strict mode blocks the run)
 
 > [!IMPORTANT]
-> By default, the runner falls back to the first available provider (OpenCode → Ollama → Anthropic → OpenAI). For client engagements that mandate a single AI account, configure an **allowlist + strict** policy and verify with `dots-devcompanion llm-status`. See [`DEV_COMPANION_LLM.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/DEV_COMPANION_LLM.md) for the full reference.
+> By default, the runner falls back to the first available provider (OpenCode → Ollama → Anthropic → OpenAI). For client engagements that mandate a single AI account, configure an **allowlist + strict** policy and verify with `dots-devcompanion llm-status`. See [`DEV_COMPANION_LLM.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/DEV_COMPANION_LLM.md) for the full reference.
 
 ---
 
@@ -26,8 +26,8 @@ The Dev Companion is a background job system that uses AI models to generate int
 
 | Layer | Skill | Purpose |
 |-------|-------|---------|
-| **L1** | `dots-ai-assistant` | Repository inspection and discovery |
-| **L2** | `dots-ai-dev-companion` | General delivery companion |
+| **L1** | `dots-workstation-assistant` | Repository inspection and discovery |
+| **L2** | `dots-workstation-dev-companion` | General delivery companion |
 | **L3** | Workspace pack overlay | Client/account context |
 
 L2 and L3 are **independent** — overlays are loaded from the user workspace (`~/.ai-workspace/packs/`).
@@ -53,8 +53,8 @@ When a job completes, the runner produces:
 
 - `plan.md` — LLM-generated plan (or skeleton plan when LLM is disabled / policy blocks)
 - `result.json` — metadata (provider, model, duration, **`llm_policy_applied`**)
-- `~/.local/share/dots-ai/dev-companion/logs/llm-audit.log` — single-line JSON audit per run (metadata only, no prompts/output)
+- `~/.local/share/agentic-workstation/dev-companion/logs/llm-audit.log` — single-line JSON audit per run (metadata only, no prompts/output)
 
 ---
 
-**Canonical doc:** [`docs/DEV_COMPANION.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/DEV_COMPANION.md)
+**Canonical doc:** [`docs/DEV_COMPANION.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/DEV_COMPANION.md)

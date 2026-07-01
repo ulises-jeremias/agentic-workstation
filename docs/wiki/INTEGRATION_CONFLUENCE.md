@@ -11,8 +11,8 @@ Use the Confluence assistant skill pack plus local env files. Confluence does no
 ## Setup
 
 ```bash
-cp ~/.config/dots-ai/env.d/confluence.env.example ~/.config/dots-ai/env.d/confluence.env
-$EDITOR ~/.config/dots-ai/env.d/confluence.env
+cp ~/.config/agentic-workstation/env.d/confluence.env.example ~/.config/agentic-workstation/env.d/confluence.env
+$EDITOR ~/.config/agentic-workstation/env.d/confluence.env
 ```
 
 Fill in the same Atlassian site, email, and token used for Jira.

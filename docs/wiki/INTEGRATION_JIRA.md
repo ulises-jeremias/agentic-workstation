@@ -11,8 +11,8 @@ Use the Jira assistant skill pack plus local env files. Jira does not use an MCP
 ## Setup
 
 ```bash
-cp ~/.config/dots-ai/env.d/jira.env.example ~/.config/dots-ai/env.d/jira.env
-$EDITOR ~/.config/dots-ai/env.d/jira.env
+cp ~/.config/agentic-workstation/env.d/jira.env.example ~/.config/agentic-workstation/env.d/jira.env
+$EDITOR ~/.config/agentic-workstation/env.d/jira.env
 ```
 
 Fill in your Atlassian site URL, email, and API token.

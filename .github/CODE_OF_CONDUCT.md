@@ -17,4 +17,4 @@ This code of conduct applies to repository discussions, issues, pull requests, a
 
 ## Reporting
 
-Report unacceptable behavior through dots-ai channels to the Technology leadership team.
+Report unacceptable behavior through agentic-workstation channels to the Technology leadership team.
