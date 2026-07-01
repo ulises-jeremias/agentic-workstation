@@ -3,18 +3,18 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="static/hero-banner.svg">
   <source media="(prefers-color-scheme: light)" srcset="static/hero-banner.svg">
-  <img alt="dots-ai" src="static/hero-banner.svg" width="800">
+  <img alt="agentic-workstation" src="static/hero-banner.svg" width="800">
 </picture>
 
-<h1>dots-ai</h1>
+<h1>agentic-workstation</h1>
 <h3>Agentic Workstation Baseline — chezmoi-managed skills, agents, MCP, and loops for AI-assisted delivery</h3>
 
 <p><strong>Chezmoi-managed • Skills-first • Multi-tool • Cross-platform</strong></p>
 
-[Wiki](https://github.com/ulises-jeremias/dots-ai/wiki) .
-[Quick Start](https://github.com/ulises-jeremias/dots-ai/wiki/TECHNICAL_QUICKSTART) .
-[Guided AI Install](https://github.com/ulises-jeremias/dots-ai/wiki/GUIDED_AI_INSTALL) .
-[Integrations](https://github.com/ulises-jeremias/dots-ai/wiki/INTEGRATIONS) .
+[Wiki](https://github.com/ulises-jeremias/agentic-workstation/wiki) .
+[Quick Start](https://github.com/ulises-jeremias/agentic-workstation/wiki/TECHNICAL_QUICKSTART) .
+[Guided AI Install](https://github.com/ulises-jeremias/agentic-workstation/wiki/GUIDED_AI_INSTALL) .
+[Integrations](https://github.com/ulises-jeremias/agentic-workstation/wiki/INTEGRATIONS) .
 [Technical Docs](docs/) .
 [Contributing](CONTRIBUTING.md)
 
@@ -22,24 +22,24 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![chezmoi](https://img.shields.io/badge/chezmoi-managed-blue?style=for-the-badge&logo=chezmoi&logoColor=white)](https://www.chezmoi.io/)
-[![dots-ai](https://img.shields.io/badge/dots--ai-public-7c3aed?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ulises-jeremias)
+[![agentic-workstation](https://img.shields.io/badge/dots--ai-public-7c3aed?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ulises-jeremias)
 
 <br>
 
-[![Validate Workstation](https://github.com/ulises-jeremias/dots-ai/actions/workflows/validate-workstation.yml/badge.svg)](https://github.com/ulises-jeremias/dots-ai/actions/workflows/validate-workstation.yml)
-[![Devcontainer Chezmoi Validate](https://github.com/ulises-jeremias/dots-ai/actions/workflows/devcontainer-chezmoi-validate.yml/badge.svg)](https://github.com/ulises-jeremias/dots-ai/actions/workflows/devcontainer-chezmoi-validate.yml)
-[![Pre-commit](https://github.com/ulises-jeremias/dots-ai/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/ulises-jeremias/dots-ai/actions/workflows/pre-commit.yml)
-[![MegaLinter v9](https://github.com/ulises-jeremias/dots-ai/actions/workflows/megalinter-v9.yml/badge.svg)](https://github.com/ulises-jeremias/dots-ai/actions/workflows/megalinter-v9.yml)
-[![Security Scan](https://github.com/ulises-jeremias/dots-ai/actions/workflows/security-scan.yml/badge.svg)](https://github.com/ulises-jeremias/dots-ai/actions/workflows/security-scan.yml)
-[![Release AI Assets](https://github.com/ulises-jeremias/dots-ai/actions/workflows/release-ai-assets.yml/badge.svg)](https://github.com/ulises-jeremias/dots-ai/actions/workflows/release-ai-assets.yml)
+[![Validate Workstation](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/validate-workstation.yml/badge.svg)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/validate-workstation.yml)
+[![Devcontainer Chezmoi Validate](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/devcontainer-chezmoi-validate.yml/badge.svg)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/devcontainer-chezmoi-validate.yml)
+[![Pre-commit](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/pre-commit.yml)
+[![MegaLinter v9](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/megalinter-v9.yml/badge.svg)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/megalinter-v9.yml)
+[![Security Scan](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/security-scan.yml/badge.svg)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/security-scan.yml)
+[![Release AI Assets](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/release-ai-assets.yml/badge.svg)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/release-ai-assets.yml)
 
 </div>
 
 ---
 
-## What Is dots-ai?
+## What Is agentic-workstation?
 
-`dots-ai` is an agentic workstation baseline for AI-assisted software delivery. It installs a chezmoi-managed layer of AI skills, agents, MCP templates, CLI helpers, and dev companion tooling across Linux, macOS, and Windows.
+`agentic-workstation` is an agentic workstation baseline for AI-assisted software delivery. It installs a chezmoi-managed layer of AI skills, agents, MCP templates, CLI helpers, and dev companion tooling across Linux, macOS, and Windows.
 
 The wiki is the source of truth for setup and day-to-day usage. The repository `docs/` directory is for technical references, architecture notes, maintainer contracts, and ADRs.
 
@@ -57,7 +57,7 @@ The wiki is the source of truth for setup and day-to-day usage. The repository `
 Start from the wiki unless you are maintaining the repository itself:
 
 ```bash
-chezmoi init --apply ulises-jeremias/dots-ai
+chezmoi init --apply ulises-jeremias/agentic-workstation
 ```
 
 Need only the AI layer? Use the guided flow:
@@ -66,19 +66,19 @@ Need only the AI layer? Use the guided flow:
 bash scripts/install-skills.sh
 ```
 
-See [Wiki Quick Start](https://github.com/ulises-jeremias/dots-ai/wiki/TECHNICAL_QUICKSTART) and [Guided AI Install](https://github.com/ulises-jeremias/dots-ai/wiki/GUIDED_AI_INSTALL) for supported paths and prerequisites.
+See [Wiki Quick Start](https://github.com/ulises-jeremias/agentic-workstation/wiki/TECHNICAL_QUICKSTART) and [Guided AI Install](https://github.com/ulises-jeremias/agentic-workstation/wiki/GUIDED_AI_INSTALL) for supported paths and prerequisites.
 
 ## Start Here
 
 | Need | Go to |
 |---|---|
-| Install the workstation | [Wiki Quick Start](https://github.com/ulises-jeremias/dots-ai/wiki/TECHNICAL_QUICKSTART) |
-| Install only AI skills and agents | [Guided AI Install](https://github.com/ulises-jeremias/dots-ai/wiki/GUIDED_AI_INSTALL) |
-| Choose profiles or answer prompts | [Profiles](https://github.com/ulises-jeremias/dots-ai/wiki/PROFILES) and [Questionnaire](https://github.com/ulises-jeremias/dots-ai/wiki/QUESTIONNAIRE) |
-| Configure credentials | [Credentials](https://github.com/ulises-jeremias/dots-ai/wiki/CREDENTIALS) |
-| Configure ClickUp, Jira, Figma, Slack, etc. | [Integrations](https://github.com/ulises-jeremias/dots-ai/wiki/INTEGRATIONS) |
-| Use `dots-*` commands | [CLI](https://github.com/ulises-jeremias/dots-ai/wiki/CLI) |
-| Troubleshoot setup | [Troubleshooting](https://github.com/ulises-jeremias/dots-ai/wiki/TROUBLESHOOTING) |
+| Install the workstation | [Wiki Quick Start](https://github.com/ulises-jeremias/agentic-workstation/wiki/TECHNICAL_QUICKSTART) |
+| Install only AI skills and agents | [Guided AI Install](https://github.com/ulises-jeremias/agentic-workstation/wiki/GUIDED_AI_INSTALL) |
+| Choose profiles or answer prompts | [Profiles](https://github.com/ulises-jeremias/agentic-workstation/wiki/PROFILES) and [Questionnaire](https://github.com/ulises-jeremias/agentic-workstation/wiki/QUESTIONNAIRE) |
+| Configure credentials | [Credentials](https://github.com/ulises-jeremias/agentic-workstation/wiki/CREDENTIALS) |
+| Configure ClickUp, Jira, Figma, Slack, etc. | [Integrations](https://github.com/ulises-jeremias/agentic-workstation/wiki/INTEGRATIONS) |
+| Use `dots-*` commands | [CLI](https://github.com/ulises-jeremias/agentic-workstation/wiki/CLI) |
+| Troubleshoot setup | [Troubleshooting](https://github.com/ulises-jeremias/agentic-workstation/wiki/TROUBLESHOOTING) |
 | Understand architecture | [Technical Docs](docs/) |
 
 ## What It Provides
@@ -89,7 +89,7 @@ See [Wiki Quick Start](https://github.com/ulises-jeremias/dots-ai/wiki/TECHNICAL
 | AI layer | Shared skills and agents for supported AI coding tools |
 | Integrations | Guided setup for GitHub, GitLab, ClickUp, Jira, Confluence, Slack, Figma, Linear, and Notion |
 | CLI helpers | `dots-*` commands for validation, skills, updates, env loading, and dev companion workflows |
-| MCP templates | Provider templates under `~/.local/share/dots-ai/mcp/` after apply |
+| MCP templates | Provider templates under `~/.local/share/agentic-workstation/mcp/` after apply |
 | Technical governance | Architecture docs, ADRs, validation scripts, and CI checks |
 
 ## Related Project
@@ -134,4 +134,4 @@ git diff --check
 
 ## Security
 
-Never commit credentials, tokens, or private keys. Use the wiki credentials flow for local secrets: [Credentials](https://github.com/ulises-jeremias/dots-ai/wiki/CREDENTIALS).
+Never commit credentials, tokens, or private keys. Use the wiki credentials flow for local secrets: [Credentials](https://github.com/ulises-jeremias/agentic-workstation/wiki/CREDENTIALS).

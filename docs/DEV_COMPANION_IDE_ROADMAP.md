@@ -10,7 +10,7 @@
 ## Why we need this doc
 
 The dev-companion runner (`dots-devcompanion run-once`, `bin/devcompanion run-once`) calls an LLM **headlessly** through provider classes in
-[`runner/providers/`](../home/dot_local/share/dots-ai/dev-companion/runner/providers/).
+[`runner/providers/`](../home/dot_local/share/agentic-workstation/dev-companion/runner/providers/).
 Today the only viable headless providers are:
 
 | Provider | Headless transport |
@@ -20,7 +20,7 @@ Today the only viable headless providers are:
 | Anthropic | direct REST against `api.anthropic.com` |
 | OpenAI | direct REST against `api.openai.com` |
 
-There is **no stable, dots-ai-supported headless equivalent for Cursor or
+There is **no stable, dots-workstation-supported headless equivalent for Cursor or
 Copilot today** — both are designed around an interactive IDE session. That
 is fine for users, but it means the runner cannot honor "only Cursor" or
 "only Copilot" the same way it honors "only Anthropic via API".
@@ -38,11 +38,11 @@ Copilot, Claude IDE, JetBrains AI, ...) and forbids headless API calls.
 **How:**
 
 1. Lock the queue out of LLM use. In the engagement env file
-   (`~/.config/dots-ai/env.d/<client>.env`):
+   (`~/.config/agentic-workstation/env.d/<client>.env`):
    ```bash
-   export DOTS_AI_DEVCOMPANION_LLM_ALLOWLIST=""        # nothing allowed
-   export DOTS_AI_DEVCOMPANION_LLM_DENYLIST="opencode,ollama,anthropic,openai"
-   export DOTS_AI_DEVCOMPANION_LLM_STRICT="1"
+   export DOTS_WORKSTATION_DEVCOMPANION_LLM_ALLOWLIST=""        # nothing allowed
+   export DOTS_WORKSTATION_DEVCOMPANION_LLM_DENYLIST="opencode,ollama,anthropic,openai"
+   export DOTS_WORKSTATION_DEVCOMPANION_LLM_STRICT="1"
    ```
    With the empty allowlist plus strict mode, any attempt to run an LLM job
    produces a `policy_violation` artifact (exit code `2`) — this is the
@@ -88,7 +88,7 @@ before it lands in `runner/providers/`.
    **disqualified**.
 
 2. **Pinned versions.** The provider must declare the minimum vendor CLI
-   version in its `is_available()` check (parse `--version`). dots-ai will
+   version in its `is_available()` check (parse `--version`). agentic-workstation will
    not silently use an upgraded CLI whose interface changed.
 
 3. **Auditable identity.** The CLI must use the user's logged-in vendor
@@ -105,7 +105,7 @@ before it lands in `runner/providers/`.
    `python3 -m unittest tests.test_policy tests.test_dispatcher tests.test_<new>`.
 
 6. **Policy registration.** Add the provider name to `KNOWN_PROVIDERS` in
-   [`policy.py`](../home/dot_local/share/dots-ai/dev-companion/runner/policy.py)
+   [`policy.py`](../home/dot_local/share/agentic-workstation/dev-companion/runner/policy.py)
    and document it in [`DEV_COMPANION_LLM.md`](DEV_COMPANION_LLM.md).
 
 7. **Default off.** New IDE-bound providers ship with `is_available()`
@@ -115,7 +115,7 @@ before it lands in `runner/providers/`.
 
 ### Why we don't ship one today
 
-- **Cursor agent CLI** is evolving; no dots-ai-internal contract pins its
+- **Cursor agent CLI** is evolving; no dots-workstation-internal contract pins its
   version, JSON shape, or auth model.
 - **GitHub Copilot CLI** is interactive-first. `gh copilot suggest` does
   not currently produce a deterministic, machine-parseable plan suitable for
@@ -134,11 +134,11 @@ non-interactive surface.
 repo content) happen on infrastructure they control.
 
 **How:** ship the runner (and the worker) to a VM the client provisions in
-their cloud, configure dots-ai-side `bin/devcompanion` to delegate to it
+their cloud, configure dots-workstation-side `bin/devcompanion` to delegate to it
 (SSH or a queue gateway), and lock down the local runner with strict
 allowlist as in Mode A.
 
-This is engagement infrastructure, not a dots-ai feature. It does not
+This is engagement infrastructure, not a agentic-workstation feature. It does not
 require code changes; it does require an explicit agreement, a runbook in
 the client's pack, and an extra layer in `dots-doctor` that warns when both
 the local runner **and** the remote runner are reachable (we don't want a
@@ -161,11 +161,11 @@ job to run in two places).
 
 ## Operational checklist (before queuing client work)
 
-- [ ] Engagement env file under `~/.config/dots-ai/env.d/<client>.env` exists and exports the right `DOTS_AI_DEVCOMPANION_LLM_*` and credentials.
+- [ ] Engagement env file under `~/.config/agentic-workstation/env.d/<client>.env` exists and exports the right `DOTS_WORKSTATION_DEVCOMPANION_LLM_*` and credentials.
 - [ ] `dots-devcompanion llm-status` reports the expected provider (or "would run: NONE" with strict + Mode A).
 - [ ] If using Mode A: every queue command includes `--no-llm` or the template ships `"llm": { "enabled": false }`.
-- [ ] `~/.local/share/dots-ai/dev-companion/logs/llm-audit.log` is rotated/archived per engagement retention policy (the runner only appends; rotation is operational).
-- [ ] Workspace is wired to the workstation runner: `AI_WORKSPACE_RUNNER_DIR=$HOME/.local/share/dots-ai/dev-companion/runner`.
+- [ ] `~/.local/share/agentic-workstation/dev-companion/logs/llm-audit.log` is rotated/archived per engagement retention policy (the runner only appends; rotation is operational).
+- [ ] Workspace is wired to the workstation runner: `AI_WORKSPACE_RUNNER_DIR=$HOME/.local/share/agentic-workstation/dev-companion/runner`.
 
 ---
 
@@ -174,4 +174,4 @@ job to run in two places).
 - [`DEV_COMPANION_LLM.md`](DEV_COMPANION_LLM.md) — policy reference, env vars, file format
 - [`DEV_COMPANION.md`](DEV_COMPANION.md) — runner overview
 - [`wiki/CLI.md`](wiki/CLI.md) — `dots-devcompanion` command list
-- [`home/dot_local/share/dots-ai/skills/dots-ai-dev-companion/references/LOOP_GUARDRAILS.md`](../home/dot_local/share/dots-ai/skills/dots-ai-dev-companion/references/LOOP_GUARDRAILS.md) — autonomous loop guardrails
+- [`home/dot_local/share/agentic-workstation/skills/dots-workstation-dev-companion/references/LOOP_GUARDRAILS.md`](../home/dot_local/share/agentic-workstation/skills/dots-workstation-dev-companion/references/LOOP_GUARDRAILS.md) — autonomous loop guardrails

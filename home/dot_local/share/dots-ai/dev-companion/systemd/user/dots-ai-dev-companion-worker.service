@@ -1,5 +1,0 @@
-[Unit]
-Description=dots-ai dev companion queue worker (oneshot)
-[Service]
-Type=oneshot
-ExecStart=%h/.local/share/dots-ai/dev-companion/worker.sh

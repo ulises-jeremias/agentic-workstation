@@ -3,7 +3,7 @@ set -eo pipefail
 
 ## dots-bootstrap
 ##
-## Bootstrap helper for the dots-ai workstation baseline.
+## Bootstrap helper for the agentic-workstation workstation baseline.
 ##
 ## Usage:
 ##     @script.name [option]
@@ -13,9 +13,9 @@ set -eo pipefail
 ##         --apply              Apply changes with chezmoi.
 ##
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && pwd || true)"
-DOTS_AI_LIB_DIR="${DOTS_AI_LIB_DIR:-${DEFAULT_DOTS_AI_LIB_DIR:-$HOME/.local/lib/dots-ai}}"
-EASY_OPTIONS_LIB="${DOTS_AI_LIB_DIR}/easy-options/easyoptions.sh"
+DEFAULT_DOTS_WORKSTATION_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/agentic-workstation" 2>/dev/null && pwd || true)"
+DOTS_WORKSTATION_LIB_DIR="${DOTS_WORKSTATION_LIB_DIR:-${DEFAULT_DOTS_WORKSTATION_LIB_DIR:-$HOME/.local/lib/agentic-workstation}}"
+EASY_OPTIONS_LIB="${DOTS_WORKSTATION_LIB_DIR}/easy-options/easyoptions.sh"
 
 if [[ ! -f ${EASY_OPTIONS_LIB} ]]; then
   echo "[dots-bootstrap] Missing dependency: ${EASY_OPTIONS_LIB}" >&2
@@ -36,14 +36,14 @@ fi
 info() { printf '%b[dots-bootstrap]%b %s\n' "$c_blue" "$c_reset" "$*"; }
 ok() { printf '%b[dots-bootstrap]%b %s\n' "$c_green" "$c_reset" "$*"; }
 
-info "dots-ai bootstrap"
-info "1) chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml --dry-run"
-info "2) chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml"
+info "agentic-workstation bootstrap"
+info "1) chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml --dry-run"
+info "2) chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml"
 info "3) dots-doctor"
 
 if [[ -n ${apply:-} ]]; then
-  ok "running: chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml"
-  exec chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml
+  ok "running: chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml"
+  exec chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml
 fi
 
 ok "dry-run plan displayed (pass --apply to execute)"

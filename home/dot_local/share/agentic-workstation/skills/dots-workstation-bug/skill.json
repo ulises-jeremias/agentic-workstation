@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/lib/schemas/skill.schema.json",
+  "name": "dots-workstation-bug",
+  "version": "1.0.0",
+  "description": "WHAT: Draft and review bugs using the agentic-workstation Bug Template; classifies whether an issue should be escalated to incident based on production/user impact.",
+  "source": "bundled",
+  "author": "agentic-workstation",
+  "tags": [
+    "agentic-workstation",
+    "bug",
+    "incident-triage",
+    "work-item",
+    "clickup"
+  ],
+  "compatibility": {
+    "universal": {
+      "supported": true
+    },
+    "claude-code": {
+      "supported": true
+    },
+    "pi": {
+      "supported": true
+    },
+    "windsurf": {
+      "supported": true
+    },
+    "opencode": {
+      "supported": false
+    },
+    "cursor": {
+      "supported": false
+    },
+    "copilot-cli": {
+      "supported": false
+    }
+  }
+}

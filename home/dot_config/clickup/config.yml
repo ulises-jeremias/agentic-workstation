@@ -4,7 +4,7 @@
 
 prompt: "enabled"
 
-# Per-directory space overrides — useful when working across multiple dots-ai projects.
+# Per-directory space overrides — useful when working across multiple agentic-workstation projects.
 # Each project directory can point to a different ClickUp space.
 # Uncomment and fill in your project paths and space IDs:
 #

@@ -9,29 +9,29 @@
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-assistant` | dots-ai Assistant: inspect any repo in order README→docs→AGENTS→CONTRI | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-workspace-knowledge-sync` | Syncs knowledge to ai-workspace knowledge base. Auto-triggers from dot | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-assistant` | agentic-workstation Assistant: inspect any repo in order README→docs→AGENTS→CONTRI | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-harness-knowledge-sync` | Syncs knowledge to ai-workspace knowledge base. Auto-triggers from dot | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Workflow
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-workflow-client-bootstrap` | WHAT: Interactive interview that stores client delivery context into t | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-workflow-generic-project` | WHAT: Generic client delivery phases, gates, English ticket traceabili | `universal`, `claude-code`, `windsurf`, `pi` |
-| `workflow-client-bootstrap` | DEPRECATED alias. Use dots-ai-workflow-client-bootstrap instead. | `universal`, `claude-code`, `windsurf`, `pi` |
-| `workflow-generic-project` | DEPRECATED alias. Use dots-ai-workflow-generic-project instead. | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-workflow-client-bootstrap` | WHAT: Interactive interview that stores client delivery context into t | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-workflow-generic-project` | WHAT: Generic client delivery phases, gates, English ticket traceabili | `universal`, `claude-code`, `windsurf`, `pi` |
+| `workflow-client-bootstrap` | DEPRECATED alias. Use dots-workstation-workflow-client-bootstrap instead. | `universal`, `claude-code`, `windsurf`, `pi` |
+| `workflow-generic-project` | DEPRECATED alias. Use dots-workstation-workflow-generic-project instead. | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Companion
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-dev-companion` | WHAT: general dots-ai dev companion layer; delegates to dots-ai-assist | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-dev-companion` | WHAT: general agentic-workstation dev companion layer; delegates to dots-workstation-assist | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Other
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-loop-runner` | Execute and manage loop engineering primitives from an AI coding sessi | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
+| `dots-workstation-loop-runner` | Execute and manage loop engineering primitives from an AI coding sessi | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
 | `gh-contribution-planner` | Daily GitHub contribution planner — analyzes the gh-logged-in user's n | `claude-code`, `opencode`, `cursor`, `windsurf`, `copilot-cli`, `pi` |
 
 ## Clickup
@@ -51,48 +51,48 @@
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-adr` | WHAT: Architecture Decision Records per the dots-ai ADR workflow in Cl | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-bug` | WHAT: Draft and review bugs using the dots-ai Bug Template; classifies | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-development-workflow` | WHAT: Default development workflow, task lifecycle, DoR, DoD, validati | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-epic` | WHAT: Draft and review epics using the dots-ai Best Practices Epic Tem | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-meeting-minutes` | WHAT: Create structured meeting minutes from notes or transcripts usin | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-output-handshake` | WHAT: Ask where the final artifact goes and confirm human review befor | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-planning` | WHAT: Planning, estimation, task breakdown, and iteration capacity fal | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-pr-fallback` | WHAT: Default PR/MR body structure when the repo has no template; use  | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-prd` | WHAT: Draft and review a PRD following the dots-ai ClickUp template; b | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-spike` | WHAT: Produce spike and research findings using the dots-ai spike temp | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-task` | WHAT: Draft and review technical tasks using the dots-ai Best Practice | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-trd` | WHAT: Draft and review a TRD from the dots-ai ClickUp template, aligne | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-user-story` | WHAT: Draft and review user stories using the dots-ai task template pl | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-work-item` | WHAT: Router for creating and refining epics, user stories, tasks, bug | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-adr` | WHAT: Architecture Decision Records per the agentic-workstation ADR workflow in Cl | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-bug` | WHAT: Draft and review bugs using the agentic-workstation Bug Template; classifies | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-development-workflow` | WHAT: Default development workflow, task lifecycle, DoR, DoD, validati | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-epic` | WHAT: Draft and review epics using the agentic-workstation Best Practices Epic Tem | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-meeting-minutes` | WHAT: Create structured meeting minutes from notes or transcripts usin | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-output-handshake` | WHAT: Ask where the final artifact goes and confirm human review befor | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-planning` | WHAT: Planning, estimation, task breakdown, and iteration capacity fal | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-pr-fallback` | WHAT: Default PR/MR body structure when the repo has no template; use  | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-prd` | WHAT: Draft and review a PRD following the agentic-workstation ClickUp template; b | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-spike` | WHAT: Produce spike and research findings using the agentic-workstation spike temp | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-task` | WHAT: Draft and review technical tasks using the agentic-workstation Best Practice | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-trd` | WHAT: Draft and review a TRD from the agentic-workstation ClickUp template, aligne | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-user-story` | WHAT: Draft and review user stories using the agentic-workstation task template pl | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-work-item` | WHAT: Router for creating and refining epics, user stories, tasks, bug | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Governance
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-agreement` | WHAT: Capture explicit agreements, terms, parties involved, dates, val | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-decision-log` | WHAT: Capture lightweight project, product, or operational decisions t | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-agreement` | WHAT: Capture explicit agreements, terms, parties involved, dates, val | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-decision-log` | WHAT: Capture lightweight project, product, or operational decisions t | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Operations
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-incident` | WHAT: Draft and review incident reports and RCA notes using dots-ai In | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-incident` | WHAT: Draft and review incident reports and RCA notes using agentic-workstation In | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Assessment
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-management-unit-assessment` | WHAT: Evidence-based management unit assessment for governance, delive | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-project-assessment` | WHAT: Interactive project assessment router for evidence-based managem | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-project-assessment-evidence` | WHAT: Interactive evidence intake for project assessments, including s | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-ai-technical-unit-assessment` | WHAT: Evidence-based technical unit assessment for frontend, backend,  | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-management-unit-assessment` | WHAT: Evidence-based management unit assessment for governance, delive | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-project-assessment` | WHAT: Interactive project assessment router for evidence-based managem | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-project-assessment-evidence` | WHAT: Interactive evidence intake for project assessments, including s | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-technical-unit-assessment` | WHAT: Evidence-based technical unit assessment for frontend, backend,  | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Workstation
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-ai-workstation-triage` | Workstation health triage: validate tooling, directory layout, and run | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-triage` | Workstation health triage: validate tooling, directory layout, and run | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Figma
 

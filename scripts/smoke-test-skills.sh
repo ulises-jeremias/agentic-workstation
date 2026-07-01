@@ -13,7 +13,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SKILLS_DIR="${REPO_ROOT}/home/dot_local/share/dots-ai/skills"
+SKILLS_DIR="${REPO_ROOT}/home/dot_local/share/agentic-workstation/skills"
 
 _c() { [[ -t 1 ]] && printf '\033[%sm%s\033[0m' "$1" "$2" || printf '%s' "$2"; }
 ok() {

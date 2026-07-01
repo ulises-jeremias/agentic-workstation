@@ -22,7 +22,7 @@ dots-doctor
 Re-run the latest release installer for your platform:
 
 ```bash
-curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/latest/download/install-skills.sh | sh
+curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | sh
 ```
 
 ## Before opening a support issue

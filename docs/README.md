@@ -1,6 +1,6 @@
 # Documentation Index
 
-> Technical documentation map for the dots-ai platform.
+> Technical documentation map for the agentic-workstation platform.
 
 ---
 

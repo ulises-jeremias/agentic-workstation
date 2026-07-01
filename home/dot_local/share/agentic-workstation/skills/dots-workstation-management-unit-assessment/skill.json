@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/lib/schemas/skill.schema.json",
+  "name": "dots-workstation-management-unit-assessment",
+  "version": "1.0.0",
+  "description": "WHAT: Evidence-based management unit assessment for governance, delivery, collaboration, culture, and AI-native management readiness indicators.",
+  "source": "bundled",
+  "author": "agentic-workstation",
+  "tags": [
+    "agentic-workstation",
+    "management-assessment",
+    "project-assessment",
+    "quality-indicators",
+    "governance",
+    "delivery"
+  ],
+  "compatibility": {
+    "universal": {
+      "supported": true
+    },
+    "claude-code": {
+      "supported": true
+    },
+    "pi": {
+      "supported": true
+    },
+    "windsurf": {
+      "supported": true
+    },
+    "opencode": {
+      "supported": false
+    },
+    "cursor": {
+      "supported": false
+    },
+    "copilot-cli": {
+      "supported": false
+    }
+  }
+}

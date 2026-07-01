@@ -6,7 +6,7 @@
 
 ## Overview
 
-`scripts/estimate-cost.py` reads a [trace.jsonl](../home/dot_local/share/dots-ai/dev-companion/runner/README.md) file produced by the dev-companion runner or the `ai-workspace` loop engine and calculates the total token usage and estimated cost based on model-specific pricing.
+`scripts/estimate-cost.py` reads a [trace.jsonl](../home/dot_local/share/agentic-workstation/dev-companion/runner/README.md) file produced by the dev-companion runner or the `ai-workspace` loop engine and calculates the total token usage and estimated cost based on model-specific pricing.
 
 ---
 

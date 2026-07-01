@@ -1,6 +1,6 @@
 # Windows Setup
 
-> Installing the dots-ai workstation on Windows via WSL2, Git Bash, or skills-only mode.
+> Installing the agentic-workstation workstation on Windows via WSL2, Git Bash, or skills-only mode.
 
 ---
 
@@ -18,7 +18,7 @@
 
 ```powershell
 # In PowerShell — auto-detects WSL2
-irm https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/install.ps1 | iex
 ```
 
 This installs everything inside your WSL2 Ubuntu environment.
@@ -30,7 +30,7 @@ This installs everything inside your WSL2 Ubuntu environment.
 If you prefer Git Bash without WSL2:
 
 ```powershell
-irm https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/install.ps1 | iex
 # Choose "Git Bash" when prompted
 ```
 
@@ -43,7 +43,7 @@ Limited to `dots-*` CLI scripts — no full chezmoi source state.
 For AI skills and agents without the full toolchain:
 
 ```powershell
-irm https://github.com/ulises-jeremias/dots-ai/releases/latest/download/install-skills.ps1 | iex
+irm https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.ps1 | iex
 ```
 
 ---
@@ -58,4 +58,4 @@ dots-doctor
 
 ---
 
-**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/README.md)
+**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/README.md)

@@ -28,8 +28,8 @@ except ImportError:
     sys.exit(1)
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-DEPLOYED_SKILLS_DIR = pathlib.Path.home() / ".local" / "share" / "dots-ai" / "skills"
-REGISTRY_PATH = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills-registry.yaml"
+DEPLOYED_SKILLS_DIR = pathlib.Path.home() / ".local" / "share" / "agentic-workstation" / "skills"
+REGISTRY_PATH = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills-registry.yaml"
 
 
 def load_registry() -> dict[str, dict]:
@@ -46,7 +46,7 @@ def load_deployed_versions() -> dict[str, str]:
     versions: dict[str, str] = {}
     if not DEPLOYED_SKILLS_DIR.is_dir():
         # In CI, check from repo instead
-        alt = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills"
+        alt = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills"
         if alt.is_dir():
             for d in alt.iterdir():
                 manifest = d / "skill.json"

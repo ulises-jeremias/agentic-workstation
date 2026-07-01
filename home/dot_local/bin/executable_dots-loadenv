@@ -3,7 +3,7 @@ set -eo pipefail
 
 ## dots-loadenv
 ##
-## Helper to load opt-in environment variables from ~/.config/dots-ai/env.d/*.env
+## Helper to load opt-in environment variables from ~/.config/agentic-workstation/env.d/*.env
 ## for shells that don't source the workstation-managed ~/.zshrc.
 ##
 ## Important:
@@ -16,7 +16,7 @@ set -eo pipefail
 ##     @script.name [options]
 ##
 ## Options:
-##         --dir=PATH   Directory containing *.env files (default: ~/.config/dots-ai/env.d)
+##         --dir=PATH   Directory containing *.env files (default: ~/.config/agentic-workstation/env.d)
 ##         --list       Print matching *.env files (one per line)
 ##         --show       Print matching files and exported variable names (no values)
 ##         --emit       Emit shell code that sources all *.env files (for eval)
@@ -25,9 +25,9 @@ set -eo pipefail
 ##
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && pwd || true)"
-DOTS_AI_LIB_DIR="${DOTS_AI_LIB_DIR:-${DEFAULT_DOTS_AI_LIB_DIR:-$HOME/.local/lib/dots-ai}}"
-EASY_OPTIONS_LIB="${DOTS_AI_LIB_DIR}/easy-options/easyoptions.sh"
+DEFAULT_DOTS_WORKSTATION_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/agentic-workstation" 2>/dev/null && pwd || true)"
+DOTS_WORKSTATION_LIB_DIR="${DOTS_WORKSTATION_LIB_DIR:-${DEFAULT_DOTS_WORKSTATION_LIB_DIR:-$HOME/.local/lib/agentic-workstation}}"
+EASY_OPTIONS_LIB="${DOTS_WORKSTATION_LIB_DIR}/easy-options/easyoptions.sh"
 
 if [[ ! -f ${EASY_OPTIONS_LIB} ]]; then
   echo "[dots-loadenv] Missing dependency: ${EASY_OPTIONS_LIB}" >&2
@@ -37,7 +37,7 @@ source "${EASY_OPTIONS_LIB}"
 
 # Apply defaults after easy-options has set variables from CLI flags.
 # easy-options sets dir="" if --dir was not passed, so we fall back to the env var or default.
-dir="${dir:-${DOTS_AI_ENVD_DIR:-$HOME/.config/dots-ai/env.d}}"
+dir="${dir:-${DOTS_WORKSTATION_ENVD_DIR:-$HOME/.config/agentic-workstation/env.d}}"
 quiet="${quiet:-}"
 
 if [[ -n ${list:-} ]]; then

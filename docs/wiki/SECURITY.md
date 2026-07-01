@@ -15,11 +15,11 @@
 
 ## Secret management
 
-Store secrets in `~/.config/dots-ai/env.d/`:
+Store secrets in `~/.config/agentic-workstation/env.d/`:
 
 ```bash
 # Example: Jira credentials
-cat > ~/.config/dots-ai/env.d/jira.env << 'EOF'
+cat > ~/.config/agentic-workstation/env.d/jira.env << 'EOF'
 export JIRA_SITE_URL="https://your-company.atlassian.net"
 export JIRA_EMAIL="you@company.com"
 export JIRA_API_TOKEN="your-api-token"
@@ -33,7 +33,7 @@ Load with `dots-loadenv` or source directly.
 ## Reporting vulnerabilities
 
 1. **Do not** open a public issue with exploit details
-2. Contact the dots-ai Technology team through internal channels
+2. Contact the agentic-workstation Technology team through internal channels
 3. Include reproduction details, impact, and affected files
 
 ---
@@ -49,4 +49,4 @@ Load with `dots-loadenv` or source directly.
 
 ---
 
-**Canonical doc:** [`SECURITY.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/SECURITY.md)
+**Canonical doc:** [`SECURITY.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/SECURITY.md)

@@ -1,6 +1,6 @@
 # Skills System
 
-> How dots-ai skills are defined, distributed, installed, and made available to AI tools.
+> How agentic-workstation skills are defined, distributed, installed, and made available to AI tools.
 
 ---
 
@@ -19,10 +19,10 @@ Each skill contains:
 
 | Skill | Purpose |
 |-------|---------|
-| `dots-ai-assistant` | Workspace orchestration and routing |
-| `dots-ai-dev-companion` | General dev companion delivery layer |
+| `dots-workstation-assistant` | Workspace orchestration and routing |
+| `dots-workstation-dev-companion` | General dev companion delivery layer |
 | Workspace pack overlays | Client/account overlays |
-| `dots-ai-workflow-generic-project` | Generic project delivery phases |
+| `dots-workstation-workflow-generic-project` | Generic project delivery phases |
 | `dev-assistant` | Repository inspection and discovery |
 | `dev-companion` | Delivery workflow pattern |
 | `github-cli-workflow` | GitHub PR creation |
@@ -32,13 +32,13 @@ Each skill contains:
 | `clickup-cli` | ClickUp task management |
 | `slack-cli` | Slack CLI for app development |
 | `ui-ux-pro-max` | UI/UX design intelligence |
-| `dots-ai-workspace-knowledge-sync` | Session knowledge persistence |
-| `dots-ai-output-handshake` | Required gate for final deliverables: destination + human review |
-| `dots-ai-prd`, `dots-ai-trd`, `dots-ai-adr` | Product, technical, and architecture decision artifacts |
-| `dots-ai-planning`, `dots-ai-development-workflow` | Planning, estimation, workflow, DoR, DoD, and validation defaults |
-| `dots-ai-work-item`, `dots-ai-epic`, `dots-ai-user-story`, `dots-ai-task`, `dots-ai-bug`, `dots-ai-incident` | Work item templates and routing |
-| `dots-ai-meeting-minutes`, `dots-ai-decision-log`, `dots-ai-agreement`, `dots-ai-spike` | Meeting, decision, agreement, and research artifacts |
-| `dots-ai-project-assessment`, `dots-ai-project-assessment-evidence`, `dots-ai-technical-unit-assessment`, `dots-ai-management-unit-assessment` | Interactive project assessments, evidence maps, and unit scorecards |
+| `dots-harness-knowledge-sync` | Session knowledge persistence |
+| `dots-workstation-output-handshake` | Required gate for final deliverables: destination + human review |
+| `dots-workstation-prd`, `dots-workstation-trd`, `dots-workstation-adr` | Product, technical, and architecture decision artifacts |
+| `dots-workstation-planning`, `dots-workstation-development-workflow` | Planning, estimation, workflow, DoR, DoD, and validation defaults |
+| `dots-workstation-work-item`, `dots-workstation-epic`, `dots-workstation-user-story`, `dots-workstation-task`, `dots-workstation-bug`, `dots-workstation-incident` | Work item templates and routing |
+| `dots-workstation-meeting-minutes`, `dots-workstation-decision-log`, `dots-workstation-agreement`, `dots-workstation-spike` | Meeting, decision, agreement, and research artifacts |
+| `dots-workstation-project-assessment`, `dots-workstation-project-assessment-evidence`, `dots-workstation-technical-unit-assessment`, `dots-workstation-management-unit-assessment` | Interactive project assessments, evidence maps, and unit scorecards |
 
 ---
 
@@ -61,10 +61,10 @@ Project assessments use four skills:
 
 | Skill | Role |
 |-------|------|
-| `dots-ai-project-assessment` | Defines assessment purpose, period, audience, units, findings, and action plan |
-| `dots-ai-project-assessment-evidence` | Asks where evidence lives and tracks source quality, freshness, missing evidence, assumptions, and confidence |
-| `dots-ai-technical-unit-assessment` | Scores technical workloads: repositories, frontend, backend, infrastructure, data, UI/UX, and AI-native structural readiness |
-| `dots-ai-management-unit-assessment` | Scores management scope: governance, delivery, collaboration, culture, and AI-native management readiness |
+| `dots-workstation-project-assessment` | Defines assessment purpose, period, audience, units, findings, and action plan |
+| `dots-workstation-project-assessment-evidence` | Asks where evidence lives and tracks source quality, freshness, missing evidence, assumptions, and confidence |
+| `dots-workstation-technical-unit-assessment` | Scores technical workloads: repositories, frontend, backend, infrastructure, data, UI/UX, and AI-native structural readiness |
+| `dots-workstation-management-unit-assessment` | Scores management scope: governance, delivery, collaboration, culture, and AI-native management readiness |
 
 The assistant must not score indicators without evidence. If evidence is unavailable, it should mark the indicator as missing evidence, not assessed, or low confidence with the assumption clearly stated.
 
@@ -74,7 +74,7 @@ End-to-end assessment:
 
 ```text
 User: Run a project assessment for this engagement.
-Assistant: I will use dots-ai-project-assessment. Where should the final report live, and who will review it?
+Assistant: I will use dots-workstation-project-assessment. Where should the final report live, and who will review it?
 User: Put the draft in docs/assessment.md. I will review it.
 Assistant: What period and units should be assessed? Should this cover management, technical units, or both?
 User: Last quarter, both. Backend and data pipelines are in scope.
@@ -85,14 +85,14 @@ Technical-only assessment:
 
 ```text
 User: Assess the cloud infrastructure and CI/CD maturity.
-Assistant: I will use dots-ai-project-assessment-evidence and dots-ai-technical-unit-assessment. Where are the IaC repo, pipeline history, deployment docs, monitoring dashboards, security scans, and incident records?
+Assistant: I will use dots-workstation-project-assessment-evidence and dots-workstation-technical-unit-assessment. Where are the IaC repo, pipeline history, deployment docs, monitoring dashboards, security scans, and incident records?
 ```
 
 Management-only assessment:
 
 ```text
 User: Review governance and delivery health.
-Assistant: I will use dots-ai-project-assessment-evidence and dots-ai-management-unit-assessment. Where are the board, backlog, planning notes, retrospectives, risks, delivery reports, decisions, agreements, and stakeholder feedback?
+Assistant: I will use dots-workstation-project-assessment-evidence and dots-workstation-management-unit-assessment. Where are the board, backlog, planning notes, retrospectives, risks, delivery reports, decisions, agreements, and stakeholder feedback?
 ```
 
 Missing evidence:
@@ -122,8 +122,8 @@ Assistant: I can inspect the repository, but observability scoring also needs da
 
 ## Skill lifecycle
 
-1. Skills are defined in `home/dot_local/share/dots-ai/skills/`
-2. `chezmoi apply` deploys them to `~/.local/share/dots-ai/skills/`
+1. Skills are defined in `home/dot_local/share/agentic-workstation/skills/`
+2. `chezmoi apply` deploys them to `~/.local/share/agentic-workstation/skills/`
 3. `dots-skills sync` reads each `skill.json` and creates symlinks to supported AI tools
 4. AI tools load `SKILL.md` at startup
 
@@ -142,4 +142,4 @@ Each `skill.json` declares which tools are supported:
 
 ---
 
-**Canonical doc:** [`docs/SKILLS.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/SKILLS.md)
+**Canonical doc:** [`docs/SKILLS.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/SKILLS.md)

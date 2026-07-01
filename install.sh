@@ -22,7 +22,7 @@ fi
 
 # POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
 script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
-config_file="${HOME}/.config/chezmoi/dots-ai.toml"
+config_file="${HOME}/.config/chezmoi/agentic-workstation.toml"
 config_dir="$(dirname "${config_file}")"
 mkdir -p "${config_dir}"
 

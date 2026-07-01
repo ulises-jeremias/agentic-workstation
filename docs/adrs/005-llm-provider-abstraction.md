@@ -10,7 +10,7 @@ The dev companion background runner needs LLM capabilities to generate intellige
 
 - Not all developers have access to paid API keys (Anthropic, OpenAI)
 - Local LLM options (Ollama, vLLM) vary by machine and GPU availability
-- OpenCode ships with `big-pickle`, a free local model available to all dots-ai developers
+- OpenCode ships with `big-pickle`, a free local model available to all agentic-workstation developers
 - The runner should work out-of-the-box without configuration for the common case
 
 We needed a provider abstraction that:

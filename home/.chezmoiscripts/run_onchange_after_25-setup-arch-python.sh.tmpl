@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # run_onchange_after_25-setup-arch-python.sh.tmpl
-# hash: {{ include (joinPath .chezmoi.sourceDir "dot_local/share/dots-ai/pacman-hooks/pipx-reinstall.hook") | sha256sum }}
+# hash: {{ include (joinPath .chezmoi.sourceDir "dot_local/share/agentic-workstation/pacman-hooks/pipx-reinstall.hook") | sha256sum }}
 {{- $gPy := index . "install_group_python" | default false -}}
 {{- $gAi := index . "install_group_ai"     | default false -}}
 {{- $gSkJ := index . "install_skill_jira_assistant"       | default false -}}
@@ -40,7 +40,7 @@ log "configuring Python environment for Arch Linux..."
 
 # ── 1. Install pacman hook for auto-reinstalling pipx after Python upgrades ──
 
-HOOK_SRC="{{ .chezmoi.homeDir }}/.local/share/dots-ai/pacman-hooks/pipx-reinstall.hook"
+HOOK_SRC="{{ .chezmoi.homeDir }}/.local/share/agentic-workstation/pacman-hooks/pipx-reinstall.hook"
 HOOK_DIR="/etc/pacman.d/hooks"
 HOOK_DST="${HOOK_DIR}/pipx-reinstall.hook"
 

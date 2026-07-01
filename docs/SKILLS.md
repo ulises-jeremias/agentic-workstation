@@ -1,6 +1,6 @@
 # Skills
 
-This document describes the dots-ai skill system — how skills are defined, distributed, installed, and made available to multiple AI tools.
+This document describes the agentic-workstation skill system — how skills are defined, distributed, installed, and made available to multiple AI tools.
 
 ## Skill Lifecycle
 
@@ -18,8 +18,8 @@ flowchart LR
     end
 
     subgraph Store["Skill Store"]
-        S1["~/.local/share/dots-ai/skills/"]
-        S2["~/.local/share/dots-ai/skills-external/"]
+        S1["~/.local/share/agentic-workstation/skills/"]
+        S2["~/.local/share/agentic-workstation/skills-external/"]
     end
 
     subgraph Sync["dots-skills sync"]
@@ -56,12 +56,12 @@ Each skill lives in its own directory and always contains:
 - `SKILL.md` — the main content read by AI tools (frontmatter + instructions)
 - `skill.json` — machine-readable manifest (source, version, compatibility, requirements). External skills sourced via chezmoiexternal may omit it; they are treated as universally compatible.
 
-The bundled **dots-ai-assistant** skill is the **dots-ai Assistant** and **orchestrator**: it defines a **repository inspection order** (README → docs → `AGENTS.md` → CONTRIBUTING → PR templates → task runners → devcontainer → CI → configs → code), **conflict heuristics**, and **anti-duplication** rules. It ships `references/REPO_INSPECTION.md`, `references/ORCHESTRATION.md` (routing and delegation), and `references/AGENTS_TEMPLATE.md`; a chezmoi **project** starter lives at `home/.chezmoitemplates/agents/AGENTS.project.md.tmpl`. **`skill-catalog.yaml`** next to bundled skills lists **WHAT vs HOW**, **triggers**, and **`depends_on`** for routing. It remains useful **outside** this repository by anchoring on the **applied machine** (`~/.local/share/dots-ai/`, `dots-*`) when relevant. Future org playbooks should be **read from shipped paths**, not hardcoded in the skill body.
+The bundled **dots-workstation-assistant** skill is the **agentic-workstation Assistant** and **orchestrator**: it defines a **repository inspection order** (README → docs → `AGENTS.md` → CONTRIBUTING → PR templates → task runners → devcontainer → CI → configs → code), **conflict heuristics**, and **anti-duplication** rules. It ships `references/REPO_INSPECTION.md`, `references/ORCHESTRATION.md` (routing and delegation), and `references/AGENTS_TEMPLATE.md`; a chezmoi **project** starter lives at `home/.chezmoitemplates/agents/AGENTS.project.md.tmpl`. **`skill-catalog.yaml`** next to bundled skills lists **WHAT vs HOW**, **triggers**, and **`depends_on`** for routing. It remains useful **outside** this repository by anchoring on the **applied machine** (`~/.local/share/agentic-workstation/`, `dots-*`) when relevant. Future org playbooks should be **read from shipped paths**, not hardcoded in the skill body.
 
 ## Directory structure
 
 ```
-~/.local/share/dots-ai/skills/           # Bundled skills (managed by chezmoi)
+~/.local/share/agentic-workstation/skills/           # Bundled skills (managed by chezmoi)
 │   skill-catalog.yaml                   # Routing metadata (WHAT/HOW, triggers, depends_on)
 │   clickup-cli/
 │   │   SKILL.md
@@ -74,20 +74,20 @@ The bundled **dots-ai-assistant** skill is the **dots-ai Assistant** and **orche
 │   gitlab-cli-workflow/
 │   dbt-validation/
 │   snowflake-validation/
-│   dots-ai-workflow-generic-project/
-│   dots-ai-workflow-client-bootstrap/
-│   dots-ai-dev-companion/
+│   dots-workstation-workflow-generic-project/
+│   dots-workstation-workflow-client-bootstrap/
+│   dots-workstation-dev-companion/
 │   dots-slack-assistant/
-│   dots-ai-workspace-knowledge-sync/
+│   dots-harness-knowledge-sync/
 │   ui-ux-pro-max/
 │   │   SKILL.md
 │   │   skill.json
 │   │   scripts/
 │   │   data/
-│   dots-ai-workstation-triage/
+│   dots-workstation-triage/
 │   │   SKILL.md
 │   │   skill.json
-│   dots-ai-assistant/
+│   dots-workstation-assistant/
 │   │   SKILL.md
 │   │   skill.json
 │   │   references/
@@ -95,10 +95,10 @@ The bundled **dots-ai-assistant** skill is the **dots-ai Assistant** and **orche
 │   │       ORCHESTRATION.md
 │   │       AGENTS_TEMPLATE.md
 
-~/.local/share/dots-ai/dev-companion/    # Optional queue + worker (see README.md)
-~/.local/share/dots-ai/third-party/      # Small attributed third-party excerpts (e.g. everything-claude-code)
+~/.local/share/agentic-workstation/dev-companion/    # Optional queue + worker (see README.md)
+~/.local/share/agentic-workstation/third-party/      # Small attributed third-party excerpts (e.g. everything-claude-code)
 
-~/.local/share/dots-ai/skills-external/  # External skills (managed by chezmoiexternal + dots-skills)
+~/.local/share/agentic-workstation/skills-external/  # External skills (managed by chezmoiexternal + dots-skills)
     jira-admin/                          # ← extracted from JIRA-Assistant-Skills pack
     jira-agile/
     jira-issue/
@@ -140,12 +140,12 @@ Every skill must have a `skill.json` alongside its `SKILL.md`. This is the machi
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/ulises-jeremias/dots-ai/main/lib/schemas/skill.schema.json",
+  "$schema": "https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/lib/schemas/skill.schema.json",
   "name": "my-skill",
   "version": "1.0.0",
   "description": "Short description used by AI tools in skill selection.",
   "source": "bundled",
-  "author": "dots-ai",
+  "author": "agentic-workstation",
   "tags": ["tag1", "tag2"],
   "requires": ["some-cli-tool"],
   "compatibility": {
@@ -202,7 +202,7 @@ Known tool keys:
 
 ## The Skills Registry (`skills-registry.yaml`)
 
-`home/.chezmoidata/skills-registry.yaml` documents skills known to this baseline (same content as **`home/dot_local/share/dots-ai/skills-registry.yaml`**, which chezmoi deploys to `~/.local/share/dots-ai/skills-registry.yaml` for `dots-skills`). It is used by `dots-skills` for **bundled and npm** sources.
+`home/.chezmoidata/skills-registry.yaml` documents skills known to this baseline (same content as **`home/dot_local/share/agentic-workstation/skills-registry.yaml`**, which chezmoi deploys to `~/.local/share/agentic-workstation/skills-registry.yaml` for `dots-skills`). It is used by `dots-skills` for **bundled and npm** sources.
 
 **`github` and `url` skills are no longer in this registry** — they are declared in `.chezmoiexternal.toml.tmpl` and installed natively by chezmoi.
 
@@ -232,7 +232,7 @@ Ten skills in this baseline are derived from the curated set in
 [openai/skills](https://github.com/openai/skills) (`skills/.curated/`), all
 Apache-2.0 licensed:
 
-| dots-ai skill | Upstream | Domain | Notes |
+| agentic-workstation skill | Upstream | Domain | Notes |
 |---|---|---|---|
 | `gh-address-comments` | `gh-address-comments` | forge | PR review-comment triage via `gh`. Pairs with `github-cli-workflow`. |
 | `gh-fix-ci` | `gh-fix-ci` | forge | GitHub Actions failure triage. Plan-before-implement. |
@@ -242,21 +242,21 @@ Apache-2.0 licensed:
 | `figma-code-connect-components` | `figma-code-connect-components` | figma | Code Connect mappings. |
 | `figma-create-design-system-rules` | `figma-create-design-system-rules` | figma | Generate agent rules for design systems. |
 | `figma-create-new-file` | `figma-create-new-file` | figma | Create a new Figma file from scratch. |
-| `playwright-cli` | `playwright` | testing | CLI-first browser automation. Renamed to disambiguate from `dots-ai-e2e-runner`. |
+| `playwright-cli` | `playwright` | testing | CLI-first browser automation. Renamed to disambiguate from `dots-workstation-e2e-runner`. |
 | `jupyter-notebook` | `jupyter-notebook` | research | Scaffold reproducible notebooks; exposed via `dots-newnotebook`. |
 
 Each imported skill keeps the upstream `LICENSE.txt` and adds a `NOTICE.txt`
-documenting dots-ai-side modifications. Common changes:
+documenting dots-workstation-side modifications. Common changes:
 
 - Removed Codex-specific paths (`CODEX_HOME`, `~/.codex/skills/...`) and
   flags (`sandbox_permissions`, `[features].rmcp_client`). Replaced with the
   chezmoi-managed install location and tool-agnostic guidance for Claude
   Code, Cursor, OpenCode and Windsurf.
 - Replaced `agents/openai.yaml` and `metadata.short-description` with the
-  dots-ai [`skill.json` schema](#the-skilljson-manifest).
+  agentic-workstation [`skill.json` schema](#the-skilljson-manifest).
 - Dropped vendor logo assets (`assets/*.svg`, `assets/*.png`).
-- Added cross-references to dots-ai counterparts (`github-cli-workflow`,
-  `dots-ai-e2e-runner`, `dots-ai-planning`, etc.).
+- Added cross-references to agentic-workstation counterparts (`github-cli-workflow`,
+  `dots-workstation-e2e-runner`, `dots-workstation-planning`, etc.).
 
 ### Out-of-scope (opt-in pack, not bundled)
 
@@ -278,13 +278,13 @@ and `figma-create-new-file` cover the most common design-to-code workflows.
 ### MCP templates
 
 Two new MCP templates ship with this batch (deployed to
-`~/.local/share/dots-ai/mcp/`):
+`~/.local/share/agentic-workstation/mcp/`):
 
 - `mcp/linear/` — streamable-HTTP, OAuth at `https://mcp.linear.app/mcp`. No
   env vars required.
 - `mcp/figma/` — streamable-HTTP with `Authorization: Bearer
   ${FIGMA_OAUTH_TOKEN}` and `X-Figma-Region: ${FIGMA_REGION}`. Store the
-  token in `~/.config/dots-ai/env.d/figma.env`.
+  token in `~/.config/agentic-workstation/env.d/figma.env`.
 
 See [`docs/MCP_TEMPLATES.md`](MCP_TEMPLATES.md) for the registration matrix.
 
@@ -293,7 +293,7 @@ See [`docs/MCP_TEMPLATES.md`](MCP_TEMPLATES.md) for the registration matrix.
 `github` and `url` skills are managed by chezmoi's native external mechanism. This lives at:
 
 ```
-home/private_dot_local/share/dots-ai/.chezmoiexternal.toml.tmpl
+home/private_dot_local/share/agentic-workstation/.chezmoiexternal.toml.tmpl
 ```
 
 Chezmoi handles download, extraction, caching, and refresh — no custom bash needed.
@@ -314,7 +314,7 @@ Or answered during `chezmoi init` interactive prompts.
 A **skill pack** is a GitHub repo with multiple skills under a subdirectory. Each pack gets its own unique key (target subdirectory) inside `skills-external/`, so multiple packs don't conflict:
 
 ```toml
-# Key = target path relative to ~/.local/share/dots-ai/
+# Key = target path relative to ~/.local/share/agentic-workstation/
 # stripComponents=2 strips "RepoName-main/" and "skills/" from the archive paths
 ["skills-external/jira-assistant"]
     type            = "archive"
@@ -337,7 +337,7 @@ skills-external/
 
 `dots-skills sync` discovers 2 levels deep in `skills-external/` — it detects that `jira-assistant/` has no `SKILL.md` (it's a pack), so it scans one level deeper to find the individual skills.
 
-`dots-ai/JIRA-Assistant-Skills` is a skill pack with 14 specialized JIRA skills:
+`agentic-workstation/JIRA-Assistant-Skills` is a skill pack with 14 specialized JIRA skills:
 
 | Skill | Purpose |
 |-------|---------|
@@ -359,14 +359,14 @@ skills-external/
 **To install** (requires JIRA credentials):
 
 > [!CAUTION]
-> Store JIRA credentials in `~/.config/dots-ai/env.d/jira.env` — never in `.env` files inside repositories or chezmoi source state.
+> Store JIRA credentials in `~/.config/agentic-workstation/env.d/jira.env` — never in `.env` files inside repositories or chezmoi source state.
 
 ```bash
 # Recommended: store credentials in the opt-in global env.d mechanism:
-mkdir -p ~/.config/dots-ai/env.d
-$EDITOR ~/.config/dots-ai/env.d/jira.env
+mkdir -p ~/.config/agentic-workstation/env.d
+$EDITOR ~/.config/agentic-workstation/env.d/jira.env
 
-# Example ~/.config/dots-ai/env.d/jira.env:
+# Example ~/.config/agentic-workstation/env.d/jira.env:
 # export JIRA_API_TOKEN="your-token"
 # export JIRA_EMAIL="you@company.com"
 # export JIRA_SITE_URL="https://company.atlassian.net"
@@ -411,7 +411,7 @@ Reads every skill directory (both `skills/` and `skills-external/`), checks the 
 If a skill is listed in `skills-registry.yaml` with **`enabled: false`**, it is **skipped** (no symlinks created), and any existing symlinks pointing at that skill are **removed**. Skills not listed in the registry are treated as enabled. **Workflow** and **dev companion** skills default to **`enabled: true`** in the baseline registry; use **`enabled: false`** to opt out (see [CLIENT_AI_PLAYBOOKS.md](CLIENT_AI_PLAYBOOKS.md)).
 
 Called automatically by `run_onchange_45-install-ai-agents.sh.tmpl` on every `chezmoi apply`.
-- **url**: downloads and extracts to `~/.local/share/dots-ai/skills-external/<name>/`
+- **url**: downloads and extracts to `~/.local/share/agentic-workstation/skills-external/<name>/`
 
 After installation, runs `dots-skills sync` automatically.
 
@@ -421,10 +421,10 @@ For each skill that is **not** disabled via `skills-registry.yaml` (`enabled: fa
 
 ## Bundled Best Practices skills
 
-The workstation bundles atomic dots-ai Best Practices skills for common delivery artifacts. They stay small by keeping reusable Markdown bodies in each skill's `references/default-template.md`, while `SKILL.md` handles routing and guardrails.
+The workstation bundles atomic agentic-workstation Best Practices skills for common delivery artifacts. They stay small by keeping reusable Markdown bodies in each skill's `references/default-template.md`, while `SKILL.md` handles routing and guardrails.
 
 
-Final artifacts must first run the `dots-ai-output-handshake`: confirm the destination and require human review. Repository instructions, project templates, and engagement packs override these defaults.
+Final artifacts must first run the `dots-workstation-output-handshake`: confirm the destination and require human review. Repository instructions, project templates, and engagement packs override these defaults.
 
 Project assessment skills are fully interactive: they ask where each evidence source lives, build an evidence map, and separate confirmed findings from assumptions and missing evidence before scoring management or technical units.
 
@@ -435,10 +435,10 @@ Use the assessment skills when a user asks for a project assessment, maturity re
 
 The default flow is:
 
-1. Run `dots-ai-output-handshake` before final reports: ask where the final artifact should live and who will review it.
-2. Use `dots-ai-project-assessment` to define purpose, period, audience, and assessment units.
-3. Use `dots-ai-project-assessment-evidence` to ask where evidence lives. Evidence may be in repositories, boards, docs, dashboards, incident records, PRs, meeting notes, interviews, Slack, email, spreadsheets, or other systems.
-4. Use `dots-ai-technical-unit-assessment` and/or `dots-ai-management-unit-assessment` to score only indicators with evidence.
+1. Run `dots-workstation-output-handshake` before final reports: ask where the final artifact should live and who will review it.
+2. Use `dots-workstation-project-assessment` to define purpose, period, audience, and assessment units.
+3. Use `dots-workstation-project-assessment-evidence` to ask where evidence lives. Evidence may be in repositories, boards, docs, dashboards, incident records, PRs, meeting notes, interviews, Slack, email, spreadsheets, or other systems.
+4. Use `dots-workstation-technical-unit-assessment` and/or `dots-workstation-management-unit-assessment` to score only indicators with evidence.
 5. Record confidence, assumptions, missing evidence, and validation needs before creating recommendations.
 6. Create follow-up work items only after explicit approval, delegating writes to the relevant ticket tool skill.
 
@@ -451,7 +451,7 @@ End-to-end assessment:
 
 ```text
 User: Run a project assessment for this engagement.
-Assistant: I will use dots-ai-project-assessment. Where should the final report live, and who will review it?
+Assistant: I will use dots-workstation-project-assessment. Where should the final report live, and who will review it?
 User: Put the draft in docs/assessment.md. I will review it.
 Assistant: What period and units should be assessed? Should this cover management, technical units, or both?
 User: Last quarter, both. The backend and data pipeline are the technical units.
@@ -462,14 +462,14 @@ Technical-only assessment:
 
 ```text
 User: Assess the cloud infrastructure and CI/CD maturity.
-Assistant: I will use dots-ai-project-assessment-evidence and dots-ai-technical-unit-assessment. Where are the IaC repo, pipeline history, deployment docs, monitoring dashboards, security scans, and incident records?
+Assistant: I will use dots-workstation-project-assessment-evidence and dots-workstation-technical-unit-assessment. Where are the IaC repo, pipeline history, deployment docs, monitoring dashboards, security scans, and incident records?
 ```
 
 Management-only assessment:
 
 ```text
 User: Review project governance and delivery health.
-Assistant: I will use dots-ai-project-assessment-evidence and dots-ai-management-unit-assessment. Where are the board, backlog, planning notes, retrospectives, risks, delivery reports, decisions, agreements, and stakeholder feedback?
+Assistant: I will use dots-workstation-project-assessment-evidence and dots-workstation-management-unit-assessment. Where are the board, backlog, planning notes, retrospectives, risks, delivery reports, decisions, agreements, and stakeholder feedback?
 ```
 
 Missing evidence:
@@ -497,7 +497,7 @@ For **client engagement** or **project-specific** AI workflows, use the naming a
 
 ### Bundled skill (in this repo)
 
-1. Create `home/dot_local/share/dots-ai/skills/<name>/` (chezmoi source path under `home/`)
+1. Create `home/dot_local/share/agentic-workstation/skills/<name>/` (chezmoi source path under `home/`)
 2. Add `SKILL.md` with YAML frontmatter and content
 3. Add `skill.json` with the manifest
 4. Add an entry to `home/.chezmoidata/skills-registry.yaml`

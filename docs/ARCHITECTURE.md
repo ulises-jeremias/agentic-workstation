@@ -1,10 +1,10 @@
 # Architecture
 
-> Layered design model and source state conventions for the dots-ai workstation.
+> Layered design model and source state conventions for the agentic-workstation workstation.
 
 ---
 
-`dots-ai` keeps repository governance and workstation state clearly separated.
+`agentic-workstation` keeps repository governance and workstation state clearly separated.
 
 ## Design principles
 
@@ -25,7 +25,7 @@ graph TD
 
     subgraph "Machine Layer (after chezmoi apply)"
         B --> C["~/.local/bin/ — dots-* CLI helpers"]
-        B --> D["~/.local/share/dots-ai/ — AI resources"]
+        B --> D["~/.local/share/agentic-workstation/ — AI resources"]
         B --> E["~/.config/ — tool configs"]
         D --> F["skills/ — bundled skills"]
         D --> G["mcp/ — MCP templates"]
@@ -51,7 +51,7 @@ graph TD
    Idempotent setup scripts executed by `chezmoi`. Includes skills sync via `dots-skills sync`.
 3. **Templates** (`home/.chezmoitemplates`)
    Reusable AI instruction templates for projects and assistants.
-4. **Shared assets** (`home/private_dot_local/share/dots-ai`)
+4. **Shared assets** (`home/private_dot_local/share/agentic-workstation`)
    Prompts, skills, templates, MCP provider examples, and the runtime skills registry.
 5. **CLI helpers** (`home/private_dot_local/bin`)
    Internal operations commands with `dots-` prefix, including `dots-skills`.
@@ -62,8 +62,8 @@ graph TD
 
 Skills are the primary AI-facing assets. They follow a two-layer model:
 
-- **Bundled skills** — defined in this repo, distributed via chezmoi to `~/.local/share/dots-ai/skills/`.
-- **External skills** — installed from npm, GitHub, or URLs by `dots-skills install`, placed in `~/.local/share/dots-ai/skills-external/`.
+- **Bundled skills** — defined in this repo, distributed via chezmoi to `~/.local/share/agentic-workstation/skills/`.
+- **External skills** — installed from npm, GitHub, or URLs by `dots-skills install`, placed in `~/.local/share/agentic-workstation/skills-external/`.
 
 Each skill contains a `skill.json` manifest that declares compatibility with each AI tool. `dots-skills sync` reads those manifests and creates symlinks in tool-specific directories (e.g. `~/.claude/skills/`, `~/.copilot/skills/`).
 

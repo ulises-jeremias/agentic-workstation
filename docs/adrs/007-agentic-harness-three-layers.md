@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-dots-ai needed a principled framework for AI-assisted software delivery that:
+agentic-workstation needed a principled framework for AI-assisted software delivery that:
 
 - Separates **infrastructure** (this workstation), **running instances** (workspaces), and **application repos** (client projects)
 - Supports both **interactive** (IDE-first) and **background** (queue-based) execution
@@ -22,7 +22,7 @@ Implement a **three-layer architecture**:
 
 | Layer | Purpose | Example |
 |-------|---------|---------|
-| **L1 — Infrastructure** | Tooling baseline, skills, agent configs, CLI helpers | `dots-ai` (this repo) |
+| **L1 — Infrastructure** | Tooling baseline, skills, agent configs, CLI helpers | `agentic-workstation` (this repo) |
 | **L2 — Running Instance** | Session state, knowledge base, workspace context, packs | `ai-workspace` |
 | **L3 — Application** | Client project repos with `AGENTS.md` and project-specific configs | Any client repo |
 
@@ -36,7 +36,7 @@ The **Ralph Loop** maps onto this architecture:
 - Backing specs → `AGENTS.md` templates (L1)
 - Context engineering → Skills (L1) + Packs (L2)
 - Persistent memory → Knowledge base (L2)
-- Fix the loop → `dots-ai-workspace-knowledge-sync` skill (L1→L2)
+- Fix the loop → `dots-harness-knowledge-sync` skill (L1→L2)
 
 ## Consequences
 

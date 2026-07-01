@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/lib/schemas/skill.schema.json",
+  "name": "linear",
+  "version": "1.0.0",
+  "description": "Manage Linear issues, projects and cycles through the Linear MCP server.",
+  "source": "bundled",
+  "author": "agentic-workstation",
+  "tags": [
+    "linear",
+    "mcp",
+    "task-management",
+    "sprint-planning"
+  ],
+  "requires": [],
+  "compatibility": {
+    "universal": {
+      "supported": true
+    },
+    "claude-code": {
+      "supported": true
+    },
+    "cursor": {
+      "supported": true
+    },
+    "opencode": {
+      "supported": true
+    },
+    "windsurf": {
+      "supported": true,
+      "notes": "On Windows native, run the MCP via WSL — see SKILL.md."
+    },
+    "pi": {
+      "supported": true
+    },
+    "copilot-cli": {
+      "supported": false
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Troubleshooting
 
-> Common issues and fixes for the dots-ai workstation.
+> Common issues and fixes for the agentic-workstation workstation.
 
 ---
 
@@ -21,7 +21,7 @@ This is normal when new configuration questions are added upstream. Answer the p
 
 ```bash
 chezmoi update
-chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml
+chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml
 ```
 
 ---
@@ -64,7 +64,7 @@ To remove the workstation baseline from your machine:
 chezmoi purge
 
 # Remove AI resources
-rm -rf ~/.local/share/dots-ai
+rm -rf ~/.local/share/agentic-workstation
 rm -rf ~/.local/bin/dots-*
 
 # Remove skill symlinks
@@ -81,7 +81,7 @@ rm -rf ~/.config/opencode/agents/
 
 ## Getting help
 
-1. Check the [docs/](https://github.com/ulises-jeremias/dots-ai/tree/main/docs) directory
+1. Check the [docs/](https://github.com/ulises-jeremias/agentic-workstation/tree/main/docs) directory
 2. Run `dots-doctor` for diagnostics
 3. Ask in #tech-support on Slack
 4. Open an issue in the repository

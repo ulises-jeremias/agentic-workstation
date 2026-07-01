@@ -1,10 +1,10 @@
 #!/bin/sh
-# dots-ai Skills Installer
-# Downloads and installs dots-ai AI skills and agents into the correct directories.
+# agentic-workstation Skills Installer
+# Downloads and installs agentic-workstation AI skills and agents into the correct directories.
 # Compatible with: macOS, Linux, WSL2 (Windows)
 #
 # Usage:
-#   curl -fsSL https://github.com/ulises-jeremias/dots-ai/releases/latest/download/install-skills.sh | sh
+#   curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | sh
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool claude
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool opencode
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool cursor
@@ -17,13 +17,13 @@
 # The RELEASE_BASE variable is rewritten at release time to pin the version URL.
 # When running from source or latest, it falls back to the GitHub latest redirect.
 #
-# Hermetic CI / private mirrors: set DOTS_AI_SKILLS_VERSION (e.g. v0.1.4 or v0.0.0-pr42)
+# Hermetic CI / private mirrors: set DOTS_WORKSTATION_SKILLS_VERSION (e.g. v0.1.4 or v0.0.0-pr42)
 # so zip names resolve without probing GitHub when RELEASE_BASE is not a
 # github.com/releases/download URL.
 
 set -eu
 
-GITHUB_REPO="ulises-jeremias/dots-ai"
+GITHUB_REPO="ulises-jeremias/agentic-workstation"
 RELEASE_BASE="https://github.com/${GITHUB_REPO}/releases/latest/download"
 
 TARGET_TOOL="all"
@@ -32,7 +32,7 @@ DRY_RUN=0
 
 usage() {
   cat <<'USAGE'
-install-skills.sh — dots-ai AI skills & agents installer
+install-skills.sh — agentic-workstation AI skills & agents installer
 
 Options:
   --tool <name>   Install for one tool: all|claude|opencode|cursor|windsurf|copilot
@@ -96,9 +96,9 @@ fi
 
 # Detect version: explicit env (CI / mirrors), else from URL, else GitHub redirect.
 VERSION=""
-if [ -n "${DOTS_AI_SKILLS_VERSION:-}" ]; then
-  VERSION="$DOTS_AI_SKILLS_VERSION"
-  log "using DOTS_AI_SKILLS_VERSION from environment: $VERSION"
+if [ -n "${DOTS_WORKSTATION_SKILLS_VERSION:-}" ]; then
+  VERSION="$DOTS_WORKSTATION_SKILLS_VERSION"
+  log "using DOTS_WORKSTATION_SKILLS_VERSION from environment: $VERSION"
 else
   case "$RELEASE_BASE" in
     */releases/download/*)
@@ -157,28 +157,28 @@ if [ "$DRY_RUN" = "1" ]; then
   log "  tool: ${TARGET_TOOL}"
   log "  release base: ${RELEASE_BASE}"
   log "  version: ${VERSION:-latest}"
-  log "  skills dir (target): ${HOME}/.local/share/dots-ai/skills"
+  log "  skills dir (target): ${HOME}/.local/share/agentic-workstation/skills"
   exit 0
 fi
 
 install_skills() {
   log "downloading skills package..."
-  if ! download "${RELEASE_BASE}/dots-ai-skills-${VERSION}.zip" \
+  if ! download "${RELEASE_BASE}/dots-workstation-skills-${VERSION}.zip" \
     "${TMPDIR_SKILLS}/skills.zip" 2>/dev/null; then
     fail "could not download skills package from ${RELEASE_BASE}"
   fi
 
-  SKILLS_DIR="${HOME}/.local/share/dots-ai/skills"
+  SKILLS_DIR="${HOME}/.local/share/agentic-workstation/skills"
   mkdir -p "$SKILLS_DIR"
   if command -v unzip >/dev/null 2>&1; then
     unzip -o "${TMPDIR_SKILLS}/skills.zip" -d "${TMPDIR_SKILLS}/extracted" >/dev/null
     _ext="${TMPDIR_SKILLS}/extracted"
-    if [ -d "${_ext}/.local/share/dots-ai/skills" ]; then
-      _skills_src="${_ext}/.local/share/dots-ai/skills"
+    if [ -d "${_ext}/.local/share/agentic-workstation/skills" ]; then
+      _skills_src="${_ext}/.local/share/agentic-workstation/skills"
     elif [ -d "${_ext}/skills" ]; then
       _skills_src="${_ext}/skills"
     else
-      fail "skills zip had unexpected layout (expected .local/share/dots-ai/skills/ or skills/)"
+      fail "skills zip had unexpected layout (expected .local/share/agentic-workstation/skills/ or skills/)"
     fi
     cp -r "${_skills_src}/." "$SKILLS_DIR/"
   else
@@ -189,7 +189,7 @@ install_skills() {
 
 install_for_claude() {
   log "installing agents for Claude Code / Claude Desktop..."
-  if ! download "${RELEASE_BASE}/dots-ai-agents-claude-${VERSION}.zip" \
+  if ! download "${RELEASE_BASE}/dots-workstation-agents-claude-${VERSION}.zip" \
     "${TMPDIR_SKILLS}/claude.zip" 2>/dev/null; then
     warn "could not download claude agents package — skipping"
     return 0
@@ -212,7 +212,7 @@ install_for_claude() {
 
 install_for_opencode() {
   log "installing agents for OpenCode..."
-  if ! download "${RELEASE_BASE}/dots-ai-agents-opencode-${VERSION}.zip" \
+  if ! download "${RELEASE_BASE}/dots-workstation-agents-opencode-${VERSION}.zip" \
     "${TMPDIR_SKILLS}/opencode.zip" 2>/dev/null; then
     warn "could not download opencode agents package — skipping"
     return 0
@@ -221,13 +221,13 @@ install_for_opencode() {
   unzip -o "${TMPDIR_SKILLS}/opencode.zip" -d "${TMPDIR_SKILLS}/opencode-extracted" >/dev/null
   cp -r "${TMPDIR_SKILLS}/opencode-extracted/.config/opencode/agents/." \
     "${HOME}/.config/opencode/agents/"
-  # Note: skills are symlinked by dots-skills sync; for standalone install use dots-ai-skills ZIP
+  # Note: skills are symlinked by dots-skills sync; for standalone install use dots-workstation-skills ZIP
   ok "OpenCode agents installed to ${HOME}/.config/opencode/agents/"
 }
 
 install_for_cursor() {
   log "installing agents for Cursor..."
-  if ! download "${RELEASE_BASE}/dots-ai-agents-cursor-${VERSION}.zip" \
+  if ! download "${RELEASE_BASE}/dots-workstation-agents-cursor-${VERSION}.zip" \
     "${TMPDIR_SKILLS}/cursor.zip" 2>/dev/null; then
     warn "could not download cursor agents package — skipping"
     return 0
@@ -240,7 +240,7 @@ install_for_cursor() {
 
 install_for_windsurf() {
   log "installing agents for Windsurf..."
-  if ! download "${RELEASE_BASE}/dots-ai-agents-windsurf-${VERSION}.zip" \
+  if ! download "${RELEASE_BASE}/dots-workstation-agents-windsurf-${VERSION}.zip" \
     "${TMPDIR_SKILLS}/windsurf.zip" 2>/dev/null; then
     warn "could not download windsurf agents package — skipping"
     return 0
@@ -257,7 +257,7 @@ install_for_windsurf() {
 
 install_for_copilot() {
   log "installing GitHub Copilot custom instructions..."
-  if ! download "${RELEASE_BASE}/dots-ai-agents-copilot-${VERSION}.zip" \
+  if ! download "${RELEASE_BASE}/dots-workstation-agents-copilot-${VERSION}.zip" \
     "${TMPDIR_SKILLS}/copilot.zip" 2>/dev/null; then
     warn "could not download copilot agents package — skipping"
     return 0
@@ -296,5 +296,5 @@ esac
 
 log ""
 log "Installation complete."
-log "  Skills:  ${HOME}/.local/share/dots-ai/skills/"
+log "  Skills:  ${HOME}/.local/share/agentic-workstation/skills/"
 log "  Restart your AI tool for changes to take effect."

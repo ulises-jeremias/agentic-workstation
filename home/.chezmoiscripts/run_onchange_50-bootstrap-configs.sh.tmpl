@@ -19,10 +19,10 @@ ok() { printf '%b[bootstrap-configs]%b %s\n' "$c_green" "$c_reset" "$*"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
 
 mkdir -p "$HOME/.local/bin"
-mkdir -p "$HOME/.local/share/dots-ai/prompts"
-mkdir -p "$HOME/.local/share/dots-ai/skills"
-mkdir -p "$HOME/.local/share/dots-ai/templates"
-mkdir -p "$HOME/.local/share/dots-ai/mcp"
+mkdir -p "$HOME/.local/share/agentic-workstation/prompts"
+mkdir -p "$HOME/.local/share/agentic-workstation/skills"
+mkdir -p "$HOME/.local/share/agentic-workstation/templates"
+mkdir -p "$HOME/.local/share/agentic-workstation/mcp"
 
 if has_cmd docker; then
   ok "docker detected"

@@ -17,7 +17,7 @@ The platform ships MCP starter templates for connecting AI tools to external ser
 | **Linear** | `linear/` | Issues, cycles, projects (OAuth, no token required) |
 | **Figma** | `figma/` | Design context, screenshots, variables, assets |
 
-Templates are installed to `~/.local/share/dots-ai/mcp/` during `chezmoi apply`.
+Templates are installed to `~/.local/share/agentic-workstation/mcp/` during `chezmoi apply`.
 
 > [!NOTE]
 > Linear and Figma use the **streamable HTTP** transport (no local
@@ -46,7 +46,7 @@ Each provider directory includes:
 
 ```mermaid
 flowchart LR
-    A[chezmoi apply] --> B[Templates deployed to ~/.local/share/dots-ai/mcp/]
+    A[chezmoi apply] --> B[Templates deployed to ~/.local/share/agentic-workstation/mcp/]
     B --> C[Copy config.template.json to config.json]
     C --> D[Fill in credentials via env vars]
     D --> E[Configure AI tool to use MCP server]
@@ -67,7 +67,7 @@ flowchart LR
 | **Figma** | `FIGMA_OAUTH_TOKEN`, `FIGMA_REGION` (default `us-east-1`) |
 
 > [!CAUTION]
-> All templates are **secret-free** by default. Never hardcode tokens in configuration files. Use `~/.config/dots-ai/env.d/` for persistent secrets.
+> All templates are **secret-free** by default. Never hardcode tokens in configuration files. Use `~/.config/agentic-workstation/env.d/` for persistent secrets.
 
 ---
 
@@ -75,7 +75,7 @@ flowchart LR
 
 ```bash
 # Navigate to the template
-cd ~/.local/share/dots-ai/mcp/github/
+cd ~/.local/share/agentic-workstation/mcp/github/
 
 # Copy template
 cp config.template.json config.json

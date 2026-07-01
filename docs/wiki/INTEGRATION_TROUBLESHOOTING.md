@@ -24,7 +24,7 @@ glab auth status
 ## If a local env file is missing
 
 - Confirm the file ends in `.env`.
-- Confirm it lives under `~/.config/dots-ai/env.d/`.
+- Confirm it lives under `~/.config/agentic-workstation/env.d/`.
 - Re-open a new terminal after editing it.
 
 ## If MCP does not connect

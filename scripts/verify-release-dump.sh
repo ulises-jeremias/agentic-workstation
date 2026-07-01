@@ -37,11 +37,11 @@ dump_nonempty() {
 }
 
 # Critical paths used by release-artifacts.json
-[[ -d "${HOME}/.local/share/dots-ai/skills" ]] || {
-  echo "verify-release-dump: missing ~/.local/share/dots-ai/skills" >&2
+[[ -d "${HOME}/.local/share/agentic-workstation/skills" ]] || {
+  echo "verify-release-dump: missing ~/.local/share/agentic-workstation/skills" >&2
   exit 1
 }
-skill_count="$(find "${HOME}/.local/share/dots-ai/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)"
+skill_count="$(find "${HOME}/.local/share/agentic-workstation/skills" -mindepth 1 -maxdepth 1 -type d | wc -l)"
 if [[ ${skill_count} -lt 3 ]]; then
   echo "verify-release-dump: expected several skill dirs, found ${skill_count}" >&2
   exit 1

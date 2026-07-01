@@ -5,7 +5,7 @@
 # ///
 """
 scripts/dots-skills-search.py
-Skill discovery tool for dots-ai: search, explain, doctor, and index generation.
+Skill discovery tool for agentic-workstation: search, explain, doctor, and index generation.
 
 Commands:
     search <query>          Fuzzy search across name, description, triggers, capabilities
@@ -16,7 +16,7 @@ Commands:
 
 Usage:
     python3 scripts/dots-skills-search.py search clickup
-    python3 scripts/dots-skills-search.py explain dots-ai-assistant
+    python3 scripts/dots-skills-search.py explain dots-workstation-assistant
     python3 scripts/dots-skills-search.py doctor
     python3 scripts/dots-skills-search.py generate-index
 """
@@ -34,7 +34,7 @@ except ImportError:
     _YAML = False
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "dots-ai" / "skills"
+SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" / "skills"
 CATALOG_PATH = SKILLS_DIR / "skill-catalog.yaml"
 INDEX_PATH = REPO_ROOT / "docs" / "SKILL_INDEX.md"
 

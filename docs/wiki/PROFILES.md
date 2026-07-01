@@ -50,11 +50,11 @@ home/.chezmoidata/profiles.yaml
 Re-run init to update your choices:
 
 ```bash
-cd /path/to/dots-ai
-chezmoi init --source=. -c ~/.config/chezmoi/dots-ai.toml
-chezmoi apply --source=. -c ~/.config/chezmoi/dots-ai.toml
+cd /path/to/agentic-workstation
+chezmoi init --source=. -c ~/.config/chezmoi/agentic-workstation.toml
+chezmoi apply --source=. -c ~/.config/chezmoi/agentic-workstation.toml
 ```
 
 ---
 
-**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/README.md)
+**Technical context:** [`docs/README.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/README.md)

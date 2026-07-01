@@ -1,4 +1,4 @@
-# Pre-commit hooks for dots-ai quality assurance.
+# Pre-commit hooks for agentic-workstation quality assurance.
 # Install with: pipx install pre-commit && pre-commit install
 # Run manually: pre-commit run --all-files
 
@@ -87,7 +87,7 @@ repos:
 
       - id: validate-python-syntax
         name: Validate Python syntax
-        entry: python3 -m compileall scripts home/dot_local/share/dots-ai/dev-companion/runner
+        entry: python3 -m compileall scripts home/dot_local/share/agentic-workstation/dev-companion/runner
         language: system
         pass_filenames: false
         always_run: true

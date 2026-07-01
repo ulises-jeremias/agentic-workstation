@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - "home/dot_local/share/dots-ai/skills/skill-catalog.yaml"
-      - "home/dot_local/share/dots-ai/skills/*/skill.json"
+      - "home/dot_local/share/agentic-workstation/skills/skill-catalog.yaml"
+      - "home/dot_local/share/agentic-workstation/skills/*/skill.json"
       - "scripts/generate-skill-index.py"
   workflow_dispatch:
 

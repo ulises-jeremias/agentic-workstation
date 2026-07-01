@@ -1,16 +1,16 @@
-# dots-ai Skills Installer for Windows
-# Downloads and installs dots-ai AI skills and agents
+# agentic-workstation Skills Installer for Windows
+# Downloads and installs agentic-workstation AI skills and agents
 # Compatible with: Windows 10/11 (PowerShell 5.1+)
 #
 # Usage (run in PowerShell):
-#   irm https://github.com/ulises-jeremias/dots-ai/releases/latest/download/install-skills.ps1 | iex
+#   irm https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.ps1 | iex
 #
 # Or with tool selection:
-#   $env:DOTS_AI_TOOL = "claude"
-#   irm https://github.com/ulises-jeremias/dots-ai/releases/latest/download/install-skills.ps1 | iex
+#   $env:DOTS_WORKSTATION_TOOL = "claude"
+#   irm https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.ps1 | iex
 #
 # Hermetic CI / private mirrors:
-#   $env:DOTS_AI_SKILLS_VERSION = "v0.1.4"   # must match zip names under $ReleaseBase
+#   $env:DOTS_WORKSTATION_SKILLS_VERSION = "v0.1.4"   # must match zip names under $ReleaseBase
 #
 # Or locally:
 #   .\scripts\install-skills.ps1
@@ -18,15 +18,15 @@
 
 param(
     [ValidateSet("all", "claude", "opencode", "cursor", "windsurf", "copilot")]
-    [string]$Tool = $(if ($env:DOTS_AI_TOOL) { $env:DOTS_AI_TOOL } else { "all" }),
-    [switch]$Guided = $(if ($env:DOTS_AI_GUIDED -eq "1") { $true } else { $false }),
-    [switch]$DryRun = $(if ($env:DOTS_AI_DRY_RUN -eq "1") { $true } else { $false })
+    [string]$Tool = $(if ($env:DOTS_WORKSTATION_TOOL) { $env:DOTS_WORKSTATION_TOOL } else { "all" }),
+    [switch]$Guided = $(if ($env:DOTS_WORKSTATION_GUIDED -eq "1") { $true } else { $false }),
+    [switch]$DryRun = $(if ($env:DOTS_WORKSTATION_DRY_RUN -eq "1") { $true } else { $false })
 )
 
 $ErrorActionPreference = "Stop"
-$GithubRepo = "ulises-jeremias/dots-ai"
+$GithubRepo = "ulises-jeremias/agentic-workstation"
 $ReleaseBase = "https://github.com/$GithubRepo/releases/latest/download"
-$TempDir = Join-Path $env:TEMP "dots-ai-skills-install-$(Get-Random)"
+$TempDir = Join-Path $env:TEMP "dots-workstation-skills-install-$(Get-Random)"
 New-Item -ItemType Directory -Force -Path $TempDir | Out-Null
 
 function Write-NLog  { param($msg) Write-Host "[install-skills] $msg" }
@@ -35,8 +35,8 @@ function Write-NWarn { param($msg) Write-Host "[install-skills] WARNING: $msg" -
 function Write-NFail { param($msg) Write-Host "[install-skills] ERROR: $msg" -ForegroundColor Red; throw $msg }
 
 function Get-ReleaseVersion {
-    if ($env:DOTS_AI_SKILLS_VERSION -and $env:DOTS_AI_SKILLS_VERSION.Trim().Length -gt 0) {
-        return $env:DOTS_AI_SKILLS_VERSION.Trim()
+    if ($env:DOTS_WORKSTATION_SKILLS_VERSION -and $env:DOTS_WORKSTATION_SKILLS_VERSION.Trim().Length -gt 0) {
+        return $env:DOTS_WORKSTATION_SKILLS_VERSION.Trim()
     }
     # If RELEASE_BASE already has a pinned version, extract it
     if ($ReleaseBase -match 'releases/download/(v\d+\.\d+\.\d+(?:-[A-Za-z0-9_.-]+)?)') {
@@ -149,13 +149,13 @@ if ($DryRun) {
     Write-NLog "  tool: $Tool"
     Write-NLog "  release base: $ReleaseBase"
     Write-NLog "  version: $Version"
-    Write-NLog ("  skills dir (target): {0}" -f (Join-Path $env:USERPROFILE ".local\share\dots-ai\skills"))
+    Write-NLog ("  skills dir (target): {0}" -f (Join-Path $env:USERPROFILE ".local\share\agentic-workstation\skills"))
     Remove-Item -Recurse -Force $TempDir -ErrorAction SilentlyContinue
     exit 0
 }
 
 # Skill paths for Windows (following XDG-style conventions)
-$SkillsDir    = Join-Path $env:USERPROFILE ".local\share\dots-ai\skills"
+$SkillsDir    = Join-Path $env:USERPROFILE ".local\share\agentic-workstation\skills"
 $ClaudeDir    = Join-Path $env:USERPROFILE ".claude"
 $ClaudeAgents = Join-Path $ClaudeDir "agents"
 $OpenCodeDir  = Join-Path $env:APPDATA "opencode"
@@ -167,21 +167,21 @@ $GithubUserDir = Join-Path $env:USERPROFILE ".github"
 function Install-Skills {
     Write-NLog "downloading skills package..."
     $zipPath = Join-Path $TempDir "skills.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-ai-skills-$Version.zip" $zipPath)) {
+    if (-not (Get-Package "$ReleaseBase/dots-workstation-skills-$Version.zip" $zipPath)) {
         Write-NFail "could not download skills package from $ReleaseBase"
     }
     $extractPath = Join-Path $TempDir "skills-extracted"
     New-Item -ItemType Directory -Force -Path $extractPath | Out-Null
     Expand-ZipTo $zipPath $extractPath
     New-Item -ItemType Directory -Force -Path $SkillsDir | Out-Null
-    $nested = Join-Path $extractPath ".local\share\dots-ai\skills"
+    $nested = Join-Path $extractPath ".local\share\agentic-workstation\skills"
     $flat = Join-Path $extractPath "skills"
     if (Test-Path $nested -PathType Container) {
         Copy-DirContents $nested $SkillsDir
     } elseif (Test-Path $flat -PathType Container) {
         Copy-DirContents $flat $SkillsDir
     } else {
-        Write-NFail "skills zip had unexpected layout (expected .local\share\dots-ai\skills or skills)"
+        Write-NFail "skills zip had unexpected layout (expected .local\share\agentic-workstation\skills or skills)"
     }
     Write-NOk "skills installed to $SkillsDir"
 }
@@ -189,7 +189,7 @@ function Install-Skills {
 function Install-ForClaude {
     Write-NLog "installing agents for Claude Code / Claude Desktop..."
     $zipPath = Join-Path $TempDir "claude.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-ai-agents-claude-$Version.zip" $zipPath)) {
+    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-claude-$Version.zip" $zipPath)) {
         Write-NWarn "could not download claude agents — skipping"
         return
     }
@@ -210,7 +210,7 @@ function Install-ForClaude {
 function Install-ForOpenCode {
     Write-NLog "installing agents for OpenCode..."
     $zipPath = Join-Path $TempDir "opencode.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-ai-agents-opencode-$Version.zip" $zipPath)) {
+    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-opencode-$Version.zip" $zipPath)) {
         Write-NWarn "could not download opencode agents — skipping"
         return
     }
@@ -226,7 +226,7 @@ function Install-ForOpenCode {
 function Install-ForCursor {
     Write-NLog "installing agents for Cursor..."
     $zipPath = Join-Path $TempDir "cursor.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-ai-agents-cursor-$Version.zip" $zipPath)) {
+    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-cursor-$Version.zip" $zipPath)) {
         Write-NWarn "could not download cursor agents — skipping"
         return
     }
@@ -242,7 +242,7 @@ function Install-ForCursor {
 function Install-ForWindsurf {
     Write-NLog "installing agents for Windsurf..."
     $zipPath = Join-Path $TempDir "windsurf.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-ai-agents-windsurf-$Version.zip" $zipPath)) {
+    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-windsurf-$Version.zip" $zipPath)) {
         Write-NWarn "could not download windsurf agents — skipping"
         return
     }
@@ -263,7 +263,7 @@ function Install-ForWindsurf {
 function Install-ForCopilot {
     Write-NLog "installing GitHub Copilot custom instructions..."
     $zipPath = Join-Path $TempDir "copilot.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-ai-agents-copilot-$Version.zip" $zipPath)) {
+    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-copilot-$Version.zip" $zipPath)) {
         Write-NWarn "could not download copilot agents — skipping"
         return
     }

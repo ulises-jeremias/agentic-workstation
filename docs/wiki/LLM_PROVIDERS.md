@@ -54,7 +54,7 @@ Cloud providers are used only if no free local provider is available.
 ## Debugging
 
 ```bash
-DOTS_AI_LLM_DEBUG=1 dots-devcompanion run-once   # debug logging
+DOTS_WORKSTATION_LLM_DEBUG=1 dots-devcompanion run-once   # debug logging
 opencode --version                           # check OpenCode
 ollama list                                  # check Ollama models
 ```
@@ -71,4 +71,4 @@ ollama list                                  # check Ollama models
 
 ---
 
-**Canonical doc:** [`docs/DEV_COMPANION_LLM.md`](https://github.com/ulises-jeremias/dots-ai/blob/main/docs/DEV_COMPANION_LLM.md)
+**Canonical doc:** [`docs/DEV_COMPANION_LLM.md`](https://github.com/ulises-jeremias/agentic-workstation/blob/main/docs/DEV_COMPANION_LLM.md)

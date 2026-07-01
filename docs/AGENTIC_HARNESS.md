@@ -1,6 +1,6 @@
 # Agentic Harness Framework
 
-> The conceptual and operational framework behind dots-ai AI tooling.
+> The conceptual and operational framework behind agentic-workstation AI tooling.
 
 ---
 
@@ -31,7 +31,7 @@ The harness implements the **Ralph Loop** — a four-phase feedback cycle descri
 └─────────────────────────────────────────────────────────┘
 ```
 
-### How dots-ai implements it
+### How agentic-workstation implements it
 
 ```mermaid
 flowchart LR
@@ -41,12 +41,12 @@ flowchart LR
     D --> A
 ```
 
-| Ralph Concept | dots-ai Implementation |
+| Ralph Concept | agentic-workstation Implementation |
 |---------------|------------------------|
 | **Backing specifications** | `AGENTS.md` templates in `home/.chezmoitemplates/agents/` |
-| **Context engineering** | `~/.local/share/dots-ai/skills/` — modular skill packs |
+| **Context engineering** | `~/.local/share/agentic-workstation/skills/` — modular skill packs |
 | **Persistent memory** | `ai-workspace/knowledge/` — session discoveries |
-| **Fix the loop** | `dots-ai-workspace-knowledge-sync` skill — auto-syncs |
+| **Fix the loop** | `dots-harness-knowledge-sync` skill — auto-syncs |
 
 ---
 
@@ -81,7 +81,7 @@ graph TD
     S3 -.-> K2
 ```
 
-The dots-ai harness has three distinct layers:
+The agentic-workstation harness has three distinct layers:
 
 ### Layer 1 — Workstation (this repo)
 
@@ -95,7 +95,7 @@ The **infrastructure layer**:
 → See `docs/AI_LAYER.md` for the full AI layer reference.
 
 > [!NOTE]
-> This layer is what `dots-ai` provides. Layers 2 and 3 are operational concerns of the running workspace.
+> This layer is what `agentic-workstation` provides. Layers 2 and 3 are operational concerns of the running workspace.
 
 ### Layer 2 — AI Workspace
 
@@ -179,7 +179,7 @@ The workstation (`dots-skills sync`) manages the per-tool skill directories. The
 
 The `ai-workspace` serves dual purposes:
 
-1. **dots-ai running instance** — with team-specific processes, client packs, and accumulated knowledge
+1. **agentic-workstation running instance** — with team-specific processes, client packs, and accumulated knowledge
 2. **Generic starter** — the `main` branch contains a fully generic, team-agnostic version that anyone can clone and use
 
 If you're setting up a new AI workspace (personal or for a new client team), start from the repo:

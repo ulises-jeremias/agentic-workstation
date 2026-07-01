@@ -19,7 +19,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CHEZMOI_SOURCE="$REPO_ROOT"
 HOME_DIR="${REPO_ROOT}/home"
 SCRIPTS_DIR="${HOME_DIR}/.chezmoiscripts"
-EXTERNALS="${HOME_DIR}/dot_local/share/dots-ai/.chezmoiexternal.toml.tmpl"
+EXTERNALS="${HOME_DIR}/dot_local/share/agentic-workstation/.chezmoiexternal.toml.tmpl"
 
 PROFILES_DEFAULT=(technical non-technical ai node python data infra minimal custom)
 if [[ $# -gt 0 ]]; then

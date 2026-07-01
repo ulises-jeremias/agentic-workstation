@@ -26,9 +26,9 @@ set -eo pipefail
 ##
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-DEFAULT_DOTS_AI_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/dots-ai" 2>/dev/null && pwd || true)"
-DOTS_AI_LIB_DIR="${DOTS_AI_LIB_DIR:-${DEFAULT_DOTS_AI_LIB_DIR:-$HOME/.local/lib/dots-ai}}"
-EASY_OPTIONS_LIB="${DOTS_AI_LIB_DIR}/easy-options/easyoptions.sh"
+DEFAULT_DOTS_WORKSTATION_LIB_DIR="$(cd -- "${SCRIPT_DIR}/../lib/agentic-workstation" 2>/dev/null && pwd || true)"
+DOTS_WORKSTATION_LIB_DIR="${DOTS_WORKSTATION_LIB_DIR:-${DEFAULT_DOTS_WORKSTATION_LIB_DIR:-$HOME/.local/lib/agentic-workstation}}"
+EASY_OPTIONS_LIB="${DOTS_WORKSTATION_LIB_DIR}/easy-options/easyoptions.sh"
 
 if [[ ! -f ${EASY_OPTIONS_LIB} ]]; then
   echo "[dots-llm-server] Missing dependency: ${EASY_OPTIONS_LIB}" >&2
@@ -36,7 +36,7 @@ if [[ ! -f ${EASY_OPTIONS_LIB} ]]; then
 fi
 source "${EASY_OPTIONS_LIB}"
 
-LLM_SERVER_LIB="${DOTS_AI_LIB_DIR}/llm-server.sh"
+LLM_SERVER_LIB="${DOTS_WORKSTATION_LIB_DIR}/llm-server.sh"
 if [[ ! -f ${LLM_SERVER_LIB} ]]; then
   echo "[dots-llm-server] Missing dependency: ${LLM_SERVER_LIB}" >&2
   exit 1

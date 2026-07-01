@@ -30,12 +30,12 @@
 
   <!-- Title -->
   <text x="400" y="100" text-anchor="middle" fill="white" font-family="'Segoe UI', Arial, sans-serif" font-size="32" font-weight="bold" letter-spacing="2">
-    dots-ai
+    agentic-workstation
   </text>
 
   <!-- Subtitle -->
   <text x="400" y="130" text-anchor="middle" fill="#8b949e" font-family="'Segoe UI', Arial, sans-serif" font-size="16">
-    AI-First Developer Workstation Baseline for dots-ai
+    AI-First Developer Workstation Baseline for agentic-workstation
   </text>
 
   <!-- Feature pills -->

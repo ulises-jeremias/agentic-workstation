@@ -4,8 +4,8 @@
 !.config/clickup/**
 !.config/opencode/
 !.config/opencode/**
-!.config/dots-ai/
-!.config/dots-ai/**
+!.config/agentic-workstation/
+!.config/agentic-workstation/**
 .claude/**
 !.claude/
 !.claude/CLAUDE.md

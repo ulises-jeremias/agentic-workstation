@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/lib/schemas/skill.schema.json",
+  "name": "dots-workstation-meeting-minutes",
+  "version": "1.0.0",
+  "description": "WHAT: Create structured meeting minutes from notes or transcripts using agentic-workstation meeting templates, with redaction, action items, decisions, and traceability.",
+  "source": "bundled",
+  "author": "agentic-workstation",
+  "tags": [
+    "agentic-workstation",
+    "meeting-minutes",
+    "actions",
+    "decisions",
+    "clickup"
+  ],
+  "compatibility": {
+    "universal": {
+      "supported": true
+    },
+    "claude-code": {
+      "supported": true
+    },
+    "pi": {
+      "supported": true
+    },
+    "windsurf": {
+      "supported": true
+    },
+    "opencode": {
+      "supported": false
+    },
+    "cursor": {
+      "supported": false
+    },
+    "copilot-cli": {
+      "supported": false
+    }
+  }
+}

@@ -1,0 +1,893 @@
+# agentic-workstation bundled skill catalog (orchestration metadata)
+# Installed to ~/.local/share/agentic-workstation/skills/skill-catalog.yaml via chezmoi.
+# skill.json cannot hold domain/responsibility; this file is the source of truth for routing.
+
+version: 1
+
+skills:
+  - name: dots-workstation-assistant
+    domain: orchestration
+    responsibility: HOW
+    role: orchestrator_and_fallback
+    capabilities:
+      - Route tasks to workflow and tool skills
+      - Repository inspection order and conflict resolution
+      - Fallback when domain is unclear or multi-domain
+    boundaries:
+      - Do not duplicate Jira/ClickUp/Slack/forge CLI procedures owned by other skills
+    triggers:
+      - Default entry point for agentic-workstation agent work
+    depends_on: []
+    usage_hints: Read SKILL.md then references/ORCHESTRATION.md and references/REPO_INSPECTION.md
+
+  - name: dots-workstation-dev-companion
+    domain: companion
+    responsibility: WHAT
+    role: agentic-workstation_general_dev_companion
+    capabilities:
+      - Layer L2 framing for agentic-workstation client delivery
+      - Delegation to dots-workstation-assistant and dots-workstation-workflow-generic-project
+      - Optional queue mode pointers to dev-companion runner docs
+    boundaries:
+      - Does not replace dots-workstation-workflow-generic-project or tool skills
+    triggers:
+      - agentic-workstation or client delivery work
+    depends_on:
+      - name: dots-workstation-assistant
+        version: ">=1.0.0"
+      - name: dots-workstation-workflow-generic-project
+        version: ">=1.0.0"
+    usage_hints: Load the relevant workspace pack for client/account overlays; read LOOP_GUARDRAILS for optional runner
+
+  - name: dots-workstation-workflow-generic-project
+    domain: workflow
+    responsibility: WHAT
+    role: generic_client_delivery
+    capabilities:
+      - Mode selection based on user engagement context
+      - Human gates and English ticket traceability
+      - Delegation to tool skills only
+    boundaries:
+      - Must not embed Jira/ClickUp/gh/glab command sequences
+    triggers:
+      - Client delivery work
+    depends_on:
+      - dots-workstation-assistant
+      - clickup-cli
+      - github-cli-workflow
+      - gitlab-cli-workflow
+      - dots-workstation-project-assessment
+      - dots-workstation-project-assessment-evidence
+      - dots-workstation-technical-unit-assessment
+      - dots-workstation-management-unit-assessment
+    usage_hints: Use for delivery phases; run dots-workstation-output-handshake before final artifacts; for PRD/TRD/ADR use dots-workstation-prd, dots-workstation-trd, dots-workstation-adr; for project assessments use dots-workstation-project-assessment with evidence and unit scorecard skills; for default GitHub PR body when no repo template use dots-workstation-pr-fallback with github-cli-workflow; combine with external Jira/Confluence skills as needed.
+
+
+  - name: dots-workstation-workflow-client-bootstrap
+    domain: workflow
+    responsibility: WHAT
+    role: client_workflow_generator
+    capabilities:
+      - Structured interview to capture client project details
+      - Generate dots-workstation-<client>-workflow and dots-workstation-<client>-dev-companion skill pairs
+      - Update skill-catalog.yaml and create agent wrappers
+      - Open draft PR to agentic-workstation with all generated files
+    boundaries:
+      - Must not generate files until user approves the pre-generation summary
+      - Must not embed CLI command sequences in generated SKILL.md files
+      - Must not modify existing workflow skills without user confirmation
+    triggers:
+      - User wants to onboard a new client project workflow
+      - User wants to update an existing client-specific workflow skill
+      - new client workflow
+      - bootstrap workflow
+      - add <client> workflow
+    depends_on:
+      - dots-workstation-assistant
+      - github-cli-workflow
+      - gitlab-cli-workflow
+    usage_hints: Read questions.yaml before starting the interview; store client context in the workspace.
+
+  - name: workflow-generic-project
+    domain: workflow
+    responsibility: WHAT
+    role: deprecated_alias
+    capabilities:
+      - Backwards-compat alias (deprecated)
+    boundaries:
+      - Do not use for new sessions; use dots-workstation-workflow-generic-project
+    triggers:
+      - workflow-generic-project
+    depends_on:
+      - dots-workstation-workflow-generic-project
+    usage_hints: Deprecated alias. Use dots-workstation-workflow-generic-project.
+
+  - name: workflow-client-bootstrap
+    domain: workflow
+    responsibility: WHAT
+    role: deprecated_alias
+    capabilities:
+      - Backwards-compat alias (deprecated)
+    boundaries:
+      - Do not use for new sessions; use dots-workstation-workflow-client-bootstrap
+    triggers:
+      - workflow-client-bootstrap
+    depends_on:
+      - dots-workstation-workflow-client-bootstrap
+    usage_hints: Deprecated alias. Use dots-workstation-workflow-client-bootstrap.
+
+  - name: github-cli-workflow
+    domain: forge
+    responsibility: HOW
+    role: github_pr_automation
+    capabilities:
+      - Push branch and create draft PR with gh
+      - Fallback untracked PR_DESCRIPTION_*.md
+    boundaries:
+      - Does not decide ticket workflow; only executes GitHub CLI steps
+    triggers:
+      - origin is GitHub
+    depends_on: []
+    usage_hints: Workflow skills request draft PR creation here
+
+  - name: gitlab-cli-workflow
+    domain: forge
+    responsibility: HOW
+    role: gitlab_mr_automation
+    capabilities:
+      - Push branch and create draft MR with glab
+      - Fallback untracked markdown
+    boundaries:
+      - Does not replace GitHub skill on github.com remotes
+    triggers:
+      - origin is GitLab
+    depends_on: []
+    usage_hints: Use when remote host is GitLab
+
+  - name: dbt-validation
+    domain: data
+    responsibility: HOW
+    role: dbt_checks
+    capabilities:
+      - Run repo-documented dbt commands parse compile test run
+    boundaries:
+      - Does not change Snowflake security settings; follow repo AGENTS
+    triggers:
+      - dbt_project.yml present or task is dbt model work
+    depends_on: []
+    usage_hints: Called from client data workflows (and any dbt repo)
+
+  - name: snowflake-validation
+    domain: data
+    responsibility: HOW
+    role: snowflake_checks
+    capabilities:
+      - Read-only validation patterns via documented CLI or SQL
+    boundaries:
+      - Never claim validation passed without credentials
+    triggers:
+      - Snowflake referenced in repo or task
+    depends_on: []
+    usage_hints: Pair with dbt-validation in data workflows
+
+  - name: clickup-cli
+    domain: clickup
+    responsibility: HOW
+    role: clickup_cli
+    capabilities:
+      - Task view comments status via clickup CLI
+    boundaries:
+      - Not a delivery workflow by itself
+    triggers:
+      - ClickUp task IDs CU- or numeric
+    depends_on: []
+    usage_hints: workflow-generic-project delegates here
+
+  - name: slack-cli
+    domain: slack
+    responsibility: HOW
+    role: slack_app_cli
+    capabilities:
+      - Slack app development via slack CLI
+    boundaries:
+      - Not workspace chat automation
+    triggers:
+      - Slack app development
+    depends_on: []
+
+  - name: dots-slack-assistant
+    domain: slack
+    responsibility: HOW
+    role: slack_workspace_assistant
+    capabilities:
+      - Read Slack channels and messages
+      - Send messages and add reactions
+      - Browse Slack canvases
+    boundaries:
+      - Not for Slack app development (use slack-cli)
+    triggers:
+      - User asks about agentic-workstation Slack channels
+      - Read or send Slack messages
+    depends_on: []
+    usage_hints: Use for workspace chat interactions; use slack-cli for app development
+
+  - name: dots-workstation-tech-assistant
+    domain: orchestration
+    responsibility: HOW
+    role: agentic-workstation_tech_procedures
+    capabilities:
+      - Internal operational procedures for Architecture, Modernization & Infrastructure
+      - Learning/R&D procedures
+      - Consultancy requests, infra changes, training plans, presentations
+    boundaries:
+      - Internal agentic-workstation procedures only
+    triggers:
+      - Questions about agentic-workstation operational workflows
+      - Architecture procedures, infra changes, career development
+    depends_on:
+      - dots-workstation-assistant
+    usage_hints: Routes operational questions to the correct agentic-workstation procedure
+
+  - name: dots-workstation-presentations-reconciliation
+    domain: learning
+    responsibility: HOW
+    role: presentations_list_maintenance
+    capabilities:
+      - Reconcile ClickUp Presentations list against Google Calendar Thursday events
+      - Create missing ClickUp tasks for delivered talks
+      - Update Video Link, External Minutes, talk type, category, and description fields
+      - Fix task statuses to "delivered" for past talks
+    boundaries:
+      - agentic-workstation Learning/R&D Presentations list only (list ID 901702403034)
+      - Read-only on Google Calendar — all writes go to ClickUp
+    triggers:
+      - reconcile the presentations list
+      - update the presentations list
+      - presentations list is out of date
+      - batch of Thursday talks passed
+    depends_on:
+      - clickup-cli
+    usage_hints: Load gws-calendar skill for calendar fetch; use clickup-cli for all ClickUp writes; see SKILL.md for custom field IDs and gotchas
+
+  - name: dots-harness-knowledge-sync
+    domain: orchestration
+    responsibility: HOW
+    role: workspace_knowledge_management
+    capabilities:
+      - Sync workspace knowledge base
+      - Manage knowledge entries and todos
+      - Inject session context
+    boundaries:
+      - Workspace knowledge management only
+    triggers:
+      - Knowledge base sync, memory management
+    depends_on: []
+    usage_hints: Use for session context injection and knowledge persistence
+
+  - name: dots-workstation-triage
+    domain: workstation
+    responsibility: HOW
+    role: healthcheck
+    capabilities:
+      - dots-doctor and layout checks
+    triggers:
+      - Workstation health questions
+    depends_on: []
+
+  - name: ui-ux-pro-max
+    domain: ui
+    responsibility: HOW
+    role: design_intelligence
+    capabilities:
+      - UI stacks palettes patterns
+    triggers:
+      - UI UX implementation tasks
+    depends_on: []
+
+  - name: dots-workstation-prd
+    domain: delivery
+    responsibility: WHAT
+    role: prd_authoring
+    capabilities:
+      - PRD structure and review per agentic-workstation template
+      - Downstream breakdown into epics stories and tasks
+    boundaries:
+      - Does not replace product owner; does not embed full template text
+    triggers:
+      - PRD
+      - product requirements
+      - requirements document
+    depends_on:
+      - dots-workstation-assistant
+      - dots-workstation-output-handshake
+      - dots-workstation-planning
+    usage_hints: Run dots-workstation-output-handshake first; use dots-workstation-planning for estimates and dots-workstation-epic/dots-workstation-user-story/dots-workstation-task for breakdown
+
+  - name: dots-workstation-trd
+    domain: delivery
+    responsibility: WHAT
+    role: trd_authoring
+    capabilities:
+      - TRD structure and review per agentic-workstation template
+      - Links technical decisions spikes incidents and validation expectations
+    boundaries:
+      - Does not replace architecture review; does not embed full template
+    triggers:
+      - TRD
+      - technical requirements
+      - technical design document
+    depends_on:
+      - dots-workstation-assistant
+      - dots-workstation-output-handshake
+      - dots-workstation-spike
+      - dots-workstation-adr
+      - dots-workstation-development-workflow
+    usage_hints: Run dots-workstation-output-handshake first; use dots-workstation-spike for research evidence, dots-workstation-adr for durable decisions, and dots-workstation-development-workflow for validation expectations
+
+  - name: dots-workstation-adr
+    domain: delivery
+    responsibility: WHAT
+    role: adr_process
+    capabilities:
+      - ADR lifecycle and structure per agentic-workstation ADR workflow
+    boundaries:
+      - For long-impacting architecture and technical decisions only; use dots-workstation-decision-log or dots-workstation-agreement for lighter artifacts
+    triggers:
+      - ADR
+      - architecture decision
+      - technical decision record
+    depends_on:
+      - dots-workstation-assistant
+      - dots-workstation-output-handshake
+    usage_hints: Run dots-workstation-output-handshake first; use decision-log for lightweight decisions and agreement for explicit terms
+
+  - name: dots-workstation-output-handshake
+    domain: delivery
+    responsibility: WHAT
+    role: artifact_gate
+    capabilities:
+      - Ask where the final artifact will be placed and confirm human review before writing deliverables
+    boundaries:
+      - No templates; delegates to the relevant artifact skill
+    triggers:
+      - where to save
+      - deliverable
+      - final artifact
+      - output destination
+    depends_on: []
+    usage_hints: Apply before final PRD TRD ADR work item planning workflow meeting decision agreement incident spike and PR/MR text
+
+  - name: dots-workstation-pr-fallback
+    domain: delivery
+    responsibility: WHAT
+    role: default_pr_template
+    capabilities:
+      - Default GitHub PR body when repository has no pull request template; GitLab MR description when no template
+    boundaries:
+      - Does not run gh or glab; pair with github-cli-workflow or gitlab-cli-workflow
+    triggers:
+      - no pull request template
+      - default PR body
+      - pr description
+    depends_on:
+      - dots-workstation-assistant
+      - dots-workstation-output-handshake
+      - dots-workstation-development-workflow
+    usage_hints: After handshake; if the repo has a template use repo; else use references/pr-body-default.md; then github-cli-workflow or gitlab-cli-workflow
+
+  - name: dots-workstation-planning
+    domain: delivery
+    responsibility: WHAT
+    role: planning_and_estimation
+    capabilities:
+      - Planning estimation task breakdown and iteration capacity fallback
+    boundaries:
+      - Does not replace project-specific estimation rules
+    triggers:
+      - planning
+      - estimation
+      - capacity
+      - sprint planning
+      - task breakdown
+    depends_on:
+      - dots-workstation-output-handshake
+    usage_hints: Use before finalizing backlog scope estimates or iteration commitments; pair with dots-workstation-work-item
+
+  - name: dots-workstation-development-workflow
+    domain: delivery
+    responsibility: WHAT
+    role: default_development_workflow
+    capabilities:
+      - Default task lifecycle DoR DoD validation evidence and traceability model
+    boundaries:
+      - Repo AGENTS docs CI and engagement overrides take precedence
+    triggers:
+      - development workflow
+      - definition of ready
+      - definition of done
+      - validation model
+      - task lifecycle
+    depends_on:
+      - dots-workstation-assistant
+    usage_hints: Use as fallback when project docs do not define workflow; pair with dots-workstation-pr-fallback and workflow-generic-project
+
+  - name: dots-workstation-work-item
+    domain: delivery
+    responsibility: WHAT
+    role: work_item_router
+    capabilities:
+      - Route epics user stories tasks bugs and incidents to atomic templates
+    boundaries:
+      - Does not write to ClickUp; use clickup-cli after approval
+    triggers:
+      - work item
+      - epic
+      - user story
+      - task
+      - bug
+      - incident
+    depends_on:
+      - dots-workstation-output-handshake
+      - dots-workstation-planning
+    usage_hints: Classify the item then delegate to dots-workstation-epic dots-workstation-user-story dots-workstation-task dots-workstation-bug or dots-workstation-incident
+
+  - name: dots-workstation-epic
+    domain: delivery
+    responsibility: WHAT
+    role: epic_template
+    capabilities:
+      - Epic template with objectives success criteria related tasks stakeholders and effort metadata
+    triggers:
+      - epic
+    depends_on:
+      - dots-workstation-output-handshake
+      - dots-workstation-planning
+    usage_hints: Use for large bodies of work that group stories tasks bugs or subtasks
+
+  - name: dots-workstation-user-story
+    domain: delivery
+    responsibility: WHAT
+    role: user_story_template
+    capabilities:
+      - User story template with persona capability value technical notes and acceptance criteria
+    triggers:
+      - user story
+      - as a i want so that
+    depends_on:
+      - dots-workstation-output-handshake
+      - dots-workstation-planning
+    usage_hints: Use for user-centered requirements; use dots-workstation-task for purely technical work
+
+  - name: dots-workstation-task
+    domain: delivery
+    responsibility: WHAT
+    role: task_template
+    capabilities:
+      - Technical task template with summary notes acceptance criteria and effort metadata
+    triggers:
+      - task
+      - technical task
+    depends_on:
+      - dots-workstation-output-handshake
+      - dots-workstation-planning
+    usage_hints: Use for technical or operational work that is not best represented as a story
+
+  - name: dots-workstation-bug
+    domain: delivery
+    responsibility: WHAT
+    role: bug_template
+    capabilities:
+      - Bug template and bug-vs-incident classification
+    triggers:
+      - bug
+      - defect
+      - reproduction steps
+    depends_on:
+      - dots-workstation-output-handshake
+    usage_hints: Route to dots-workstation-incident if production live users service degradation critical operations or immediate response apply
+
+  - name: dots-workstation-incident
+    domain: operations
+    responsibility: WHAT
+    role: incident_report
+    capabilities:
+      - Incident report and RCA template with impact timeline resolution and follow-ups
+    triggers:
+      - incident
+      - RCA
+      - production outage
+      - service degradation
+    depends_on:
+      - dots-workstation-output-handshake
+      - dots-workstation-meeting-minutes
+    usage_hints: Use for urgent or production-impacting events; create follow-up bugs or tasks only after approval
+
+  - name: dots-workstation-meeting-minutes
+    domain: delivery
+    responsibility: WHAT
+    role: meeting_minutes
+    capabilities:
+      - Meeting minutes with agenda decisions action items parking lot evidence and redaction notes
+    triggers:
+      - meeting minutes
+      - minuta
+      - notes
+      - transcript
+    depends_on:
+      - dots-workstation-output-handshake
+    usage_hints: Redact sensitive details; extract action items and use clickup-cli only after approval
+
+  - name: dots-workstation-decision-log
+    domain: governance
+    responsibility: WHAT
+    role: lightweight_decision_log
+    capabilities:
+      - Lightweight decision entries with rationale owner date and references
+    triggers:
+      - decision log
+      - decision
+      - decisions made
+    depends_on:
+      - dots-workstation-output-handshake
+    usage_hints: Use for lightweight decisions; use dots-workstation-adr for durable architecture decisions and dots-workstation-agreement for explicit terms
+
+  - name: dots-workstation-agreement
+    domain: governance
+    responsibility: WHAT
+    role: agreement_document
+    capabilities:
+      - Agreement document with summary parties terms validity and references
+    triggers:
+      - agreement
+      - terms
+      - commitment
+    depends_on:
+      - dots-workstation-output-handshake
+    usage_hints: Use for explicit commitments among parties; link to meeting minutes and work items where possible
+
+  - name: dots-workstation-spike
+    domain: delivery
+    responsibility: WHAT
+    role: spike_research_findings
+    capabilities:
+      - Spike and research findings template with findings tradeoffs implementation strategy risks and open questions
+    triggers:
+      - spike
+      - research findings
+      - technical exploration
+      - tradeoffs
+    depends_on:
+      - dots-workstation-output-handshake
+    usage_hints: Use as evidence for dots-workstation-trd and dots-workstation-adr when exploration informs design or decisions
+
+  - name: dots-workstation-project-assessment
+    domain: assessment
+    responsibility: WHAT
+    role: project_assessment_router
+    capabilities:
+      - Interactive project assessment intake scope units evidence scoring coordination findings and action plan
+    boundaries:
+      - Does not retrieve evidence or update systems directly; delegate HOW to tool skills
+      - Does not score indicators without evidence and confidence
+    triggers:
+      - project assessment
+      - maturity assessment
+      - technical assessment
+      - management assessment
+      - quality indicators
+      - assessment report
+      - project audit
+    depends_on:
+      - dots-workstation-output-handshake
+      - dots-workstation-project-assessment-evidence
+      - dots-workstation-technical-unit-assessment
+      - dots-workstation-management-unit-assessment
+    usage_hints: Use as the router for assessment scope and units; collect evidence first, then delegate to technical or management unit assessment
+
+  - name: dots-workstation-project-assessment-evidence
+    domain: assessment
+    responsibility: WHAT
+    role: assessment_evidence_intake
+    capabilities:
+      - Interactive evidence map for assessment sources freshness owners missing evidence assumptions and confidence
+    boundaries:
+      - Does not assign scores; returns evidence map to assessment skills
+      - Does not assume evidence is in ClickUp or repositories
+    triggers:
+      - assessment evidence
+      - evidence map
+      - audit evidence
+      - collect evidence
+      - missing evidence
+    depends_on:
+      - dots-workstation-output-handshake
+    usage_hints: Ask where each source lives; capture direct indirect interview-only stale missing and not-applicable evidence before scoring
+
+  - name: dots-workstation-technical-unit-assessment
+    domain: assessment
+    responsibility: WHAT
+    role: technical_unit_assessment
+    capabilities:
+      - Technical unit scorecards for general frontend backend infrastructure data UIUX and AI-native structural readiness indicators
+    boundaries:
+      - Does not replace repository AGENTS rules or specialized review skills
+      - Does not score out-of-scope indicators
+    triggers:
+      - technical unit assessment
+      - frontend assessment
+      - backend assessment
+      - devsecops assessment
+      - data platform assessment
+      - technical scorecard
+      - ai-native structural readiness
+    depends_on:
+      - dots-workstation-output-handshake
+      - dots-workstation-project-assessment-evidence
+      - dots-workstation-assistant
+      - ui-ux-pro-max
+    usage_hints: Use after evidence intake; pair with dots-workstation-assistant for repository discovery and ui-ux-pro-max for deep UI review
+
+  - name: dots-workstation-management-unit-assessment
+    domain: assessment
+    responsibility: WHAT
+    role: management_unit_assessment
+    capabilities:
+      - Management unit scorecards for governance delivery collaboration culture and AI-native management readiness indicators
+    boundaries:
+      - Requires validation for subjective indicators
+      - Does not create follow-up tasks without approval
+    triggers:
+      - management unit assessment
+      - governance assessment
+      - delivery assessment
+      - collaboration assessment
+      - management scorecard
+      - ai-native management readiness
+    depends_on:
+      - dots-workstation-output-handshake
+      - dots-workstation-project-assessment-evidence
+      - dots-workstation-planning
+      - dots-workstation-development-workflow
+      - dots-workstation-meeting-minutes
+      - dots-workstation-decision-log
+      - dots-workstation-agreement
+      - dots-workstation-incident
+    usage_hints: Use after evidence intake; validate subjective scores with the appropriate reviewer or stakeholder
+
+  # External (not bundled in this repo; installed via chezmoiexternal)
+  - name: jira-assistant
+    domain: jira
+    responsibility: HOW
+    role: jira_cli_router
+    bundled: false
+    install_path_hint: ~/.local/share/agentic-workstation/skills-external/jira-assistant
+    capabilities:
+      - jira-as issue collaborate search lifecycle etc
+    usage_hints: workflow skills delegate Jira operations here
+
+  - name: confluence-assistant
+    domain: confluence
+    responsibility: HOW
+    role: confluence_cli_router
+    bundled: false
+    install_path_hint: ~/.local/share/agentic-workstation/skills-external/confluence-assistant
+    capabilities:
+      - confluence-as page space search comment attachment label template
+      - permission analytics watch hierarchy property bulk ops admin
+    usage_hints: workflow skills delegate Confluence operations here; use for documentation workflows
+
+  # ── Imported from openai/skills (Apache-2.0) ────────────────────────────────
+  # Each skill keeps its upstream LICENSE.txt and adds a NOTICE.txt that
+  # documents dots-workstation-side modifications. See docs/SKILLS.md → "Imported skills".
+
+  - name: gh-address-comments
+    domain: forge
+    responsibility: HOW
+    role: gh_pr_comment_handler
+    capabilities:
+      - Inspect open PR review comments and review threads via gh GraphQL
+      - Apply fixes for selected comments after user approval
+    boundaries:
+      - Does not push/merge; pair with github-cli-workflow for forge actions
+    triggers:
+      - address PR comments
+      - resolve review comments
+      - respond to PR feedback
+    depends_on:
+      - github-cli-workflow
+    usage_hints: Run gh auth status before invoking; uses scripts/fetch_comments.py (stdlib only)
+
+  - name: gh-fix-ci
+    domain: forge
+    responsibility: HOW
+    role: gh_pr_ci_triage
+    capabilities:
+      - Triage failing GitHub Actions checks via gh
+      - Fetch run/job logs and extract failure snippets
+      - Draft a fix plan and request explicit approval before implementing
+    boundaries:
+      - GitHub Actions only; external providers (Buildkite, CircleCI) reported by URL
+      - Does not push commits; pair with github-cli-workflow
+    triggers:
+      - fix CI
+      - debug failing checks
+      - why is the build red
+    depends_on:
+      - github-cli-workflow
+      - dots-workstation-planning
+    usage_hints: Run scripts/inspect_pr_checks.py; --json for machine-friendly output
+
+  - name: linear
+    domain: linear
+    responsibility: HOW
+    role: linear_mcp_workflows
+    capabilities:
+      - Manage Linear issues, projects and cycles via Linear MCP (OAuth)
+      - Sprint planning, bug triage, documentation audits, workload balance
+    boundaries:
+      - All access via Linear MCP; do not call Linear REST/GraphQL directly
+    triggers:
+      - Linear ticket
+      - sprint planning in Linear
+      - triage Linear bugs
+    depends_on: []
+    usage_hints: Requires Linear MCP registered in your AI tool — see ~/.local/share/agentic-workstation/mcp/linear/
+
+  - name: figma
+    domain: figma
+    responsibility: HOW
+    role: figma_mcp_entry_point
+    capabilities:
+      - Entry point for the Figma MCP family
+      - Required flow get_design_context → get_metadata → get_screenshot
+      - Asset handling and link-based prompting rules
+    boundaries:
+      - Reads Figma context and writes code; does not write back to Figma
+    triggers:
+      - Figma URL
+      - design-to-code from Figma
+      - Figma MCP setup
+    depends_on: []
+    usage_hints: Requires Figma MCP and FIGMA_OAUTH_TOKEN — see ~/.local/share/agentic-workstation/mcp/figma/
+
+  - name: figma-implement-design
+    domain: figma
+    responsibility: HOW
+    role: figma_design_to_code
+    capabilities:
+      - Translate a Figma node into production code with 1:1 fidelity
+      - Project conventions and design tokens enforcement
+    boundaries:
+      - Code in user repo only; for canvas writes install opt-in figma-use pack
+    triggers:
+      - implement design
+      - generate code from Figma
+      - build component from Figma
+    depends_on:
+      - figma
+    usage_hints: Always start with get_design_context + get_screenshot
+
+  - name: figma-code-connect-components
+    domain: figma
+    responsibility: HOW
+    role: figma_code_connect
+    capabilities:
+      - Map Figma nodes to existing code components via Code Connect MCP
+    boundaries:
+      - Mapping only; for canvas writes install opt-in figma-use pack
+    triggers:
+      - code connect mapping
+      - link Figma component to code
+    depends_on:
+      - figma
+    usage_hints: Use scripts/normalize_node_id.py to canonicalize node IDs
+
+  - name: figma-create-design-system-rules
+    domain: figma
+    responsibility: HOW
+    role: figma_agents_md_generator
+    capabilities:
+      - Generate design system rule files (AGENTS.md, .cursor/rules/, etc.)
+      - Encode unwritten conventions for Figma-driven implementation
+    boundaries:
+      - Writes a rules file; does not modify components or implementations
+    triggers:
+      - create design system rules
+      - generate AGENTS.md for design system
+    depends_on:
+      - figma
+    usage_hints: Targets AGENTS.md/CLAUDE.md/.cursor/rules/.windsurfrules — prefer single AGENTS.md with symlinks
+
+  - name: figma-create-new-file
+    domain: figma
+    responsibility: HOW
+    role: figma_file_bootstrap
+    capabilities:
+      - Create a new Figma file with sane defaults via the MCP
+    boundaries:
+      - File-creation only; for richer canvas writes install opt-in figma-use pack
+    triggers:
+      - new Figma file
+      - create Figma file from scratch
+    depends_on:
+      - figma
+
+  - name: playwright-cli
+    domain: testing
+    responsibility: HOW
+    role: playwright_cli_browser_automation
+    capabilities:
+      - Drive a real browser from the terminal via @playwright/cli
+      - Snapshot/click/fill/screenshot/trace, sessions, multi-tab
+    boundaries:
+      - CLI-first automation only; for Playwright test specs use dots-workstation-e2e-runner
+    triggers:
+      - browser automation from CLI
+      - data extraction from rendered page
+      - reproduce UI bug interactively
+    depends_on: []
+    usage_hints: Source ~/.local/share/agentic-workstation/skills/playwright-cli/scripts/playwright_cli.sh as $PWCLI
+
+  - name: jupyter-notebook
+    domain: rd
+    responsibility: HOW
+    role: jupyter_notebook_scaffold
+    capabilities:
+      - Scaffold reproducible Jupyter notebooks from experiment/tutorial templates
+      - Stdlib-only helper script via dots-newnotebook wrapper
+    boundaries:
+      - Scaffolds and refactors notebooks; does not run them
+    triggers:
+      - new Jupyter notebook
+      - scaffold .ipynb
+      - convert script to notebook
+    depends_on: []
+    usage_hints: Use dots-newnotebook (wrapper) or invoke scripts/new_notebook.py directly
+
+  # AI Agents (deployed per-tool by chezmoi — dots-workstation-* prefix)
+  # OpenCode: ~/.config/opencode/agents/   Claude: ~/.claude/agents/
+  # Cursor:   ~/.cursor/rules/             Windsurf: ~/.windsurf/rules/
+  - name: dots-workstation-agents
+    domain: agents
+    responsibility: HOW
+    role: agent_router
+    bundled: true
+    install_path_hint: ~/.config/opencode/agents/
+    capabilities:
+      - "dots-workstation-planner: feature planning"
+      - "dots-workstation-code-reviewer: code quality"
+      - "dots-workstation-typescript-reviewer: TS/JS review"
+      - "dots-workstation-security-reviewer: security scanning"
+      - "dots-workstation-tdd-guide: TDD workflow"
+      - "dots-workstation-build-error-resolver: build fixes"
+      - "dots-workstation-refactor-cleaner: dead code cleanup"
+      - "dots-workstation-performance-optimizer: performance analysis"
+      - "dots-workstation-database-reviewer: PostgreSQL/Supabase"
+      - "dots-workstation-docs-lookup: API documentation"
+      - "dots-workstation-e2e-runner: Playwright testing"
+      - "dots-workstation-architect: system design"
+      - "dots-workstation-assistant: agentic-workstation conventions"
+      - "dots-workstation-reference-lookup: public examples examples"
+    usage_hints: "Use @mention to invoke agents in OpenCode/Claude Code. Agents are deployed directly by chezmoi apply."
+
+  - name: dev-companion-llm
+    domain: llm
+    responsibility: HOW
+    role: llm_provider_abstraction
+    bundled: true
+    install_path_hint: ~/.local/share/agentic-workstation/dev-companion/runner/
+    capabilities:
+      - Provider-agnostic LLM calls
+      - Automatic provider selection (priority order)
+      - OpenCode (big-pickle, free, local)
+      - Ollama (local models, free)
+      - Anthropic/Claude (paid)
+      - OpenAI/GPT (paid)
+    boundaries:
+      - Runner use only (not for interactive sessions)
+      - No API keys required for basic operation
+    triggers:
+      - Jobs with llm: true in JSON
+      - dots-devcompanion plan-only command
+    depends_on: []
+    usage_hints: Loaded automatically by runner; set DOTS_WORKSTATION_LLM_DEBUG=1 for debug output

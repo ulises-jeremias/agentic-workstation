@@ -3,12 +3,12 @@
 # bundled jupyter-notebook skill templates.
 #
 # Thin wrapper around:
-#   ~/.local/share/dots-ai/skills/jupyter-notebook/scripts/new_notebook.py
+#   ~/.local/share/agentic-workstation/skills/jupyter-notebook/scripts/new_notebook.py
 #
 # Forwards all arguments to the script. Run `dots-newnotebook --help` for usage.
 set -euo pipefail
 
-SKILL_DIR="${HOME}/.local/share/dots-ai/skills/jupyter-notebook"
+SKILL_DIR="${HOME}/.local/share/agentic-workstation/skills/jupyter-notebook"
 SCRIPT="${SKILL_DIR}/scripts/new_notebook.py"
 
 if [[ ! -f ${SCRIPT} ]]; then
