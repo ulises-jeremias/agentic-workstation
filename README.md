@@ -9,19 +9,19 @@
 <br>
 <br>
 
-[![MIT License](https://img.shields.io/badge/License-MIT-%23ff6b35?style=for-the-badge&labelColor=1f2937)](LICENSE)
-[![chezmoi](https://img.shields.io/badge/chezmoi-managed-%23f7c948?style=for-the-badge&labelColor=1f2937&logo=chezmoi&logoColor=white)](https://www.chezmoi.io/)
-[![Release](https://img.shields.io/github/v/release/ulises-jeremias/agentic-workstation?style=for-the-badge&label=Release&color=%23ff6b35&labelColor=1f2937)](https://github.com/ulises-jeremias/agentic-workstation/releases)
-[![Stars](https://img.shields.io/github/stars/ulises-jeremias/agentic-workstation?style=for-the-badge&logo=github&color=%23f7c948&labelColor=1f2937)](https://github.com/ulises-jeremias/agentic-workstation)
+[![Layer](https://img.shields.io/badge/L1-Workstation%20Baseline-22d3ee?style=for-the-badge&labelColor=020617)](#personal-dx-stack)
+[![Skills](https://img.shields.io/badge/52%2B-AI%20Skill%20Packs-a78bfa?style=for-the-badge&labelColor=020617)](#what-you-get)
+[![MCP](https://img.shields.io/badge/MCP-Ready-84cc16?style=for-the-badge&labelColor=020617)](#what-you-get)
+[![CI](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/devcontainer-chezmoi-validate.yml?style=for-the-badge&label=CI&labelColor=020617&color=22d3ee)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/devcontainer-chezmoi-validate.yml)
 
-[![CI — Validate Workstation](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/validate-workstation.yml?style=flat-square&label=Validate%20Workstation&logo=githubactions&logoColor=white&labelColor=1f2937&color=%23ff6b35)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/validate-workstation.yml)
-[![CI — Chezmoi Validate](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/devcontainer-chezmoi-validate.yml?style=flat-square&label=Chezmoi%20Validate&logo=githubactions&logoColor=white&labelColor=1f2937&color=%23f7c948)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/devcontainer-chezmoi-validate.yml)
-[![CI — Pre-commit](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/pre-commit.yml?style=flat-square&label=Pre-commit&logo=githubactions&logoColor=white&labelColor=1f2937&color=%2358a6ff)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/pre-commit.yml)
-[![CI — E2E Install](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/e2e-install.yml?style=flat-square&label=E2E%20Install&logo=githubactions&logoColor=white&labelColor=1f2937&color=%237ee787)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/e2e-install.yml)
-[![CI — MegaLinter](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/megalinter-v9.yml?style=flat-square&label=MegaLinter&logo=githubactions&logoColor=white&labelColor=1f2937&color=%23bc8cff)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/megalinter-v9.yml)
-[![CI — Security Scan](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/security-scan.yml?style=flat-square&label=Security&logo=githubactions&logoColor=white&labelColor=1f2937&color=%23f778ba)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/security-scan.yml)
+<h3>One command to turn a machine into an AI-native developer workstation.</h3>
 
-[Install :zap:](#quick-start) · [Wiki](https://github.com/ulises-jeremias/agentic-workstation/wiki) · [Integrations](#-integrations) · [Docs](docs/) · [Contributing](CONTRIBUTING.md)
+<p>
+  <strong>agentic-workstation</strong> is the baseline layer of my personal Developer Experience stack:<br>
+  reproducible dotfiles, AI skills, MCP servers, agent workflows, and CLI guardrails optimized for flow.
+</p>
+
+[Install](#quick-start) · [Wiki](https://github.com/ulises-jeremias/agentic-workstation/wiki) · [Integrations](#integrations) · [Personal DX Stack](#personal-dx-stack) · [Docs](docs/) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -33,7 +33,7 @@ Works with **Claude Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub C
 
 ---
 
-## ✨ What You Get
+## What You Get
 
 <table>
   <tr>
@@ -74,7 +74,7 @@ Works with **Claude Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub C
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ```bash
 # Install the full workstation (chezmoi-based, profiles, skills, everything)
@@ -113,7 +113,7 @@ bash scripts/install-skills.sh
 
 ---
 
-## 🔌 Integrations
+## Integrations
 
 Seamless skill packs for the tools you use every day:
 
@@ -160,7 +160,7 @@ Seamless skill packs for the tools you use every day:
 
 ## 📂 Repository Map
 
-```
+```text
 agentic-workstation/
 ├── home/                    # Chezmoi source state → your $HOME
 ├── docs/                    # Architecture, ADRs, maintainer guides
@@ -197,21 +197,32 @@ Key decisions are recorded as ADRs — immutable once accepted, superseded by ne
 
 ---
 
-## 🔗 Related Project
+## Personal DX Stack
 
 <table>
   <tr>
-    <td width="60%" valign="top">
-      <strong>🧠 agentic-harness</strong><br>
-      <sub>The running instance layer — persistent memory, indexed repos,<br>personas, packs, and background job orchestration.</sub>
+    <td width="33%" valign="top">
+      <strong>dotfiles</strong><br>
+      <sub>The personal operating layer: shell, editor, terminal, packages, and day-to-day ergonomics.</sub>
       <br><br>
-      <a href="https://github.com/ulises-jeremias/agentic-harness"><code>github.com/ulises-jeremias/agentic-harness</code></a>
+      <a href="https://github.com/ulises-jeremias/dotfiles"><code>ulises-jeremias/dotfiles</code></a>
     </td>
-    <td width="40%" align="center">
-      <pre>L1: agentic-workstation<br>L2: agentic-harness<br>L3: client repos</pre>
+    <td width="34%" valign="top">
+      <strong>agentic-workstation</strong><br>
+      <sub>The AI-native workstation baseline: skills, agents, MCP templates, CLI helpers, and setup automation.</sub>
+      <br><br>
+      <a href="https://github.com/ulises-jeremias/agentic-workstation"><code>ulises-jeremias/agentic-workstation</code></a>
+    </td>
+    <td width="33%" valign="top">
+      <strong>agentic-harness</strong><br>
+      <sub>The running instance layer: persistent memory, indexed repos, personas, packs, and background loops.</sub>
+      <br><br>
+      <a href="https://github.com/ulises-jeremias/agentic-harness"><code>ulises-jeremias/agentic-harness</code></a>
     </td>
   </tr>
 </table>
+
+Together, these three projects form my personal workspace: a polished Developer Experience / UX system that optimizes setup, context switching, AI-assisted delivery, and daily workflow automation.
 
 ---
 
