@@ -1,62 +1,70 @@
-<svg width="800" height="200" xmlns="http://www.w3.org/2000/svg">
+<svg width="1200" height="280" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#161b22;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e14;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#141a23;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a0e14;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
       <stop offset="50%" style="stop-color:#f7c948;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="subtleGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:0.15" />
-      <stop offset="100%" style="stop-color:#f7c948;stop-opacity:0.05" />
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:0.12" />
+      <stop offset="100%" style="stop-color:#f7c948;stop-opacity:0.04" />
     </linearGradient>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f7c948;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="none"/>
+      <rect x="0" y="0" width="1" height="1" fill="#ffffff" opacity="0.02"/>
+    </pattern>
   </defs>
 
-  <!-- Background -->
-  <rect width="800" height="200" rx="12" ry="12" fill="url(#bgGradient)"/>
+  <rect width="1200" height="280" rx="16" ry="16" fill="url(#bgGrad)"/>
+  <rect width="1200" height="280" rx="16" ry="16" fill="url(#grid)"/>
+  <ellipse cx="400" cy="140" rx="500" ry="120" fill="url(#glowGrad)"/>
 
-  <!-- Subtle glow effect -->
-  <ellipse cx="400" cy="100" rx="350" ry="80" fill="url(#subtleGlow)"/>
+  <rect x="0" y="0" width="1200" height="4" rx="2" fill="url(#accentGrad)"/>
 
-  <!-- Accent line top -->
-  <rect x="150" y="0" width="500" height="3" rx="1.5" fill="url(#accentGradient)"/>
+  <g transform="translate(100, 80)">
+    <rect x="0" y="0" width="64" height="64" rx="16" fill="#1a2332" stroke="#ff6b35" stroke-width="1.5"/>
+    <text x="32" y="44" text-anchor="middle" font-size="32" fill="url(#iconGrad)">⚡</text>
+  </g>
 
-  <!-- Robot/AI icon -->
-  <text x="400" y="60" text-anchor="middle" font-size="36">🛠️</text>
-
-  <!-- Title -->
-  <text x="400" y="100" text-anchor="middle" fill="white" font-family="'Segoe UI', Arial, sans-serif" font-size="32" font-weight="bold" letter-spacing="2">
+  <text x="184" y="112" fill="white" font-family="'Segoe UI', -apple-system, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="1">
     agentic-workstation
   </text>
 
-  <!-- Subtitle -->
-  <text x="400" y="130" text-anchor="middle" fill="#8b949e" font-family="'Segoe UI', Arial, sans-serif" font-size="16">
-    AI-First Developer Workstation Baseline for agentic-workstation
+  <text x="184" y="146" fill="#8b949e" font-family="'Segoe UI', -apple-system, Arial, sans-serif" font-size="18" font-weight="400">
+    AI-First Workstation Baseline — chezmoi-managed skills, agents, MCP, and loops
   </text>
 
-  <!-- Feature pills -->
-  <rect x="100" y="150" width="100" height="24" rx="12" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-  <text x="150" y="166" text-anchor="middle" fill="#ff6b35" font-family="'Segoe UI', Arial, sans-serif" font-size="11">chezmoi</text>
+  <g transform="translate(120, 200)">
+    <rect x="0" y="0" width="90" height="28" rx="14" fill="#1f2937" stroke="#ff6b35" stroke-width="1"/>
+    <text x="45" y="18" text-anchor="middle" fill="#ff6b35" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="600">chezmoi</text>
 
-  <rect x="215" y="150" width="80" height="24" rx="12" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-  <text x="255" y="166" text-anchor="middle" fill="#f7c948" font-family="'Segoe UI', Arial, sans-serif" font-size="11">skills</text>
+    <rect x="104" y="0" width="70" height="28" rx="14" fill="#1f2937" stroke="#f7c948" stroke-width="1"/>
+    <text x="139" y="18" text-anchor="middle" fill="#f7c948" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="600">skills</text>
 
-  <rect x="310" y="150" width="80" height="24" rx="12" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-  <text x="350" y="166" text-anchor="middle" fill="#58a6ff" font-family="'Segoe UI', Arial, sans-serif" font-size="11">agents</text>
+    <rect x="188" y="0" width="75" height="28" rx="14" fill="#1f2937" stroke="#58a6ff" stroke-width="1"/>
+    <text x="225" y="18" text-anchor="middle" fill="#58a6ff" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="600">agents</text>
 
-  <rect x="405" y="150" width="100" height="24" rx="12" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-  <text x="455" y="166" text-anchor="middle" fill="#7ee787" font-family="'Segoe UI', Arial, sans-serif" font-size="11">multi-tool</text>
+    <rect x="277" y="0" width="70" height="28" rx="14" fill="#1f2937" stroke="#7ee787" stroke-width="1"/>
+    <text x="312" y="18" text-anchor="middle" fill="#7ee787" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="600">MCP</text>
 
-  <rect x="520" y="150" width="80" height="24" rx="12" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-  <text x="560" y="166" text-anchor="middle" fill="#bc8cff" font-family="'Segoe UI', Arial, sans-serif" font-size="11">MCP</text>
+    <rect x="361" y="0" width="95" height="28" rx="14" fill="#1f2937" stroke="#bc8cff" stroke-width="1"/>
+    <text x="408" y="18" text-anchor="middle" fill="#bc8cff" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="600">multi-tool</text>
 
-  <rect x="615" y="150" width="90" height="24" rx="12" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-  <text x="660" y="166" text-anchor="middle" fill="#f778ba" font-family="'Segoe UI', Arial, sans-serif" font-size="11">harness</text>
+    <rect x="470" y="0" width="80" height="28" rx="14" fill="#1f2937" stroke="#f778ba" stroke-width="1"/>
+    <text x="510" y="18" text-anchor="middle" fill="#f778ba" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="600">loops</text>
 
-  <!-- Accent line bottom -->
-  <rect x="150" y="197" width="500" height="3" rx="1.5" fill="url(#accentGradient)"/>
+    <rect x="564" y="0" width="90" height="28" rx="14" fill="#1f2937" stroke="#ff6b35" stroke-width="1"/>
+    <text x="609" y="18" text-anchor="middle" fill="#ff6b35" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="600">harness</text>
+  </g>
+
+  <rect x="0" y="276" width="1200" height="4" rx="2" fill="url(#accentGrad)"/>
 </svg>
