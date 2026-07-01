@@ -1,0 +1,50 @@
+name: Skill Index
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "home/dot_local/share/dots-ai/skills/skill-catalog.yaml"
+      - "home/dot_local/share/dots-ai/skills/*/skill.json"
+      - "scripts/generate-skill-index.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Generate skill index
+        run: python3 scripts/generate-skill-index.py
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet docs/skills/index.html; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/skills/index.html
+          git commit -m "docs: update skill index"
+          git push
