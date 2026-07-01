@@ -2,15 +2,15 @@
 set -euo pipefail
 
 if [[ -t 1 && -z ${NO_COLOR:-} ]]; then
-	c_reset=$'\033[0m'
-	c_blue=$'\033[1;34m'
-	c_red=$'\033[1;31m'
-	c_green=$'\033[1;32m'
+  c_reset=$'\033[0m'
+  c_blue=$'\033[1;34m'
+  c_red=$'\033[1;31m'
+  c_green=$'\033[1;32m'
 else
-	c_reset=''
-	c_blue=''
-	c_red=''
-	c_green=''
+  c_reset=''
+  c_blue=''
+  c_red=''
+  c_green=''
 fi
 
 info() { printf '%b[markdown-tables]%b %s\n' "$c_blue" "$c_reset" "$*"; }
@@ -104,8 +104,8 @@ ENDFILE {
 
 END { exit status }
 '; then
-	fail "markdown table validation failed"
-	exit 1
+  fail "markdown table validation failed"
+  exit 1
 fi
 
 ok "markdown tables passed validation"
