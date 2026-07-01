@@ -100,8 +100,14 @@ else
   fail "chezmoi config file missing: $CHEZMOI_CONFIG"
 fi
 
-# Step 7 — Smoke-test dots-doctor (runs and exits cleanly)
-if "$HOME/.local/bin/dots-doctor" >/dev/null 2>&1; then
+# Step 7 — Smoke-test dots-doctor with CI-friendly profile.
+# E2E install only guarantees core tools; disable optional groups that require
+# user-managed tooling (fnm/node, uv/python, docker).
+if DOTS_WORKSTATION_DOCTOR_GROUP_NODE=false \
+  DOTS_WORKSTATION_DOCTOR_GROUP_PYTHON=false \
+  DOTS_WORKSTATION_DOCTOR_GROUP_DOCKER=false \
+  DOTS_WORKSTATION_DOCTOR_GROUP_AI=false \
+  "$HOME/.local/bin/dots-doctor" --no-snapshot >/dev/null 2>&1; then
   ok "dots-doctor ran successfully"
 else
   fail "dots-doctor exited with non-zero status"
