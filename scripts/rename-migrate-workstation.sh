@@ -78,7 +78,7 @@ update_chezmoi_config() {
 main() {
   printf '\n\033[1m=== agentic-workstation -> agentic-workstation migration ===\033[0m\n\n'
   printf '\033[1m[1/3] Updating remotes\033[0m\n'
-  update_remote "${HOME}/.agentic-workstation" "~/.agentic-workstation"
+  update_remote "${HOME}/.agentic-workstation" ".agentic-workstation"
   update_remote "${HOME}/.ai-workspace/repos/github.com/ulises-jeremias/agentic-workstation" "repos/agentic-workstation"
   printf '\n\033[1m[2/3] Migrating directories\033[0m\n'
   for src in "${!DIR_MIGRATIONS[@]}"; do migrate_dir "${src}" "${DIR_MIGRATIONS[${src}]}"; done
