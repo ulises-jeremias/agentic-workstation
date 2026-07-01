@@ -11,7 +11,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 CHEZMOI="${CHEZMOI:-}"
-if [[ -z "$CHEZMOI" ]]; then
+if [[ -z $CHEZMOI ]]; then
   if command -v chezmoi >/dev/null 2>&1; then
     CHEZMOI="$(command -v chezmoi)"
   elif [[ -x "$HOME/.local/bin/chezmoi" ]]; then
@@ -19,7 +19,7 @@ if [[ -z "$CHEZMOI" ]]; then
   fi
 fi
 
-if [[ -z "$CHEZMOI" ]]; then
+if [[ -z $CHEZMOI ]]; then
   echo "==> Installing chezmoi..."
   BINDIR="$(mktemp -d)"
   sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$BINDIR"
@@ -32,7 +32,7 @@ echo "==> chezmoi init --source=$REPO_ROOT --promptDefaults --apply"
 echo "==> chezmoi diff --source=$REPO_ROOT"
 DIFF_OUTPUT=$("$CHEZMOI" diff --source="$REPO_ROOT" 2>&1 || true)
 
-if [[ -z "$DIFF_OUTPUT" ]]; then
+if [[ -z $DIFF_OUTPUT ]]; then
   echo "PASS: chezmoi diff is empty — configuration is idempotent"
   exit 0
 else

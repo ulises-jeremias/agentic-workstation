@@ -9,8 +9,8 @@
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-workstation-assistant` | agentic-workstation Assistant: inspect any repo in order README→docs→AGENTS→CONTRI | `universal`, `claude-code`, `windsurf`, `pi` |
 | `dots-harness-knowledge-sync` | Syncs knowledge to ai-workspace knowledge base. Auto-triggers from dot | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-assistant` | agentic-workstation Assistant: inspect any repo in order README→docs→A | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Workflow
 
@@ -18,14 +18,14 @@
 |-------|-------------|-------|
 | `dots-workstation-workflow-client-bootstrap` | WHAT: Interactive interview that stores client delivery context into t | `universal`, `claude-code`, `windsurf`, `pi` |
 | `dots-workstation-workflow-generic-project` | WHAT: Generic client delivery phases, gates, English ticket traceabili | `universal`, `claude-code`, `windsurf`, `pi` |
-| `workflow-client-bootstrap` | DEPRECATED alias. Use dots-workstation-workflow-client-bootstrap instead. | `universal`, `claude-code`, `windsurf`, `pi` |
-| `workflow-generic-project` | DEPRECATED alias. Use dots-workstation-workflow-generic-project instead. | `universal`, `claude-code`, `windsurf`, `pi` |
+| `workflow-client-bootstrap` | DEPRECATED alias. Use dots-workstation-workflow-client-bootstrap inste | `universal`, `claude-code`, `windsurf`, `pi` |
+| `workflow-generic-project` | DEPRECATED alias. Use dots-workstation-workflow-generic-project instea | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Companion
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-workstation-dev-companion` | WHAT: general agentic-workstation dev companion layer; delegates to dots-workstation-assist | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-dev-companion` | WHAT: general agentic-workstation dev companion layer; delegates to do | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Other
 
@@ -51,19 +51,19 @@
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-workstation-adr` | WHAT: Architecture Decision Records per the agentic-workstation ADR workflow in Cl | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-workstation-bug` | WHAT: Draft and review bugs using the agentic-workstation Bug Template; classifies | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-adr` | WHAT: Architecture Decision Records per the agentic-workstation ADR wo | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-bug` | WHAT: Draft and review bugs using the agentic-workstation Bug Template | `universal`, `claude-code`, `windsurf`, `pi` |
 | `dots-workstation-development-workflow` | WHAT: Default development workflow, task lifecycle, DoR, DoD, validati | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-workstation-epic` | WHAT: Draft and review epics using the agentic-workstation Best Practices Epic Tem | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-epic` | WHAT: Draft and review epics using the agentic-workstation Best Practi | `universal`, `claude-code`, `windsurf`, `pi` |
 | `dots-workstation-meeting-minutes` | WHAT: Create structured meeting minutes from notes or transcripts usin | `universal`, `claude-code`, `windsurf`, `pi` |
 | `dots-workstation-output-handshake` | WHAT: Ask where the final artifact goes and confirm human review befor | `universal`, `claude-code`, `windsurf`, `pi` |
 | `dots-workstation-planning` | WHAT: Planning, estimation, task breakdown, and iteration capacity fal | `universal`, `claude-code`, `windsurf`, `pi` |
 | `dots-workstation-pr-fallback` | WHAT: Default PR/MR body structure when the repo has no template; use  | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-workstation-prd` | WHAT: Draft and review a PRD following the agentic-workstation ClickUp template; b | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-workstation-spike` | WHAT: Produce spike and research findings using the agentic-workstation spike temp | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-workstation-task` | WHAT: Draft and review technical tasks using the agentic-workstation Best Practice | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-workstation-trd` | WHAT: Draft and review a TRD from the agentic-workstation ClickUp template, aligne | `universal`, `claude-code`, `windsurf`, `pi` |
-| `dots-workstation-user-story` | WHAT: Draft and review user stories using the agentic-workstation task template pl | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-prd` | WHAT: Draft and review a PRD following the agentic-workstation ClickUp | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-spike` | WHAT: Produce spike and research findings using the agentic-workstatio | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-task` | WHAT: Draft and review technical tasks using the agentic-workstation B | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-trd` | WHAT: Draft and review a TRD from the agentic-workstation ClickUp temp | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-user-story` | WHAT: Draft and review user stories using the agentic-workstation task | `universal`, `claude-code`, `windsurf`, `pi` |
 | `dots-workstation-work-item` | WHAT: Router for creating and refining epics, user stories, tasks, bug | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Governance
@@ -77,7 +77,7 @@
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
-| `dots-workstation-incident` | WHAT: Draft and review incident reports and RCA notes using agentic-workstation In | `universal`, `claude-code`, `windsurf`, `pi` |
+| `dots-workstation-incident` | WHAT: Draft and review incident reports and RCA notes using agentic-wo | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Assessment
 

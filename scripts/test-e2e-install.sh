@@ -16,8 +16,14 @@ SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
 PASS_COUNT=0
 FAIL_COUNT=0
 
-ok() { printf '[E2E] PASS: %s\n' "$*"; PASS_COUNT=$((PASS_COUNT + 1)); }
-fail() { printf '[E2E] FAIL: %s\n' "$*" >&2; FAIL_COUNT=$((FAIL_COUNT + 1)); }
+ok() {
+  printf '[E2E] PASS: %s\n' "$*"
+  PASS_COUNT=$((PASS_COUNT + 1))
+}
+fail() {
+  printf '[E2E] FAIL: %s\n' "$*" >&2
+  FAIL_COUNT=$((FAIL_COUNT + 1))
+}
 
 TEMP_HOME=""
 cleanup() {

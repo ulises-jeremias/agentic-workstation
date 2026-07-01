@@ -19,6 +19,7 @@
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `clickup-cli` | 1.0.1 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dbt-validation` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| `dots-harness-knowledge-sync` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-adr` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-agreement` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-assistant` | 2.1.3 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
@@ -41,12 +42,11 @@
 | `dots-workstation-task` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-technical-unit-assessment` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-trd` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| `dots-workstation-triage` | 1.1.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-user-story` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-work-item` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-workflow-client-bootstrap` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-workflow-generic-project` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-harness-knowledge-sync` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-triage` | 1.1.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `figma` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `figma-code-connect-components` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `figma-create-design-system-rules` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
