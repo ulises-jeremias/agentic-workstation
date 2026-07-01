@@ -26,6 +26,8 @@ Each ADR follows this structure:
 | [006](006-multi-tool-portability.md) | Multi-tool portability via symlinks and thin adapters | Accepted |
 | [007](007-agentic-harness-three-layers.md) | Agentic harness with three-layer architecture | Accepted |
 | [008](008-dev-companion-queue-safety.md) | Dev companion queue with plan-only default | Accepted |
+| [009](009-keep-name-refresh-tagline.md) | Keep name, refresh tagline | Superseded by 010 |
+| [010](010-rename-to-agentic-workstation.md) | Rename to agentic-workstation | Accepted |
 
 ---
 

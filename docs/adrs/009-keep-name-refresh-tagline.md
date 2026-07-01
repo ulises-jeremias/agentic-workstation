@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR-010](010-rename-to-agentic-workstation.md)
 
 ## Context
 
