@@ -34,10 +34,11 @@ Please avoid personal machine-specific additions (use local chezmoi overrides in
 
 ## Contribution workflow
 
-1. Create a branch from `main`.
-2. Make focused changes.
-3. Run local checks.
-4. Open a pull request using the template.
+1. Fork the repository to your own GitHub account.
+2. Clone your fork and create a branch from `main`.
+3. Make focused changes.
+4. Run local checks.
+5. Open a pull request from your fork's branch to `main` using the template.
 
 ## Local quality checks
 
