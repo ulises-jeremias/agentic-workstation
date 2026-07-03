@@ -76,12 +76,20 @@ Works with **Claude Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub C
 
 ## Quick Start
 
-```bash
-# Install the full workstation (chezmoi-based, profiles, skills, everything)
-chezmoi init --apply ulises-jeremias/agentic-workstation
+### Just want the AI skills?
 
-# Or install just the AI layer (skills + agents only, no dotfiles)
-bash scripts/install-skills.sh
+Add 52+ AI skill packs to your existing setup in one command — **no dotfiles, no chezmoi, no shell changes**:
+
+```bash
+curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | bash
+```
+
+Works instantly with **Claude Code, opencode, Cursor, GitHub Copilot, and Gemini CLI**. [Learn more →](https://github.com/ulises-jeremias/agentic-workstation/wiki/GUIDED_AI_INSTALL)
+
+### Full workstation (dotfiles + skills + everything)
+
+```bash
+chezmoi init --apply ulises-jeremias/agentic-workstation
 ```
 
 <table>
