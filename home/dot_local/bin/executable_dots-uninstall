@@ -25,27 +25,27 @@ EASY_OPTIONS_LIB="${DOTS_WORKSTATION_LIB_DIR}/easy-options/easyoptions.sh"
 options=(h=help dry-run keep-config remove-skills remove-checksums all)
 
 if [[ -f ${EASY_OPTIONS_LIB} ]]; then
-  source "${EASY_OPTIONS_LIB}"
+	source "${EASY_OPTIONS_LIB}"
 fi
 
 if [[ -t 1 && -z ${NO_COLOR:-} ]]; then
-  c_reset=$'\033[0m'
-  c_blue=$'\033[1;34m'
-  c_red=$'\033[1;31m'
-  c_green=$'\033[1;32m'
-  c_yellow=$'\033[1;33m'
+	c_reset=$'\033[0m'
+	c_blue=$'\033[1;34m'
+	c_red=$'\033[1;31m'
+	c_green=$'\033[1;32m'
+	c_yellow=$'\033[1;33m'
 else
-  c_reset=''
-  c_blue=''
-  c_red=''
-  c_green=''
-  c_yellow=''
+	c_reset=''
+	c_blue=''
+	c_red=''
+	c_green=''
+	c_yellow=''
 fi
 
-info()  { printf '%b[dots-uninstall]%b %s\n' "$c_blue" "$c_reset" "$*"; }
-fail()  { printf '%b[dots-uninstall]%b %s\n' "$c_red" "$c_reset" "$*"; }
-ok()    { printf '%b[dots-uninstall]%b %s\n' "$c_green" "$c_reset" "$*"; }
-warn()  { printf '%b[dots-uninstall]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
+info() { printf '%b[dots-uninstall]%b %s\n' "$c_blue" "$c_reset" "$*"; }
+fail() { printf '%b[dots-uninstall]%b %s\n' "$c_red" "$c_reset" "$*"; }
+ok() { printf '%b[dots-uninstall]%b %s\n' "$c_green" "$c_reset" "$*"; }
+warn() { printf '%b[dots-uninstall]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 
 DRY_RUN="${dry_run:-false}"
 KEEP_CONFIG="${keep_config:-false}"
@@ -54,9 +54,9 @@ REMOVE_CHECKSUMS="${remove_checksums:-false}"
 ALL="${all:-false}"
 
 if [[ "${ALL}" == "true" ]]; then
-  KEEP_CONFIG="false"
-  REMOVE_SKILLS="true"
-  REMOVE_CHECKSUMS="true"
+	KEEP_CONFIG="false"
+	REMOVE_SKILLS="true"
+	REMOVE_CHECKSUMS="true"
 fi
 
 HOME_DIR="${HOME:?HOME not set}"
@@ -71,60 +71,60 @@ WINDSURF_SKILLS="${HOME}/.windsurf/skills"
 CHEZMOI_CHECKSUMS="${HOME}/.local/share/chezmoi/checksums"
 
 do_remove() {
-  local target="$1"
-  if [[ ! -e "${target}" ]]; then
-    ok "not found, skipping: ${target}"
-    return 0
-  fi
+	local target="$1"
+	if [[ ! -e "${target}" ]]; then
+		ok "not found, skipping: ${target}"
+		return 0
+	fi
 
-  if [[ "${DRY_RUN}" == "true" ]]; then
-    info "[DRY-RUN] would remove: ${target}"
-    return 0
-  fi
+	if [[ "${DRY_RUN}" == "true" ]]; then
+		info "[DRY-RUN] would remove: ${target}"
+		return 0
+	fi
 
-  rm -rf "${target}"
-  ok "removed: ${target}"
+	rm -rf "${target}"
+	ok "removed: ${target}"
 }
 
 do_remove_file() {
-  local target="$1"
-  if [[ ! -f "${target}" ]]; then
-    ok "not found, skipping: ${target}"
-    return 0
-  fi
+	local target="$1"
+	if [[ ! -f "${target}" ]]; then
+		ok "not found, skipping: ${target}"
+		return 0
+	fi
 
-  if [[ "${DRY_RUN}" == "true" ]]; then
-    info "[DRY-RUN] would remove: ${target}"
-    return 0
-  fi
+	if [[ "${DRY_RUN}" == "true" ]]; then
+		info "[DRY-RUN] would remove: ${target}"
+		return 0
+	fi
 
-  rm -f "${target}"
-  ok "removed: ${target}"
+	rm -f "${target}"
+	ok "removed: ${target}"
 }
 
 do_remove_skills_symlinks() {
-  local dir="$1"
-  local label="$2"
-  if [[ ! -d "${dir}" ]]; then
-    ok "not found, skipping ${label}: ${dir}"
-    return 0
-  fi
+	local dir="$1"
+	local label="$2"
+	if [[ ! -d "${dir}" ]]; then
+		ok "not found, skipping ${label}: ${dir}"
+		return 0
+	fi
 
-  local count=0
-  while IFS= read -r -d '' link; do
-    local target
-    target="$(readlink -f "${link}" 2>/dev/null || true)"
-    if [[ "${target}" == *"agentic-workstation"* || "${target}" == *"dots-ai"* ]]; then
-      do_remove_file "${link}"
-      ((count++)) || true
-    fi
-  done < <(find "${dir}" -type l -print0 2>/dev/null || true)
+	local count=0
+	while IFS= read -r -d '' link; do
+		local target
+		target="$(readlink -f "${link}" 2>/dev/null || true)"
+		if [[ "${target}" == *"agentic-workstation"* || "${target}" == *"dots-ai"* ]]; then
+			do_remove_file "${link}"
+			((count++)) || true
+		fi
+	done < <(find "${dir}" -type l -print0 2>/dev/null || true)
 
-  if [[ ${count} -gt 0 ]]; then
-    ok "removed ${count} ${label} skill symlinks"
-  else
-    ok "no ${label} skill symlinks found"
-  fi
+	if [[ ${count} -gt 0 ]]; then
+		ok "removed ${count} ${label} skill symlinks"
+	else
+		ok "no ${label} skill symlinks found"
+	fi
 }
 
 echo ""
@@ -133,34 +133,34 @@ info "=============================="
 echo ""
 
 if [[ "${DRY_RUN}" == "true" ]]; then
-  warn "DRY-RUN mode — no changes will be made"
-  echo ""
+	warn "DRY-RUN mode — no changes will be made"
+	echo ""
 fi
 
 # Ask for confirmation in non-dry-run mode
 if [[ "${DRY_RUN}" != "true" ]]; then
-  echo "This will remove agentic-workstation components from your machine."
-  echo ""
-  if [[ "${ALL}" == "true" ]]; then
-    echo "Mode: FULL — config, skills, checksums"
-  else
-    echo "Mode: DEFAULT — symbolic links and cache only"
-    [[ "${KEEP_CONFIG}" == "false" ]] && echo "  - Config: will be removed"
-    [[ "${KEEP_CONFIG}" == "true" ]] && echo "  - Config: will be KEPT"
-    [[ "${REMOVE_SKILLS}" == "true" ]] && echo "  - Skills: will be removed"
-    [[ "${REMOVE_CHECKSUMS}" == "true" ]] && echo "  - Chezmoi checksums: will be removed"
-  fi
-  echo ""
-  echo "Your dotfiles managed by chezmoi are NOT affected by this command."
-  echo "To remove dotfiles, use: chezmoi purge"
-  echo ""
+	echo "This will remove agentic-workstation components from your machine."
+	echo ""
+	if [[ "${ALL}" == "true" ]]; then
+		echo "Mode: FULL — config, skills, checksums"
+	else
+		echo "Mode: DEFAULT — symbolic links and cache only"
+		[[ "${KEEP_CONFIG}" == "false" ]] && echo "  - Config: will be removed"
+		[[ "${KEEP_CONFIG}" == "true" ]] && echo "  - Config: will be KEPT"
+		[[ "${REMOVE_SKILLS}" == "true" ]] && echo "  - Skills: will be removed"
+		[[ "${REMOVE_CHECKSUMS}" == "true" ]] && echo "  - Chezmoi checksums: will be removed"
+	fi
+	echo ""
+	echo "Your dotfiles managed by chezmoi are NOT affected by this command."
+	echo "To remove dotfiles, use: chezmoi purge"
+	echo ""
 
-  read -r -p "Continue? [y/N] " response
-  if [[ ! "${response}" =~ ^[Yy]$ ]]; then
-    info "uninstall cancelled"
-    exit 0
-  fi
-  echo ""
+	read -r -p "Continue? [y/N] " response
+	if [[ ! "${response}" =~ ^[Yy]$ ]]; then
+		info "uninstall cancelled"
+		exit 0
+	fi
+	echo ""
 fi
 
 # 1. Remove AI skill symlinks (always safe — just links)
@@ -176,39 +176,39 @@ do_remove "${AGENTS_DIR}"
 
 # 3. Remove config directory (unless --keep-config)
 if [[ "${KEEP_CONFIG}" != "true" && "${DRY_RUN}" != "true" ]] || [[ "${DRY_RUN}" == "true" ]]; then
-  info "removing config directory..."
-  do_remove "${CONFIG_DIR}"
+	info "removing config directory..."
+	do_remove "${CONFIG_DIR}"
 else
-  ok "keeping config directory: ${CONFIG_DIR}"
+	ok "keeping config directory: ${CONFIG_DIR}"
 fi
 
 # 4. Remove skills directory (only with --remove-skills or --all)
 if [[ "${REMOVE_SKILLS}" == "true" ]]; then
-  info "removing skills directory..."
-  do_remove "${SHARE_DIR}"
+	info "removing skills directory..."
+	do_remove "${SHARE_DIR}"
 else
-  ok "keeping skills directory (use --remove-skills or --all to remove): ${SHARE_DIR}"
+	ok "keeping skills directory (use --remove-skills or --all to remove): ${SHARE_DIR}"
 fi
 
 # 5. Remove chezmoi checksums (only with --remove-checksums or --all)
 if [[ "${REMOVE_CHECKSUMS}" == "true" ]]; then
-  info "removing chezmoi checksums..."
-  do_remove_file "${CHEZMOI_CHECKSUMS}"
+	info "removing chezmoi checksums..."
+	do_remove_file "${CHEZMOI_CHECKSUMS}"
 else
-  ok "keeping chezmoi checksums (use --remove-checksums or --all to remove)"
+	ok "keeping chezmoi checksums (use --remove-checksums or --all to remove)"
 fi
 
 echo ""
 if [[ "${DRY_RUN}" == "true" ]]; then
-  info "DRY-RUN complete. Run without --dry-run to apply."
+	info "DRY-RUN complete. Run without --dry-run to apply."
 else
-  ok "uninstall complete"
-  echo ""
-  info "Your dotfiles are still managed by chezmoi."
-  info "To remove them, run: chezmoi purge"
-  if [[ "${REMOVE_SKILLS}" != "true" ]]; then
-    info "To remove skills, run: dots-uninstall --remove-skills"
-  fi
-  info "To reinstall skills, run: curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | bash"
+	ok "uninstall complete"
+	echo ""
+	info "Your dotfiles are still managed by chezmoi."
+	info "To remove them, run: chezmoi purge"
+	if [[ "${REMOVE_SKILLS}" != "true" ]]; then
+		info "To remove skills, run: dots-uninstall --remove-skills"
+	fi
+	info "To reinstall skills, run: curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | bash"
 fi
 echo ""
