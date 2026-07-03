@@ -1,0 +1,25 @@
+# agentic-workstation Docker Sandbox
+# Try the full workstation in an ephemeral container without touching your host machine.
+#
+# Usage:
+#   docker compose up --build
+#   docker compose run --rm workstation zsh
+#
+
+services:
+  workstation:
+    build:
+      context: .
+      dockerfile: Dockerfile.sandbox
+    image: agentic-workstation:sandbox
+    hostname: agentic-workstation-sandbox
+    volumes:
+      - workstation-home:/home/dev
+    stdin_open: true
+    tty: true
+    environment:
+      - WORKSTATION_PROFILE=${WORKSTATION_PROFILE:-technical}
+    working_dir: /home/dev
+
+volumes:
+  workstation-home:
