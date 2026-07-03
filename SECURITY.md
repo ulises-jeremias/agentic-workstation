@@ -9,7 +9,7 @@ Only the latest `main` branch baseline is actively supported for security update
 If you discover a security issue:
 
 1. Do not open a public issue with exploit details.
-2. Contact the agentic-workstation Technology team through internal channels.
+2. Report vulnerabilities via [GitHub private vulnerability reporting](https://github.com/ulises-jeremias/agentic-workstation/security/advisories/new) or email the maintainer.
 3. Include reproduction details, impact, and affected files.
 
 ## Security principles in this repository
