@@ -149,11 +149,11 @@ function Install-ViaGitBash {
 
     $LocalBin    = "${env:USERPROFILE}\.local\bin"
     $LocalLib    = "${env:USERPROFILE}\.local\lib\agentic-workstation\easy-options"
-    $agentic-workstationShare = "${env:USERPROFILE}\.local\share\agentic-workstation"
+    ${agentic-workstationShare} = "${env:USERPROFILE}\.local\share\agentic-workstation"
 
     New-Item -ItemType Directory -Force -Path $LocalBin    | Out-Null
     New-Item -ItemType Directory -Force -Path $LocalLib    | Out-Null
-    New-Item -ItemType Directory -Force -Path $agentic-workstationShare | Out-Null
+    New-Item -ItemType Directory -Force -Path ${agentic-workstationShare} | Out-Null
 
     Write-Log "Resolving agentic-workstation repository source..."
 
@@ -226,9 +226,9 @@ function Install-ViaGitBash {
     }
 
     # Copy agentic-workstation AI assets (skills, prompts, templates)
-    $agentic-workstationAssets = Join-Path $RepoPath "home\dot_local\share\agentic-workstation"
-    if (Test-Path $agentic-workstationAssets) {
-        Copy-Item -Path "$agentic-workstationAssets\*" -Destination $agentic-workstationShare -Force -Recurse
+    ${agentic-workstationAssets} = Join-Path $RepoPath "home\dot_local\share\agentic-workstation"
+    if (Test-Path ${agentic-workstationAssets}) {
+        Copy-Item -Path "${agentic-workstationAssets}\*" -Destination ${agentic-workstationShare} -Force -Recurse
         Write-Ok "installed: agentic-workstation AI assets (skills, prompts, templates)"
     }
 

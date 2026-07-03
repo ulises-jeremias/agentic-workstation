@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+<!-- markdownlint-disable MD024 -->
 ## [Unreleased]
 
 ### Added
@@ -83,6 +84,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - GitHub Wiki sync from `docs/wiki/`
 - Agentic harness framework with three-layer architecture (Infrastructure → Running Instance → Application)
 - Client AI playbooks for generic workflow and workspace overlays
+
+<!-- markdownlint-enable MD024 -->
 
 ---
 
