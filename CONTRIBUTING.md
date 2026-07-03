@@ -4,13 +4,14 @@ Thanks for helping improve the agentic-workstation platform.
 
 ## Scope
 
-This repository is private and focused on:
+This repository is public and accepts contributions focused on:
 
 - repository-level quality and governance
 - `chezmoi` source-state templates
-- internal automation and docs
+- automation and documentation
+- bundled AI skills, agents, and MCP templates
 
-Please avoid personal machine-specific additions.
+Please avoid personal machine-specific additions (use local chezmoi overrides instead).
 
 ## Contribution workflow
 
