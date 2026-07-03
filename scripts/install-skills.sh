@@ -5,6 +5,8 @@
 #
 # Usage:
 #   curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | sh
+#   curl -fsSL .../install-skills.sh | sh -s -- --skills jira,github
+#   curl -fsSL .../install-skills.sh | sh -s -- --skills list    # show available domains
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool claude
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool opencode
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool cursor
@@ -29,6 +31,7 @@ RELEASE_BASE="https://github.com/${GITHUB_REPO}/releases/latest/download"
 TARGET_TOOL="all"
 GUIDED=0
 DRY_RUN=0
+SKILLS_FILTER=""
 
 usage() {
   cat <<'USAGE'
@@ -36,10 +39,30 @@ install-skills.sh — agentic-workstation AI skills & agents installer
 
 Options:
   --tool <name>   Install for one tool: all|claude|opencode|cursor|windsurf|copilot
+  --skills <list> Comma-separated skill domains to install (e.g. jira,github,clickup)
+                  Use --skills list to show available domains
   --all           Install for every supported tool (default)
   --guided        Interactive prompts (requires a TTY); falls back to --all if piped
   --dry-run       Print what would be downloaded/installed, but do not change anything
   -h | --help     Show this help and exit
+
+Available skill domains:
+  jira     — Jira issues, sprints, epics, JQL, admin (14 skills)
+  confluence — Confluence pages, spaces, search, permissions, templates
+  clickup  — ClickUp tasks, docs, sprints, goals, comments
+  github   — GitHub PRs, CI, releases, comments, code review
+  gitlab   — GitLab MRs, issues, CI/CD, pipelines
+  slack    — Slack channels, messages, canvases, reactions
+  figma    — Figma designs, components, variables, code generation
+  linear   — Linear issues, projects, cycles, teams
+  dbt      — dbt parse, compile, test, selective run validation
+  snowflake — Read-only Snowflake SQL validation
+  playwright — E2E tests, browser automation, snapshots, traces
+  jupyter  — Jupyter notebook scaffolding and refactoring
+  ui-ux    — UI/UX design with 67 styles, 96 palettes, 57 font pairings
+  workflow — Planning, epics, user stories, bugs, incidents, ADRs, PRDs, TRDs
+  triage   — Workstation health diagnostics
+  all      — Every skill domain (default)
 
 See docs/wiki/GUIDED_AI_INSTALL.md for the non-developer walkthrough.
 USAGE
@@ -52,6 +75,17 @@ while [ $# -gt 0 ]; do
       shift 2
       ;;
     --tool=*) TARGET_TOOL="${1#--tool=}" && shift ;;
+    --skills)
+      SKILLS_FILTER="${2:-all}"
+      if [ "$SKILLS_FILTER" = "list" ]; then
+        printf "Available skill domains:\n"
+        printf "  jira, confluence, clickup, github, gitlab, slack, figma, linear,\n"
+        printf "  dbt, snowflake, playwright, jupyter, ui-ux, workflow, triage, all\n"
+        exit 0
+      fi
+      shift 2
+      ;;
+    --skills=*) SKILLS_FILTER="${1#--skills=}" && shift ;;
     --all)
       TARGET_TOOL="all"
       shift
@@ -155,6 +189,7 @@ fi
 if [ "$DRY_RUN" = "1" ]; then
   log "DRY RUN — no files will be modified"
   log "  tool: ${TARGET_TOOL}"
+  log "  skills filter: ${SKILLS_FILTER:-all}"
   log "  release base: ${RELEASE_BASE}"
   log "  version: ${VERSION:-latest}"
   log "  skills dir (target): ${HOME}/.local/share/agentic-workstation/skills"
@@ -163,6 +198,11 @@ fi
 
 install_skills() {
   log "downloading skills package..."
+  if [ -n "$SKILLS_FILTER" ] && [ "$SKILLS_FILTER" != "all" ]; then
+    log "  skills filter requested: ${SKILLS_FILTER}"
+    log "  note: per-domain filtering requires 'dots-skills sync' after install"
+    log "  all skills will be downloaded; use dots-skills to manage which are active"
+  fi
   if ! download "${RELEASE_BASE}/dots-workstation-skills-${VERSION}.zip" \
     "${TMPDIR_SKILLS}/skills.zip" 2>/dev/null; then
     fail "could not download skills package from ${RELEASE_BASE}"
