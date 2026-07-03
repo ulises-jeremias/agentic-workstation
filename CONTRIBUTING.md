@@ -4,20 +4,21 @@ Thanks for helping improve the agentic-workstation platform.
 
 ## Scope
 
-This repository is private and focused on:
+This repository is a public, open-source project focused on:
 
 - repository-level quality and governance
 - `chezmoi` source-state templates
-- internal automation and docs
+- automation and docs
 
-Please avoid personal machine-specific additions.
+Community contributions are welcome. Please avoid personal machine-specific additions.
 
 ## Contribution workflow
 
-1. Create a branch from `main`.
-2. Make focused changes.
-3. Run local checks.
-4. Open a pull request using the template.
+1. Fork the repository to your own GitHub account.
+2. Clone your fork and create a branch from `main`.
+3. Make focused changes.
+4. Run local checks.
+5. Open a pull request from your fork's branch to `main` using the template.
 
 ## Local quality checks
 
