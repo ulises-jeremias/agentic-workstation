@@ -24,6 +24,7 @@ Key constraints:
 
 Ship AI assets and MCP templates under `~/.local/share/agentic-workstation/` and enforce env-var-only secrets. The directory structure:
 
+<!-- markdownlint-disable MD040 -->
 ```
 ~/.local/share/agentic-workstation/
 ├── skills/               # Bundled skills (managed by chezmoi)
@@ -34,6 +35,7 @@ Ship AI assets and MCP templates under `~/.local/share/agentic-workstation/` and
 ├── mcp/                  # MCP provider examples and wrappers
 └── third-party/          # Attributed third-party excerpts (MIT)
 ```
+<!-- markdownlint-enable MD040 -->
 
 MCP templates are **examples only** — they contain no credentials and require explicit local configuration via environment variables.
 
