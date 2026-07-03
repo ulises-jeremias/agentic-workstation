@@ -1,11 +1,11 @@
 # Changelog
 
-All notable changes to `dots-ai` are documented in this file.
+All notable changes to `agentic-workstation` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 > [!NOTE]
-> For commit-level detail, see the [commit history](https://github.com/ulises-jeremias/dots-ai/commits/main).
+> For commit-level detail, see the [commit history](https://github.com/ulises-jeremias/agentic-workstation/commits/main).
 
 ---
 
@@ -86,5 +86,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-[Unreleased]: https://github.com/ulises-jeremias/dots-ai/compare/main...HEAD
-[0.1.0]: https://github.com/ulises-jeremias/dots-ai/commits/main
+[Unreleased]: https://github.com/ulises-jeremias/agentic-workstation/compare/main...HEAD
+[0.1.0]: https://github.com/ulises-jeremias/agentic-workstation/commits/main
