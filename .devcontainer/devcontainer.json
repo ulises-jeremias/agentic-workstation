@@ -1,0 +1,27 @@
+{
+  "name": "agentic-workstation",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.14"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": false,
+      "upgradePackages": true
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y shellcheck jq && chezmoi init --apply ulises-jeremias/agentic-workstation --dry-run --verbose || true && echo 'devcontainer ready — run chezmoi init --apply ulises-jeremias/agentic-workstation to install'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "yzhang.markdown-all-in-one",
+        "timonwong.shellcheck",
+        "redhat.vscode-yaml",
+        "editorconfig.editorconfig"
+      ]
+    }
+  }
+}

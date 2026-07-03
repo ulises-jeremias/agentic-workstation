@@ -1,0 +1,39 @@
+# agentic-workstation Sandbox
+#
+# Try agentic-workstation in an isolated container:
+#
+#   docker build -f Dockerfile.sandbox -t agentic-workstation:sandbox .
+#   docker run --rm -it agentic-workstation:sandbox
+#
+# Or use docker compose:
+#
+#   docker compose up --build
+#   docker compose run --rm workstation zsh
+
+FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu
+
+ARG WORKSTATION_PROFILE=technical
+ENV WORKSTATION_PROFILE=${WORKSTATION_PROFILE}
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    zsh \
+    shellcheck \
+    jq \
+    curl \
+    git \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd --create-home --shell /bin/zsh dev \
+    && usermod -aG sudo dev \
+    && echo "dev ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dev
+
+USER dev
+WORKDIR /home/dev
+
+RUN sh -c "$(curl -fsSL https://get.chezmoi.io)" -- -b /home/dev/.local/bin
+ENV PATH="/home/dev/.local/bin:${PATH}"
+
+RUN chezmoi init --apply ulises-jeremias/agentic-workstation --dry-run --verbose || true
+
+CMD ["/bin/zsh"]
