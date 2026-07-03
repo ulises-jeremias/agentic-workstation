@@ -1,29 +1,55 @@
-# Package lists for install scripts. Named `package_groups` (not `groups`) so
-# chezmoi's deep-merge with profiles.yaml does not replace this map — profiles
-# defines `groups` as feature-group metadata (always_on, description, flags).
+# Package manifests for install scripts.
+# Named `package_groups` (not `groups`) so chezmoi's deep-merge with profiles.yaml
+# does not replace this map — profiles defines `groups` as feature-group metadata
+# (always_on, description, flags).
+#
+# Each group is a list of canonical package names. The install scripts translate
+# canonical names to platform-specific package names:
+#
+#   Canonical name → apt / brew / pacman / dnf
+#   git            → git  / git  / git    / git
+#   fd             → fd-find / fd / fd   / fd-find
+#   ripgrep        → ripgrep / ripgrep / ripgrep / ripgrep
+#   gh             → gh    / gh   / github-cli / gh
+#   zsh            → zsh   / zsh  / zsh   / zsh
+#
+# For details on per-package platform logic, see the install scripts under
+# `home/.chezmoiscripts/run_*`.
+#
+# Groups map to profiles defined in `profiles.yaml`. The `core` group is
+# always installed regardless of profile selection.
+
 package_groups:
+  # Always installed — base developer toolchain
   core:
-    - git
-    - curl
-    - wget
-    - jq
-    - ripgrep
-    - fd
-    - zsh
-    - gh
+    - git          # version control
+    - curl         # HTTP client
+    - wget         # network downloader
+    - jq           # JSON processor
+    - ripgrep      # fast grep alternative
+    - fd           # fast find alternative
+    - zsh          # Z shell
+    - gh           # GitHub CLI
+
+  # Node.js profile — runtime, package manager, version manager
   node:
-    - fnm
-    - nodejs
-    - pnpm
+    - fnm          # Fast Node.js version manager
+    - nodejs       # Node.js runtime (via fnm)
+    - pnpm         # fast package manager
+
+  # Python profile — runtime, package manager, tooling
   python:
-    - python3
-    - uv
-    - pipx
-  # Arch Linux uses different package names for some Python tools
+    - python3      # Python 3 runtime
+    - uv           # fast package installer/resolver
+    - pipx         # isolated app runner
+
+  # Arch Linux uses different package names for Python tools
   python_arch:
-    - python
-    - uv
-    - python-pip
-    - python-pipx
+    - python       # Python (arch naming)
+    - uv           # fast package installer/resolver
+    - python-pip   # pip (arch naming)
+    - python-pipx  # pipx (arch naming)
+
+  # Docker profile
   docker:
-    - docker
+    - docker       # Docker Engine and CLI
