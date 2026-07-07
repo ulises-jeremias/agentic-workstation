@@ -177,6 +177,57 @@ class Job:
     llm_enabled: bool = True
     timeout_sec: int = 300
     llm_overrides: dict | None = None
+    max_cost_usd: float | None = None
+
+
+# Conservative per-run cost estimates by provider (USD).
+# Used when actual token counts are unavailable.
+_PROVIDER_COST_EST: dict[str, float] = {
+    "anthropic": 0.05,
+    "openai": 0.04,
+    "ollama": 0.0,
+    "opencode": 0.0,
+}
+
+
+class BudgetExceededError(RuntimeError):
+    """Raised when the daily cost budget for a job would be exceeded."""
+
+
+def _sum_audit_cost_today(audit_log: Path, job_id: str) -> float:
+    """Sum estimated_cost_usd from today's audit log entries for the same job prefix."""
+    if not audit_log.exists():
+        return 0.0
+    today = datetime.now(timezone.utc).date().isoformat()
+    total = 0.0
+    try:
+        for line in audit_log.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if not rec.get("ts", "").startswith(today):
+                continue
+            total += float(rec.get("estimated_cost_usd", 0.0))
+    except Exception:
+        pass
+    return total
+
+
+def _check_daily_budget(job: Job) -> None:
+    """Fail-closed if adding this run's estimated cost would exceed max_cost_usd."""
+    if job.max_cost_usd is None:
+        return
+    audit_log = _audit_log_path()
+    spent_today = _sum_audit_cost_today(audit_log, job.id)
+    if spent_today >= job.max_cost_usd:
+        raise BudgetExceededError(
+            f"Daily budget ${job.max_cost_usd:.3f} reached "
+            f"(spent today: ${spent_today:.3f}). "
+            f"Set limits.max_cost_usd in the job to a higher value or wait until tomorrow."
+        )
 
 
 def utc_now_iso() -> str:
@@ -202,14 +253,19 @@ def read_job(path: Path) -> Job:
         llm_enabled = True
         llm_overrides = None
 
+    limits = data.get("limits", {})
+    raw_max_cost = limits.get("max_cost_usd")
+    max_cost_usd = float(raw_max_cost) if raw_max_cost is not None else None
+
     return Job(
         id=str(data["id"]),
         created_at=str(data["created_at"]),
         request=str(data["request"]),
         repo_path=(str(data["repo_path"]) if data.get("repo_path") else None),
         llm_enabled=llm_enabled,
-        timeout_sec=int(data.get("limits", {}).get("timeout_sec", 300)),
+        timeout_sec=int(limits.get("timeout_sec", 300)),
         llm_overrides=llm_overrides,
+        max_cost_usd=max_cost_usd,
     )
 
 
@@ -424,12 +480,14 @@ def append_audit_log(
 ) -> None:
     """Append a single-line JSON record describing the policy decision. Never
     contains the prompt or model output, so it is safe for client engagements."""
+    estimated_cost = _PROVIDER_COST_EST.get(provider or "", 0.0) if provider else 0.0
     record = {
         "ts": utc_now_iso(),
         "job_id": job.id,
         "status": status,
         "provider": provider,
         "model": model,
+        "estimated_cost_usd": estimated_cost,
         "policy": policy.to_audit(),
     }
     if error:
@@ -491,6 +549,29 @@ def main(argv: list[str]) -> int:
 
     for warning in policy.warnings:
         logger.warning("Policy warning: %s", warning)
+
+    # Hard cost gate — fail-closed before any LLM call.
+    try:
+        _check_daily_budget(job)
+    except BudgetExceededError as exc:
+        logger.error("Budget gate: %s", exc)
+        write_error_plan(
+            out_dir,
+            job,
+            str(exc),
+            status="budget_exceeded",
+            policy=policy,
+        )
+        append_audit_log(
+            job,
+            policy,
+            status="budget_exceeded",
+            provider=None,
+            model=None,
+            error=str(exc),
+        )
+        print(f"[dots-devcompanion-runner] budget exceeded: {exc}", file=sys.stderr)
+        return 3
 
     if args.no_llm or not job.llm_enabled:
         logger.info("LLM disabled, generating skeleton plan")

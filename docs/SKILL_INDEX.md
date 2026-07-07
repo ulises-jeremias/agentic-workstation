@@ -3,7 +3,7 @@
 > Auto-generated from `skill-catalog.yaml` and `skill.json` manifests.
 > Run `python3 scripts/dots-skills-search.py generate-index` to regenerate.
 >
-> 48 skills indexed.
+> 51 skills indexed.
 
 ## Orchestration
 
@@ -31,7 +31,10 @@
 
 | Skill | Description | Tools |
 |-------|-------------|-------|
+| `dots-workstation-docs-generator` | WHAT: Generate or update documentation from code — README from repo st | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `copilot-cli`, `pi` |
+| `dots-workstation-llm-cost-advisor` | WHAT: Recommend the most cost-effective LLM provider per task type; sh | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `copilot-cli`, `pi` |
 | `dots-workstation-loop-runner` | Execute and manage loop engineering primitives from an AI coding sessi | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
+| `dots-workstation-onboarding` | WHAT: Getting started guide for new users — setup validation, skill/ag | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `copilot-cli`, `pi` |
 | `gh-contribution-planner` | Daily GitHub contribution planner — analyzes the gh-logged-in user's n | `claude-code`, `opencode`, `cursor`, `windsurf`, `copilot-cli`, `pi` |
 
 ## Clickup
