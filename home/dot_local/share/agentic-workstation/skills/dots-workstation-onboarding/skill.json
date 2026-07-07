@@ -1,0 +1,14 @@
+{
+  "name": "dots-workstation-onboarding",
+  "version": "1.0.0",
+  "description": "-",
+  "source": "bundled",
+  "compatibility": {
+    "claude-code": { "supported": true },
+    "copilot-cli": { "supported": true },
+    "cursor": { "supported": true },
+    "opencode": { "supported": true },
+    "windsurf": { "supported": true }
+  },
+  "tags": []
+}
