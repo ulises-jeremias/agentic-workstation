@@ -1,14 +1,36 @@
 {
+  "$schema": "https://raw.githubusercontent.com/ulises-jeremias/agentic-workstation/main/lib/schemas/skill.schema.json",
   "name": "dots-workstation-onboarding",
   "version": "1.0.0",
-  "description": "-",
+  "description": "WHAT: Getting started guide for new users \u2014 setup validation, skill/agent hierarchy, first commands by role (developer, PM, tech lead).",
   "source": "bundled",
+  "author": "agentic-workstation",
+  "tags": [
+    "onboarding",
+    "setup",
+    "getting-started"
+  ],
   "compatibility": {
-    "claude-code": { "supported": true },
-    "copilot-cli": { "supported": true },
-    "cursor": { "supported": true },
-    "opencode": { "supported": true },
-    "windsurf": { "supported": true }
-  },
-  "tags": []
+    "universal": {
+      "supported": true
+    },
+    "claude-code": {
+      "supported": true
+    },
+    "pi": {
+      "supported": true
+    },
+    "windsurf": {
+      "supported": true
+    },
+    "opencode": {
+      "supported": true
+    },
+    "cursor": {
+      "supported": true
+    },
+    "copilot-cli": {
+      "supported": true
+    }
+  }
 }
