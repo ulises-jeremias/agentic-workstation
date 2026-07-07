@@ -42,9 +42,23 @@ dots-loop status
 2. Otherwise check `AI_WORKSPACE_LOOP_BIN` env var
 3. Otherwise: guide the user to install ai-workspace
 
+## Runner hierarchy (inside bin/loop)
+
+When `./bin/loop run` dispatches a loop, it tries runners in this order:
+
+| Priority | Runner | How to enable |
+|----------|--------|---------------|
+| 1 | **agentic-workstation runner** | `export HARNESS_RUNNER_DIR="$HOME/.local/share/agentic-workstation/dev-companion/runner"` |
+| 2 | **`claude --print`** (Claude Code CLI) | `claude` in PATH — zero setup for Claude Code users |
+| 3 | Skeleton plan | Always available |
+
+For full multi-provider support (Anthropic, OpenAI, Ollama, OpenCode), set
+`HARNESS_RUNNER_DIR` to point at the agentic-workstation runner. Claude Code
+users can skip this — `claude --print` is used automatically.
+
 ## References
 
-- [ai-workspace loop docs](https://github.com/ulises-jeremias/ai-workspace/blob/main/docs/LOOPS.md)
+- [agentic-harness loop docs](https://github.com/ulises-jeremias/agentic-harness/blob/main/docs/LOOPS.md)
 - [Loop engineering patterns](https://github.com/cobusgreyling/loop-engineering)
 - [docs/LOOPS.md](../../docs/LOOPS.md) — full reference
 
