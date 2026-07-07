@@ -59,6 +59,7 @@ Draft changelog section and ask user to confirm version before finalizing.
 ### AGENTS.md starter
 
 Use the template from `~/.local/share/agentic-workstation/skills-catalog.yaml` patterns:
+
 - Purpose and stack
 - Repository inspection order
 - What AI assistants may and must not do

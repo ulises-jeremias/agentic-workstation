@@ -32,6 +32,7 @@ Format: `[Work Type] Context — Action (Platform/Scope)`
 | `(Platform)` | App or system | `(CamperMate)`, `(API)` |
 
 Examples:
+
 - `[Bug] Booking Flow — Fix timeout on slow connections (API)`
 - `[Packdown] NT x THL — Remove CamperMate campaign landing page`
 - `[Feature] Auth v2 — Add SSO support (CamperMate)`
@@ -59,6 +60,7 @@ clickup task create --current --from-file tasks.json
 ```
 
 JSON format for `--from-file`:
+
 ```json
 [
   {

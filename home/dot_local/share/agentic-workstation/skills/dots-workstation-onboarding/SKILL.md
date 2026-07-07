@@ -39,7 +39,7 @@ dots-skills sync             # re-sync symlinks to AI tools
 
 ## Step 2 — Understand the hierarchy
 
-```
+```text
 User message
     ↓
 Orchestrator (dots-workstation-assistant)

@@ -13,6 +13,7 @@ clickup task time log --from-file entries.json
 ```
 
 JSON format:
+
 ```json
 [
   {"task_id": "86abc123", "duration": "2h", "date": "2026-03-15",
