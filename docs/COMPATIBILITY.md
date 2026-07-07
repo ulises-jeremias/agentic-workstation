@@ -3,7 +3,7 @@
 > Auto-generated from `skill.json` compatibility fields. Run
 > `python3 scripts/generate-compatibility.py` to regenerate after editing skill manifests.
 >
-> 48 skills indexed.
+> 51 skills indexed.
 
 ## Legend
 
@@ -27,11 +27,14 @@
 | `dots-workstation-decision-log` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-dev-companion` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-development-workflow` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| `dots-workstation-docs-generator` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `dots-workstation-epic` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-incident` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| `dots-workstation-llm-cost-advisor` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `dots-workstation-loop-runner` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `dots-workstation-management-unit-assessment` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-meeting-minutes` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| `dots-workstation-onboarding` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `dots-workstation-output-handshake` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-planning` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-pr-fallback` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
