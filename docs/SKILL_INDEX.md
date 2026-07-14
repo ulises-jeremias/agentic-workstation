@@ -3,7 +3,7 @@
 > Auto-generated from `skill-catalog.yaml` and `skill.json` manifests.
 > Run `python3 scripts/dots-skills-search.py generate-index` to regenerate.
 >
-> 51 skills indexed.
+> 52 skills indexed.
 
 ## Orchestration
 
@@ -49,6 +49,13 @@
 |-------|-------------|-------|
 | `dbt-validation` | HOW: dbt parse/compile/test/run per repo docs; boundaries on Snowflake | `universal`, `claude-code`, `windsurf`, `pi` |
 | `snowflake-validation` | HOW: read-only Snowflake checks per repo; explicit skip when creds mis | `universal`, `claude-code`, `windsurf`, `pi` |
+
+## Slack
+
+| Skill | Description | Tools |
+|-------|-------------|-------|
+| `dots-slack-assistant` | Interact with Slack workspaces for reading channels/messages, sending  | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
+| `slack-cli` | Interact with the official Slack CLI to create, run, deploy, and manag | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Delivery
 
@@ -133,12 +140,6 @@
 | Skill | Description | Tools |
 |-------|-------------|-------|
 | `playwright-cli` | Drive a real browser from the terminal using the Playwright CLI (snaps | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-
-## Slack
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `slack-cli` | Interact with the official Slack CLI to create, run, deploy, and manag | `universal`, `claude-code`, `windsurf`, `pi` |
 
 ## Ui
 
