@@ -2,14 +2,14 @@
 
 Welcome to `agentic-workstation`! If you're new to open source or this repository, this tutorial is the perfect place to start. 
 
-In this guide, you'll learn what "skills" are, how they are structured, and how to create your first Hello World skill that an AI tool (like Claude Code, Cursor, or Copilot) can execute.
+In this guide, you'll learn what "skills" are, how they are structured, and how to create your first Hello World skill that an AI tool (like Claude Code, pi, or Windsurf) can execute.
 
 ## Prerequisites
 
 Before starting, ensure you have:
 - Familiarity with basic Markdown and JSON formatting.
 - `agentic-workstation` installed on your machine.
-- An AI coding tool installed (e.g., Claude Code, Cursor, or OpenCode).
+- An AI coding tool installed (e.g., Claude Code, pi, or Windsurf).
 
 ## Understanding Skill Anatomy
 
@@ -59,19 +59,17 @@ Writing for an AI is different from writing for a human. Keep these tips in mind
 
 ## Creating `skill.json`
 
-The `skill.json` file is required for `dots-skills sync` to properly link your skill to the AI tools you have installed.
-
-It includes metadata, required CLI dependencies, and a `compatibility` matrix.
+The `skill.json` file provides metadata and compatibility routing for your skill. While `dots-skills sync` can discover and link skills without it (defaulting to universal compatibility), including it is strongly recommended to declare which AI tools your skill supports and any required CLI dependencies.
 
 ### Tool Compatibility
 
-You must explicitly declare which tools your skill supports. Never assume a skill "works everywhere". If you only tested it in Claude Code and Cursor, declare `true` for those and `false` for the rest.
+You must explicitly declare which tools your skill supports. Never assume a skill "works everywhere". `dots-skills sync` currently routes to `universal`, `claude-code`, `pi`, and `windsurf` — declare your target tools accordingly. If you only tested it in Claude Code, declare `true` for it and `false` for the rest.
 
 ```json
 "compatibility": {
   "claude-code": { "supported": true },
-  "cursor": { "supported": true },
-  "opencode": { "supported": false, "notes": "Requires testing" }
+  "pi": { "supported": true },
+  "windsurf": { "supported": false, "notes": "Requires testing" }
 }
 ```
 
@@ -137,10 +135,10 @@ Create `skill.json` and add the following:
   ],
   "requires": [],
   "compatibility": {
-    "claude-code": {
+    "universal": {
       "supported": true
     },
-    "cursor": {
+    "claude-code": {
       "supported": true
     }
   }
@@ -149,7 +147,7 @@ Create `skill.json` and add the following:
 
 ### Expected Behavior
 
-When a user opens Claude Code and types "Hello World", the AI will read this skill, acknowledge the user politely, and print the designated greeting.
+When a user opens their AI coding tool and types "Hello World", the AI will read this skill, acknowledge the user politely, and print the designated greeting.
 
 ## Routing and Triggers
 
@@ -169,13 +167,13 @@ Once your files are saved, it's time to run the sync process:
 
 1. Open your terminal.
 2. Run `chezmoi apply` or `dots-skills sync`. This reads your `skill.json` and creates symlinks for the compatible AI tools.
-3. Open your AI tool (e.g., Cursor) and type your trigger phrase to ensure it loads your new skill.
+3. Open your AI tool (e.g., Claude Code) and type your trigger phrase to ensure it loads your new skill.
 
 > [!TIP]
 > Run `dots-skills list` to verify that your skill appears in the registry and shows as `✓ linked` under your supported tools.
 
 ### Common Mistakes
-- **Forgetting `skill.json`**: Without this manifest, your bundled skill won't be synced.
+- **Forgetting `skill.json`**: Without this manifest, your skill will sync with universal compatibility — which may work, but limits your ability to declare tool-specific support and dependencies.
 - **Assuming Universal Compatibility**: Always define the `compatibility` matrix.
 - **Vague Triggers**: Ensure your `triggers` in `skill-catalog.yaml` are specific so the orchestrator doesn't route unrelated tasks to your skill.
 
