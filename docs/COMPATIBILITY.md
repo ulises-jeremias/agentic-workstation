@@ -3,7 +3,7 @@
 > Auto-generated from `skill.json` compatibility fields. Run
 > `python3 scripts/generate-compatibility.py` to regenerate after editing skill manifests.
 >
-> 51 skills indexed.
+> 52 skills indexed.
 
 ## Legend
 
@@ -20,6 +20,7 @@
 | `clickup-cli` | 1.0.1 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dbt-validation` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-harness-knowledge-sync` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| `dots-slack-assistant` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `dots-workstation-adr` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-agreement` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-workstation-assistant` | 2.1.3 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
