@@ -196,6 +196,17 @@ if [ "$DRY_RUN" = "1" ]; then
   exit 0
 fi
 
+# Try dots-workstation- prefix first, then fall back to dots-ai- (pre-v1.2.0 releases).
+_download_asset() {
+  _name="$1"
+  _out="$2"
+  if download "${RELEASE_BASE}/dots-workstation-${_name}-${VERSION}.zip" "$_out" 2>/dev/null; then
+    return 0
+  fi
+  log "dots-workstation-${_name}-${VERSION}.zip not found, trying dots-ai- prefix..."
+  download "${RELEASE_BASE}/dots-ai-${_name}-${VERSION}.zip" "$_out" 2>/dev/null
+}
+
 install_skills() {
   log "downloading skills package..."
   if [ -n "$SKILLS_FILTER" ] && [ "$SKILLS_FILTER" != "all" ]; then
@@ -203,10 +214,8 @@ install_skills() {
     log "  note: per-domain filtering requires 'dots-skills sync' after install"
     log "  all skills will be downloaded; use dots-skills to manage which are active"
   fi
-  if ! download "${RELEASE_BASE}/dots-workstation-skills-${VERSION}.zip" \
-    "${TMPDIR_SKILLS}/skills.zip" 2>/dev/null; then
+  _download_asset "skills" "${TMPDIR_SKILLS}/skills.zip" ||
     fail "could not download skills package from ${RELEASE_BASE}"
-  fi
 
   SKILLS_DIR="${HOME}/.local/share/agentic-workstation/skills"
   mkdir -p "$SKILLS_DIR"
@@ -229,8 +238,7 @@ install_skills() {
 
 install_for_claude() {
   log "installing agents for Claude Code / Claude Desktop..."
-  if ! download "${RELEASE_BASE}/dots-workstation-agents-claude-${VERSION}.zip" \
-    "${TMPDIR_SKILLS}/claude.zip" 2>/dev/null; then
+  if ! _download_asset "agents-claude" "${TMPDIR_SKILLS}/claude.zip"; then
     warn "could not download claude agents package — skipping"
     return 0
   fi
@@ -252,8 +260,7 @@ install_for_claude() {
 
 install_for_opencode() {
   log "installing agents for OpenCode..."
-  if ! download "${RELEASE_BASE}/dots-workstation-agents-opencode-${VERSION}.zip" \
-    "${TMPDIR_SKILLS}/opencode.zip" 2>/dev/null; then
+  if ! _download_asset "agents-opencode" "${TMPDIR_SKILLS}/opencode.zip"; then
     warn "could not download opencode agents package — skipping"
     return 0
   fi
@@ -267,8 +274,7 @@ install_for_opencode() {
 
 install_for_cursor() {
   log "installing agents for Cursor..."
-  if ! download "${RELEASE_BASE}/dots-workstation-agents-cursor-${VERSION}.zip" \
-    "${TMPDIR_SKILLS}/cursor.zip" 2>/dev/null; then
+  if ! _download_asset "agents-cursor" "${TMPDIR_SKILLS}/cursor.zip"; then
     warn "could not download cursor agents package — skipping"
     return 0
   fi
@@ -280,8 +286,7 @@ install_for_cursor() {
 
 install_for_windsurf() {
   log "installing agents for Windsurf..."
-  if ! download "${RELEASE_BASE}/dots-workstation-agents-windsurf-${VERSION}.zip" \
-    "${TMPDIR_SKILLS}/windsurf.zip" 2>/dev/null; then
+  if ! _download_asset "agents-windsurf" "${TMPDIR_SKILLS}/windsurf.zip"; then
     warn "could not download windsurf agents package — skipping"
     return 0
   fi
@@ -297,8 +302,7 @@ install_for_windsurf() {
 
 install_for_copilot() {
   log "installing GitHub Copilot custom instructions..."
-  if ! download "${RELEASE_BASE}/dots-workstation-agents-copilot-${VERSION}.zip" \
-    "${TMPDIR_SKILLS}/copilot.zip" 2>/dev/null; then
+  if ! _download_asset "agents-copilot" "${TMPDIR_SKILLS}/copilot.zip"; then
     warn "could not download copilot agents package — skipping"
     return 0
   fi

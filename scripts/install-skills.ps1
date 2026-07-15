@@ -98,6 +98,15 @@ function Get-Package {
     }
 }
 
+function Get-Asset {
+    param([string]$Name, [string]$OutFile)
+    $newUrl = "$ReleaseBase/dots-workstation-$Name-$Version.zip"
+    if (Get-Package $newUrl $OutFile) { return $true }
+    Write-NLog "dots-workstation-$Name-$Version.zip not found, trying dots-ai- prefix..."
+    $oldUrl = "$ReleaseBase/dots-ai-$Name-$Version.zip"
+    return (Get-Package $oldUrl $OutFile)
+}
+
 $Version = Get-ReleaseVersion
 Write-NLog "version: $Version"
 
@@ -167,7 +176,7 @@ $GithubUserDir = Join-Path $env:USERPROFILE ".github"
 function Install-Skills {
     Write-NLog "downloading skills package..."
     $zipPath = Join-Path $TempDir "skills.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-workstation-skills-$Version.zip" $zipPath)) {
+    if (-not (Get-Asset "skills" $zipPath)) {
         Write-NFail "could not download skills package from $ReleaseBase"
     }
     $extractPath = Join-Path $TempDir "skills-extracted"
@@ -189,7 +198,7 @@ function Install-Skills {
 function Install-ForClaude {
     Write-NLog "installing agents for Claude Code / Claude Desktop..."
     $zipPath = Join-Path $TempDir "claude.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-claude-$Version.zip" $zipPath)) {
+    if (-not (Get-Asset "agents-claude" $zipPath)) {
         Write-NWarn "could not download claude agents — skipping"
         return
     }
@@ -210,7 +219,7 @@ function Install-ForClaude {
 function Install-ForOpenCode {
     Write-NLog "installing agents for OpenCode..."
     $zipPath = Join-Path $TempDir "opencode.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-opencode-$Version.zip" $zipPath)) {
+    if (-not (Get-Asset "agents-opencode" $zipPath)) {
         Write-NWarn "could not download opencode agents — skipping"
         return
     }
@@ -226,7 +235,7 @@ function Install-ForOpenCode {
 function Install-ForCursor {
     Write-NLog "installing agents for Cursor..."
     $zipPath = Join-Path $TempDir "cursor.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-cursor-$Version.zip" $zipPath)) {
+    if (-not (Get-Asset "agents-cursor" $zipPath)) {
         Write-NWarn "could not download cursor agents — skipping"
         return
     }
@@ -242,7 +251,7 @@ function Install-ForCursor {
 function Install-ForWindsurf {
     Write-NLog "installing agents for Windsurf..."
     $zipPath = Join-Path $TempDir "windsurf.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-windsurf-$Version.zip" $zipPath)) {
+    if (-not (Get-Asset "agents-windsurf" $zipPath)) {
         Write-NWarn "could not download windsurf agents — skipping"
         return
     }
@@ -263,7 +272,7 @@ function Install-ForWindsurf {
 function Install-ForCopilot {
     Write-NLog "installing GitHub Copilot custom instructions..."
     $zipPath = Join-Path $TempDir "copilot.zip"
-    if (-not (Get-Package "$ReleaseBase/dots-workstation-agents-copilot-$Version.zip" $zipPath)) {
+    if (-not (Get-Asset "agents-copilot" $zipPath)) {
         Write-NWarn "could not download copilot agents — skipping"
         return
     }
