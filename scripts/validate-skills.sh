@@ -125,6 +125,22 @@ while IFS= read -r -d '' skill_json; do
   name="${name%/skill.json}"
   COUNT=$((COUNT + 1))
 
+  # Keep the source filename consistent so tools can read SKILL.md directly.
+  # A .tmpl suffix is not needed for skill content and can hide the skill from
+  # consumers that inspect the repository without running chezmoi.
+  skill_md="${SKILLS_DIR}/${name}/SKILL.md"
+  skill_md_tmpl="${SKILLS_DIR}/${name}/SKILL.md.tmpl"
+  if [[ -f ${skill_md_tmpl} ]]; then
+    fail "${name} — use SKILL.md instead of SKILL.md.tmpl"
+    ERRORS=$((ERRORS + 1))
+  elif [[ ! -f ${skill_md} ]]; then
+    fail "${name} — SKILL.md is missing"
+    ERRORS=$((ERRORS + 1))
+  elif [[ ! -s ${skill_md} ]]; then
+    fail "${name} — SKILL.md is empty"
+    ERRORS=$((ERRORS + 1))
+  fi
+
   # Schema validation — capture output and exit code without triggering set -e
   schema_ok=0
   output=$(validate_json "$skill_json" 2>&1) || schema_ok=$?

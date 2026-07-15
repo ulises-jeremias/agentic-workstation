@@ -135,4 +135,4 @@ The skill uses these environment variables:
 
 ---
 
-Base directory: `{{ .chezmoi.homeDir }}/.local/share/agentic-workstation/skills/dots-harness-knowledge-sync`
+Base directory: `~/.local/share/agentic-workstation/skills/dots-harness-knowledge-sync`
