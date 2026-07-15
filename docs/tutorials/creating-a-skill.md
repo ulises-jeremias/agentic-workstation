@@ -1,6 +1,6 @@
 # Creating Your First Skill
 
-Welcome to `agentic-workstation`! If you're new to open source or this repository, this tutorial is the perfect place to start. 
+Welcome to `agentic-workstation`! If you're new to open source or this repository, this tutorial is the perfect place to start.
 
 In this guide, you'll learn what "skills" are, how they are structured, and how to create your first Hello World skill that an AI tool (like Claude Code, pi, or Windsurf) can execute.
 
@@ -179,7 +179,7 @@ Once your files are saved, it's time to run the sync process:
 
 ## Submitting your Pull Request
 
-Ready to share your skill with the world? 
+Ready to share your skill with the world?
 
 1. Ensure you have run all local validation checks:
    ```bash
