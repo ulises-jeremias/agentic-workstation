@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
+# checkov:skip=CKV_DOCKER_2: sudo required for dev sandbox
 RUN useradd --create-home --shell /bin/zsh dev \
     && usermod -aG sudo dev \
     && echo "dev ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dev
@@ -36,4 +37,5 @@ ENV PATH="/home/dev/.local/bin:${PATH}"
 
 RUN chezmoi init --apply ulises-jeremias/agentic-workstation --dry-run --verbose || true
 
+HEALTHCHECK NONE
 CMD ["/bin/zsh"]

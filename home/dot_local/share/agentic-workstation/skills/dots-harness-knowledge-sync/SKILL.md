@@ -105,19 +105,22 @@ The dots-workstation-tech-assistant skill checks for these automatic sync opport
 
 ## Examples
 
-### Auto-sync discovery:
+### Auto-sync discovery
+
 ```
 Assistant discovers Initiative list IDs for all Technology spaces
 → Syncs to knowledge/processes/clickup/spaces/
 ```
 
-### Auto-sync key decision:
+### Auto-sync key decision
+
 ```
 Assistant and user decide on naming convention
 → Syncs to knowledge/learnings/general.md
 ```
 
-### Manual sync request:
+### Manual sync request
+
 ```
 User: "Remember that we always use feature branches"
 → Assistant syncs to knowledge/processes/general.md
