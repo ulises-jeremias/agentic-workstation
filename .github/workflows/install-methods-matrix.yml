@@ -434,6 +434,8 @@ jobs:
       - name: Download install-skills.sh from releases/latest
         if: runner.os != 'Windows'
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p .tmp
@@ -443,6 +445,8 @@ jobs:
       - name: Download install-skills.ps1 from releases/latest
         if: runner.os == 'Windows'
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           New-Item -ItemType Directory -Force -Path .tmp | Out-Null
           gh release download --repo $env:GITHUB_REPOSITORY --pattern "install-skills.ps1" --dir .tmp
