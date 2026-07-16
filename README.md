@@ -262,3 +262,11 @@ Never commit credentials, tokens, or private keys. Use the [wiki credentials flo
 <sub>Built with ❤️ for AI-assisted software delivery</sub>
 
 </div>
+
+## 👥 Contributors
+
+<a href="https://github.com/ulises-jeremias/agentic-workstation/contributors">
+  <img src="https://contrib.rocks/image?repo=ulises-jeremias/agentic-workstation"/>
+</a>
+
+Made with [contributors-img](https://contrib.rocks).
