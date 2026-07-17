@@ -24,7 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# checkov:skip=CKV_DOCKER_2: sudo required for dev sandbox
+# checkov:skip=CKV_DOCKER_2: HEALTHCHECK intentionally NONE for interactive sandbox
+# checkov:skip=CKV2_DOCKER_1: sudo group required for interactive sandbox user
 RUN useradd --create-home --shell /bin/zsh dev \
     && usermod -aG sudo dev \
     && echo "dev ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dev
