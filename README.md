@@ -13,6 +13,7 @@
 [![Skills](https://img.shields.io/badge/52%2B-AI%20Skill%20Packs-a78bfa?style=for-the-badge&labelColor=020617)](#what-you-get)
 [![MCP](https://img.shields.io/badge/MCP-Ready-84cc16?style=for-the-badge&labelColor=020617)](#what-you-get)
 [![CI](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/devcontainer-chezmoi-validate.yml?style=for-the-badge&label=CI&labelColor=020617&color=22d3ee)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/devcontainer-chezmoi-validate.yml)
+[![Discord](https://img.shields.io/discord/1527933660764831825?style=for-the-badge&label=Discord&logo=discord&logoColor=white&labelColor=020617)](https://discord.gg/dwFTsR7fK2)
 
 <h3>One command to turn a machine into an AI-native developer workstation.</h3>
 
