@@ -3,7 +3,7 @@
 set -euo pipefail
 
 log() { printf '\033[1;34m[agent-toolkit]\033[0m %s\n' "$*"; }
-ok()  { printf '\033[1;32m[agent-toolkit]\033[0m %s\n' "$*"; }
+ok() { printf '\033[1;32m[agent-toolkit]\033[0m %s\n' "$*"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
 
 log "Installing agent-toolkit..."
