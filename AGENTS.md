@@ -44,3 +44,11 @@ All shell scripts must:
 - [`docs/DEV_COMPANION_LLM.md`](docs/DEV_COMPANION_LLM.md)
 - [`docs/wiki/`](docs/wiki/) (wiki-synced content)
 - [`docs/adrs/`](docs/adrs/) (architecture decisions)
+
+## CI/Monitoring Scripts
+
+- Use `grep -wF` or `==` for exact-word matching in CI-wait scripts — never bare `grep pattern` that matches substrings (e.g. "skipping" matching "skip")
+- Verify runbook/doc paths exist in target repos before referencing them in generated loops
+- Test monitor scripts for false ALL_DONE events before arming
+- Use exponential backoff: start at 15s, double up to 60s — no fixed 5s polling
+- Prefer a dedicated `ci-wait` helper (from `ai-workspace/bin/ci-wait`) over inline monitoring logic

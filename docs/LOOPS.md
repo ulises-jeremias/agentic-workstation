@@ -70,6 +70,10 @@ See: `https://github.com/ulises-jeremias/ai-workspace`
 | `pr-babysitter` | L2 | 15m | High | Review and comment on open PRs |
 | `ci-sweeper` | L2 | 15m | Very High | Fix failing CI runs |
 
+> **OSS maintainers**: see `oss-pr-monitor`, `oss-triage`, `oss-daily-briefing` in the
+> OSS Maintenance Patterns section below — these are purpose-built for multi-repo
+> ecosystems with appropriate budget sizing.
+
 To use a reference pattern:
 
 ```bash
@@ -110,3 +114,38 @@ Never widen the allowlist beyond what you have manually tested at L1 first.
 - [ai-workspace docs/LOOPS.md](https://github.com/ulises-jeremias/ai-workspace/blob/main/docs/LOOPS.md) — full technical reference
 - [dots-workstation-loop-runner skill](../home/dot_local/share/agentic-workstation/skills/dots-workstation-loop-runner/SKILL.md)
 - [Loop engineering reference](https://github.com/cobusgreyling/loop-engineering)
+
+---
+
+## OSS Maintenance Patterns
+
+For maintainers managing 20-50 OSS repos, three purpose-built patterns ship with
+`agentic-harness` (copy them from `~/.local/share/agentic-workstation/loops/`):
+
+| Pattern | Tier | Cadence | Budget | Use case |
+|---------|------|---------|--------|----------|
+| `oss-pr-monitor` | L2 | 1d | 300k tokens | Merge/close dependabot PRs, report human PRs |
+| `oss-triage` | L1 | 1d | 150k tokens | Label issues, respond to questions |
+| `oss-daily-briefing` | L1 | 1d | 80k tokens | Read-only activity briefing |
+
+### Key lessons from production use
+
+**Budget sizing matters.** A 40-repo scan requires 150k–300k tokens — the default
+60k budgets in generic patterns are too small and cause mid-scan interruptions.
+Always size budgets to `(repos × 5k tokens) + 50k overhead`.
+
+**All OSS loops must be resumable.** Add this block to every `request.md`:
+
+```
+**Resumability (read first):**
+Read loops/<name>/STATE.md. If `last_processed_repo` is set, skip all repos
+before that name. After each repo: last_processed_repo: <owner>/<repo>.
+On completion: clear last_processed_repo, set last_run_status: success.
+```
+
+This recovers interrupted runs without starting over — critical for 40+ repo scans
+where a single timeout mid-scan previously wasted 20+ minutes of context.
+
+**Ecosystem packs for repo lists.** Rather than hardcoding repo lists in `request.md`,
+define a pack at `packs/my-ecosystem.yaml` with the repo list, then reference it
+from the loop. This makes loops reusable across different ecosystems.
