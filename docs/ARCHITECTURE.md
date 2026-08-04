@@ -58,17 +58,66 @@ graph TD
 
 ---
 
+## Three-layer model
+
+agentic-workstation operates across three distinct layers with clear separation of concerns:
+
+```mermaid
+graph TD
+    subgraph "L1 — agentic-workstation (this repo)"
+        AW1["Machine provisioning<br/>(chezmoi, shell, packages)"]
+        AW2["Secrets & LLM policy<br/>(dots-devcompanion, env.d)"]
+        AW3["dots-* helpers<br/>(dots-skills, dots-loop, dots-doctor)"]
+        AW4["AGENTS.md templates<br/>(chezmoitemplates/agents/)"]
+    end
+
+    subgraph "L1.5 — agent-toolkit (separate repo)"
+        AT1["52 skills / 9 domains"]
+        AT2["16 agent personas"]
+        AT3["10 loop templates"]
+        AT4["6 tool profiles<br/>(Claude Code, Cursor, OpenCode…)"]
+        AT5["6 MCP templates"]
+    end
+
+    subgraph "L3 — Project overlay"
+        PO1["Project AGENTS.md"]
+        PO2["Engagement packs"]
+        PO3["Client-specific skills"]
+    end
+
+    AW1 -->|installs via chezmoi| AT1
+    AW1 -->|installs via chezmoi| AT2
+    AW3 -->|delegates to| AT1
+    AT1 --> PO3
+    AT4 --> PO1
+```
+
+### Layer responsibilities
+
+| Layer | Repo | Responsibility |
+|-------|------|----------------|
+| **L1** | `agentic-workstation` | Machine provisioning — chezmoi, packages, shell, LLM policy |
+| **L1.5** | `agent-toolkit` | Capability distribution — skills, agents, profiles, loops |
+| **L3** | Project repo | Overlays — project AGENTS.md, engagement packs, client skills |
+
+> [!IMPORTANT]
+> **agentic-workstation's role is machine provisioning.** Skills, agent personas, and profiles come from [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit). `dots-skills` delegates to `agent-toolkit` for skill sync; `dots-loop` wraps `agent-toolkit loop`.
+
+---
+
 ## Skills architecture
 
-Skills are the primary AI-facing assets. They follow a two-layer model:
+Skills are distributed by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) — a separate repo with 52 skills, 16 agent personas, and 10 loop templates. agentic-workstation installs agent-toolkit during `chezmoi apply` and uses `dots-skills` to sync the resulting skills to per-tool directories.
 
-- **Bundled skills** — defined in this repo, distributed via chezmoi to `~/.local/share/agentic-workstation/skills/`.
-- **External skills** — installed from npm, GitHub, or URLs by `dots-skills install`, placed in `~/.local/share/agentic-workstation/skills-external/`.
+- **agent-toolkit skills** — installed via `agent-toolkit install` (or `pip install agent-toolkit-cli && agent-toolkit install`)
+- **Bundled workstation skills** — a small set of agentic-workstation-specific skills (triage, dev-companion, assistant) shipped in this repo for machine-local workflows
+- **External skills** — installed from npm, GitHub, or URLs by `dots-skills install`, placed in `~/.local/share/agentic-workstation/skills-external/`
 
-Each skill contains a `skill.json` manifest that declares compatibility with each AI tool. `dots-skills sync` reads those manifests and creates symlinks in tool-specific directories (e.g. `~/.claude/skills/`, `~/.copilot/skills/`).
+Each skill contains a `skill.json` manifest (or `SKILL.md` frontmatter for agent-toolkit skills) that declares compatibility with each AI tool. `dots-skills sync` reads those manifests and creates symlinks in tool-specific directories (e.g. `~/.claude/skills/`, `~/.copilot/skills/`).
 
 > [!NOTE]
-> See [SKILLS.md](SKILLS.md) for the full skills system documentation including how to add bundled or external skills.
+> See [SKILLS.md](SKILLS.md) for the full skills system documentation.
+> See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for the agent-toolkit integration reference.
 
 ---
 
@@ -86,6 +135,7 @@ Each skill contains a `skill.json` manifest that declares compatibility with eac
 ## See Also
 
 - [SKILLS.md](SKILLS.md) — full skills system documentation
+- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — agent-toolkit integration (skills, agents, profiles)
 - [AI_LAYER.md](AI_LAYER.md) — AI directory structure and Ralph Loop model
 - [AGENTIC_HARNESS.md](AGENTIC_HARNESS.md) — three-layer architecture framework
 - [wiki/PROFILES.md](wiki/PROFILES.md) — profile selection and feature groups

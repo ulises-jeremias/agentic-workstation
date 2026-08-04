@@ -2,6 +2,23 @@
 
 This document describes the agentic-workstation skill system — how skills are defined, distributed, installed, and made available to multiple AI tools.
 
+> [!IMPORTANT]
+> **Skills are now distributed via [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit).**
+> agentic-workstation provisions your machine. agent-toolkit provides the capability library
+> (52 skills, 16 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
+> the integration details.
+>
+> **Quick install:**
+> ```bash
+> # agent-toolkit is installed automatically by chezmoi apply.
+> # To install or update manually:
+> pip install agent-toolkit-cli
+> agent-toolkit install
+>
+> # Or via dots-skills (delegates to agent-toolkit):
+> dots-skills install-toolkit
+> ```
+
 ## Skill Lifecycle
 
 ```mermaid
@@ -118,14 +135,17 @@ AI tools access skills through symlinks in their respective config directories:
 
 ## Skill sources
 
-Skills can come from four sources, using two different installation mechanisms:
+Skills can come from five sources, using three different installation mechanisms:
 
 | Source | Mechanism | Example |
 |--------|-----------|---------|
-| `bundled` | chezmoi source state | `clickup-cli`, `slack-cli` |
+| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 52 cross-domain skills |
+| `bundled` | chezmoi source state | `dots-workstation-triage`, `dots-workstation-assistant` |
 | `npm` | `dots-skills install` | `uipro-cli` (ui-ux-pro-max) |
 | `github` | **chezmoi `.chezmoiexternal`** | `ulises-jeremias/JIRA-Assistant-Skills` |
 | `url` | **chezmoi `.chezmoiexternal`** | `https://example.com/skill.tar.gz` |
+
+**`agent-toolkit` is the primary source for cross-domain skills.** It is installed automatically during `chezmoi apply` via the `run_onchange_45-install-ai-agents.sh.tmpl` script. `dots-skills install-toolkit` provides the manual equivalent.
 
 **`github` and `url` sources are managed natively by chezmoi** via `.chezmoiexternal.toml.tmpl`. This means:
 - No custom download code — chezmoi handles HTTP, extraction, caching
@@ -380,17 +400,20 @@ chezmoi apply         # downloads pack via chezmoiexternal + installs jira-as + 
 
 ## Managing skills with `dots-skills`
 
-`dots-skills` is the CLI helper for skill management. It works alongside chezmoi:
+`dots-skills` is the CLI helper for skill management. It works alongside chezmoi and delegates to `agent-toolkit` for the primary skill library:
 
 ```
-dots-skills list              List installed skills and their status per AI tool
-dots-skills sync              Regenerate symlinks (reads skill.json or defaults to all tools)
-dots-skills install <name>    Install an npm-sourced skill from the registry
-dots-skills check             Validate required CLI tools and pip packages for each skill
-dots-skills add npm:<pkg>     Add an npm skill to the registry
+dots-skills list                 List installed skills and their status per AI tool
+dots-skills sync                 Regenerate symlinks (reads skill.json or defaults to all tools)
+dots-skills install-toolkit      Install or update agent-toolkit (pip install + agent-toolkit install)
+dots-skills install <name>       Install an npm-sourced skill from the registry
+dots-skills check                Validate required CLI tools and pip packages for each skill
+dots-skills add npm:<pkg>        Add an npm skill to the registry
 ```
 
 > **Note**: `github` and `url` skills are now managed by chezmoi (`.chezmoiexternal`), not by `dots-skills install`. Run `chezmoi apply` instead.
+>
+> **Note**: The bulk of cross-domain skills (52 skills across 9 domains) come from `agent-toolkit`. Use `dots-skills install-toolkit` or `chezmoi apply` to install/update them.
 
 ### `dots-skills list`
 
@@ -604,6 +627,7 @@ assistant-memory add --type learning --from-skill test "probe" >/dev/null 2>&1 \
 
 ## See Also
 
+- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — agent-toolkit integration (skills, agents, profiles, loops)
 - [AI_LAYER.md](AI_LAYER.md) — AI layer overview and directory structure
 - [CLIENT_AI_PLAYBOOKS.md](CLIENT_AI_PLAYBOOKS.md) — Client-specific skill workflows
 - [DEV_COMPANION.md](DEV_COMPANION.md) — Dev companion layers (uses skills)

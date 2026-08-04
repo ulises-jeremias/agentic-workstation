@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# chezmoi:template:left-delimiter="{{" right-delimiter="}}"
+set -euo pipefail
+
+log() { printf '\033[1;34m[agent-toolkit]\033[0m %s\n' "$*"; }
+ok()  { printf '\033[1;32m[agent-toolkit]\033[0m %s\n' "$*"; }
+has_cmd() { command -v "$1" >/dev/null 2>&1; }
+
+log "Installing agent-toolkit..."
+
+# Install via pip (prefers uv if available)
+if has_cmd uv; then
+  uv tool install agent-toolkit-cli
+elif has_cmd pip3; then
+  pip3 install --user agent-toolkit-cli
+elif has_cmd pip; then
+  pip install --user agent-toolkit-cli
+else
+  log "No pip found — skipping agent-toolkit install"
+  exit 0
+fi
+
+# Deploy profiles to all detected AI tools
+if has_cmd agent-toolkit; then
+  log "Deploying profiles..."
+  agent-toolkit install --force
+  ok "agent-toolkit installed and profiles deployed"
+else
+  log "agent-toolkit not in PATH yet — run 'agent-toolkit install' manually after restarting shell"
+fi

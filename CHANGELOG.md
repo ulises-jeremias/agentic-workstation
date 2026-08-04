@@ -14,6 +14,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **agent-toolkit integration** ([`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md)): agentic-workstation now delegates skill, agent persona, and profile distribution to [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit). During `chezmoi apply`, `run_onchange_45-install-ai-agents.sh.tmpl` installs `agent-toolkit-cli` (via uv/pipx/pip) and runs `agent-toolkit install` to deploy 52 skills across 9 domains, 16 agent personas, 10 loop templates, and 6 tool profiles before `dots-skills sync` runs. A new `dots-skills install-toolkit` subcommand provides the manual equivalent.
+- New doc **`docs/AGENT_TOOLKIT.md`** — explains the two-repo model, what agent-toolkit provides, how chezmoi installs it, how `dots-skills` and `dots-loop` delegate to it, and the Claude Code Plugin Marketplace alternative path.
+
+### Changed
+
+- **`docs/ARCHITECTURE.md`** — added a "Three-layer model" section with a Mermaid diagram showing agentic-workstation (L1, machine provisioning) installing agent-toolkit (L1.5, capability distribution) which feeds project overlays (L3). The old skills architecture note is updated to reflect the new source hierarchy.
+- **`docs/SKILLS.md`** — updated "Skill sources" table to include `agent-toolkit` as the primary source. Updated the `dots-skills` command reference to document `install-toolkit`. Added an installation callout at the top of the doc.
+- **`docs/LOOPS.md`** — updated Quick Start to note that loop templates come from agent-toolkit and that `dots-loop` wraps `agent-toolkit loop`. Updated reference pattern table to match agent-toolkit's 10 loop templates.
+- **`AGENTS.md`** — added a "Skills and agents" section explaining that agent-toolkit is the source of skills/agents/profiles, with install instructions and a pointer to `docs/AGENT_TOOLKIT.md`.
+- **`home/dot_local/bin/executable_dots-skills`** — added `install-toolkit` subcommand: checks for `agent-toolkit`, installs `agent-toolkit-cli` via the best available installer (uv → pipx → pip3 → pip), runs `agent-toolkit install`, then calls `cmd_sync`.
+
+
+
 - **Dev companion LLM policy** (`home/dot_local/share/dots-ai/dev-companion/runner/policy.py`): explicit allowlist/denylist/pinned-provider/pinned-model + **fail-closed `strict` mode**, composed from env vars (`DOTS_AI_DEVCOMPANION_LLM_ALLOWLIST`, `DOTS_AI_DEVCOMPANION_LLM_DENYLIST`, `DOTS_AI_DEVCOMPANION_LLM_PINNED_PROVIDER`, `DOTS_AI_DEVCOMPANION_LLM_PINNED_MODEL`, `DOTS_AI_DEVCOMPANION_LLM_STRICT`, `DOTS_AI_DEVCOMPANION_LLM_CONFIG`), an optional `~/.config/dots-ai/devcompanion-llm.json` and per-job `llm` overrides (job may only **restrict**, never widen). The runner now emits `llm_policy_applied` inside `result.json`, embeds the policy in the `plan.md` header, and appends a single-line JSON record to `~/.local/share/dots-ai/dev-companion/logs/llm-audit.log` (metadata only).
 - New CLI subcommand **`dots-devcompanion llm-status [--job FILE] [--json]`** that shows the active policy and which provider would run **without invoking any model**. Exit code `1` when strict mode would block, `2` on policy violation, `0` otherwise.
 - Unit tests for the policy and dispatcher under `home/dot_local/share/dots-ai/dev-companion/runner/tests/` (run with `python3 -m unittest tests.test_policy tests.test_dispatcher`).

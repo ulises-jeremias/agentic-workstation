@@ -11,12 +11,16 @@ set -eo pipefail
 ## Commands:
 ##     list                 List installed skills and their status per AI tool.
 ##     sync                 Regenerate symlinks for all skills (reads skill.json compatibility).
+##     install-toolkit      Install or update agent-toolkit (pip install + agent-toolkit install).
 ##     install <name>       Install an npm-sourced skill from the registry.
 ##     check                Validate that required tools and pip packages are installed.
 ##     add <source>         Add an npm skill to the registry: npm:<pkg>.
 ##
 ## Note: github and url skills are managed by chezmoi (.chezmoiexternal).
 ##       Enable them in chezmoi config and run: chezmoi apply
+##
+## Note: The bulk of cross-domain skills (52 skills) come from agent-toolkit.
+##       Use 'dots-skills install-toolkit' or 'chezmoi apply' to install/update them.
 ##
 ## Options:
 ##     -h, --help           Show this help message.
@@ -488,6 +492,73 @@ print('\n'.join(d.get('pip_packages', [])))
   info "all skill requirements satisfied"
 }
 
+cmd_install_toolkit() {
+  info "installing / updating agent-toolkit..."
+
+  # Determine the Python package installer (prefer uv, then pipx, then pip3, then pip)
+  local installer=""
+  if command -v uv &>/dev/null; then
+    installer="uv"
+  elif command -v pipx &>/dev/null; then
+    installer="pipx"
+  elif command -v pip3 &>/dev/null; then
+    installer="pip3"
+  elif command -v pip &>/dev/null; then
+    installer="pip"
+  else
+    die "No Python package manager found (uv/pipx/pip3/pip). Install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
+  fi
+
+  # Install agent-toolkit-cli
+  info "installing agent-toolkit-cli via ${installer}..."
+  case "$installer" in
+    uv)
+      if uv tool list 2>/dev/null | grep -q "^agent-toolkit-cli "; then
+        ok "agent-toolkit-cli already installed (uv tool) — upgrading..."
+        uv tool upgrade agent-toolkit-cli || warn "uv tool upgrade failed; trying install --force"
+        uv tool install --force agent-toolkit-cli
+      else
+        uv tool install agent-toolkit-cli
+      fi
+      ;;
+    pipx)
+      if pipx list --short 2>/dev/null | grep -q "^agent-toolkit-cli "; then
+        ok "agent-toolkit-cli already installed (pipx) — upgrading..."
+        pipx upgrade agent-toolkit-cli || warn "pipx upgrade failed; trying reinstall"
+        pipx reinstall agent-toolkit-cli
+      else
+        pipx install agent-toolkit-cli
+      fi
+      ;;
+    pip3)
+      pip3 install --user --upgrade agent-toolkit-cli
+      ;;
+    pip)
+      pip install --user --upgrade agent-toolkit-cli
+      ;;
+  esac
+
+  # Verify the CLI is now available
+  if ! command -v agent-toolkit &>/dev/null; then
+    warn "agent-toolkit not found in PATH after install."
+    warn "If you used uv or pipx, ensure their bin dirs are in PATH (e.g. ~/.local/bin)."
+    warn "Try: export PATH=\"\$HOME/.local/bin:\$PATH\" then re-run."
+    return 1
+  fi
+
+  ok "agent-toolkit installed: $(agent-toolkit --version 2>/dev/null || echo 'ok')"
+
+  # Run agent-toolkit install to deploy skills/profiles for detected AI tools
+  info "running agent-toolkit install..."
+  agent-toolkit install
+
+  # Sync symlinks so all AI tool directories pick up the new skills
+  info "syncing skill symlinks..."
+  cmd_sync
+
+  ok "agent-toolkit integration complete"
+}
+
 cmd_install() {
   _require_python3
   local name="${1:-}"
@@ -670,6 +741,7 @@ shift || true
 case "$command" in
   list) cmd_list ;;
   sync) cmd_sync ;;
+  install-toolkit) cmd_install_toolkit ;;
   install) cmd_install "${1:-}" ;;
   check) cmd_check ;;
   add) cmd_add "${1:-}" ;;

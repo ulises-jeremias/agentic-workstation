@@ -20,14 +20,15 @@
 
 ## Quick Start
 
-agentic-workstation bundles the `dots-workstation-loop-runner` skill and `dots-loop` CLI. They wrap
-[ai-workspace](https://github.com/ulises-jeremias/ai-workspace)'s `bin/loop`:
+Loop templates come from [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) —
+the capability distribution layer for agentic-workstation. `dots-loop` wraps `agent-toolkit loop`
+and [ai-workspace](https://github.com/ulises-jeremias/ai-workspace)'s `bin/loop`:
 
 ```bash
 # Check status of all loops
 dots-loop status
 
-# Initialize a loop from a reference pattern
+# Initialize a loop from a reference pattern (sourced from agent-toolkit)
 dots-loop init daily-triage
 
 # Run it once (L1: observe only)
@@ -35,10 +36,15 @@ dots-loop run daily-triage
 
 # Audit past runs
 dots-loop audit daily-triage
+
+# Update loop templates from agent-toolkit
+agent-toolkit loop sync
 ```
 
-**Prerequisite**: `ai-workspace` must be installed at `~/.ai-workspace`.
-See: `https://github.com/ulises-jeremias/ai-workspace`
+**Prerequisites**:
+
+- `ai-workspace` installed at `~/.ai-workspace`: `https://github.com/ulises-jeremias/ai-workspace`
+- `agent-toolkit` installed (handled automatically by `chezmoi apply`; manual: `pip install agent-toolkit-cli && agent-toolkit install`)
 
 ---
 
@@ -57,28 +63,36 @@ See: `https://github.com/ulises-jeremias/ai-workspace`
 
 ## Reference Patterns
 
-7 patterns pre-installed under
-`~/.local/share/agentic-workstation/loops/` after `chezmoi apply`.
+10 loop templates from [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) are
+pre-installed under `~/.local/share/agentic-workstation/loops/` after `chezmoi apply`.
 
 | Pattern | Tier | Cadence | Cost | Use case |
 |---------|------|---------|------|----------|
-| `daily-triage` | L1 | 1d | Low | Propose labels for new issues |
-| `issue-triage` | L1 | 4h | Low | Propose labels (higher frequency) |
-| `changelog-drafter` | L1 | 1d | Low | Draft release notes from merged PRs |
-| `post-merge-cleanup` | L2 | 6h | Low | Delete merged branches, close stale issues |
-| `dep-sweeper` | L2 | 1d | Medium | Apply patch-level dep updates |
-| `pr-babysitter` | L2 | 15m | High | Review and comment on open PRs |
-| `ci-sweeper` | L2 | 15m | Very High | Fix failing CI runs |
+| `oss-pr-monitor` | L1 | 30m | High | Monitor open PRs across OSS repos |
+| `oss-triage` | L1 | 1h | Medium | Triage new issues, apply labels |
+| `ci-health` | L1 | 15m | Very High | Watch CI status, auto-diagnose failures |
+| `oss-daily-briefing` | L2 | 1d | Low | Summarize activity across tracked OSS repos |
+| `dependency-drift` | L2 | 1d | Medium | Detect outdated dependencies |
+| `security-sweep` | L2 | 1d | Medium | Run vulnerability scan across repos |
+| `codeowner-review` | L2 | 1d | Low | Remind code owners of pending reviews |
+| `release-notes` | L3 | 1w | Low | Draft release notes from merged PRs |
+| `stale-branch-cleanup` | L3 | 1w | Low | Identify and archive stale branches |
+| `contributor-digest` | L3 | 1w | Low | Generate contributor activity digest |
 
-> **OSS maintainers**: see `oss-pr-monitor`, `oss-triage`, `oss-daily-briefing` in the
-> OSS Maintenance Patterns section below — these are purpose-built for multi-repo
-> ecosystems with appropriate budget sizing.
+> **OSS maintainers**: `oss-pr-monitor`, `oss-triage`, and `oss-daily-briefing` are purpose-built
+> for multi-repo ecosystems with appropriate budget sizing — see the OSS Maintenance Patterns
+> section below.
 
 To use a reference pattern:
 
 ```bash
+# Patterns are installed by agent-toolkit during chezmoi apply.
+# Copy one to your workspace and start it:
 cp -r ~/.local/share/agentic-workstation/loops/daily-triage ~/.ai-workspace/loops/
 dots-loop init daily-triage   # or: edit LOOP.md directly
+
+# Or use agent-toolkit's loop command directly:
+agent-toolkit loop init oss-pr-monitor
 ```
 
 ---
@@ -111,7 +125,9 @@ Never widen the allowlist beyond what you have manually tested at L1 first.
 
 ## More
 
+- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — agent-toolkit integration (loop templates, skills, agents, profiles)
 - [ai-workspace docs/LOOPS.md](https://github.com/ulises-jeremias/ai-workspace/blob/main/docs/LOOPS.md) — full technical reference
+- [agent-toolkit loops/](https://github.com/ulises-jeremias/agent-toolkit/tree/main/loops) — loop template source
 - [dots-workstation-loop-runner skill](../home/dot_local/share/agentic-workstation/skills/dots-workstation-loop-runner/SKILL.md)
 - [Loop engineering reference](https://github.com/cobusgreyling/loop-engineering)
 

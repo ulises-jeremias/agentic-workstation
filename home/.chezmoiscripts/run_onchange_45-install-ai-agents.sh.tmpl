@@ -348,6 +348,25 @@ fi
 {{- end }}
 
 # ---------------------------------------------------------------------------
+# agent-toolkit — install skills, agents, profiles, and loop templates
+# ---------------------------------------------------------------------------
+log "installing / updating agent-toolkit..."
+if command -v agent-toolkit &>/dev/null; then
+  ok "agent-toolkit already installed: $(agent-toolkit --version 2>/dev/null || echo 'ok')"
+else
+  log "agent-toolkit not found — installing agent-toolkit-cli..."
+  install_python_tool "agent-toolkit-cli"
+fi
+
+if command -v agent-toolkit &>/dev/null; then
+  log "running agent-toolkit install (deploys skills, agents, profiles, loops)..."
+  agent-toolkit install || warn "agent-toolkit install failed — run 'dots-skills install-toolkit' to retry"
+else
+  warn "agent-toolkit still not in PATH; skipping capability deployment"
+  warn "Run 'dots-skills install-toolkit' after ensuring ~/.local/bin is in PATH"
+fi
+
+# ---------------------------------------------------------------------------
 # Skills sync — regenerate AI tool symlinks based on skill.json compatibility
 # ---------------------------------------------------------------------------
 log "syncing skills across AI tools..."
