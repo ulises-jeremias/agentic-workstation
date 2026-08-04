@@ -142,7 +142,7 @@ else
   mkdir -p "$HOME/.local/bin"
   if is_macos; then
     _slackcli_arch="$(uname -m)"
-    if [[ "$_slackcli_arch" == "arm64" ]]; then
+    if [[ $_slackcli_arch == "arm64" ]]; then
       _slackcli_asset="slackcli-macos-arm64"
     else
       _slackcli_asset="slackcli-macos"

@@ -542,7 +542,7 @@ cmd_install_toolkit() {
   if ! command -v agent-toolkit &>/dev/null; then
     warn "agent-toolkit not found in PATH after install."
     warn "If you used uv or pipx, ensure their bin dirs are in PATH (e.g. ~/.local/bin)."
-    warn "Try: export PATH=\"\$HOME/.local/bin:\$PATH\" then re-run."
+    warn 'Try: export PATH="$HOME/.local/bin:$PATH" then re-run.'
     return 1
   fi
 
