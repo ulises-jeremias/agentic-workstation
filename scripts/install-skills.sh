@@ -12,6 +12,7 @@
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool cursor
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool windsurf
 #   curl -fsSL .../install-skills.sh | sh -s -- --tool copilot
+#   curl -fsSL .../install-skills.sh | sh -s -- --tool muse
 #   curl -fsSL .../install-skills.sh | sh -s -- --all
 #   curl -fsSL .../install-skills.sh | sh -s -- --guided   # interactive prompts
 #   curl -fsSL .../install-skills.sh | sh -s -- --dry-run  # plan only, no changes
@@ -38,7 +39,7 @@ usage() {
 install-skills.sh — agentic-workstation AI skills & agents installer
 
 Options:
-  --tool <name>   Install for one tool: all|claude|opencode|cursor|windsurf|copilot
+  --tool <name>   Install for one tool: all|claude|opencode|cursor|windsurf|copilot|muse
   --skills <list> Comma-separated skill domains to install (e.g. jira,github,clickup)
                   Use --skills list to show available domains
   --all           Install for every supported tool (default)
@@ -161,7 +162,7 @@ trap "rm -rf '$TMPDIR_SKILLS'" EXIT
 if [ "$GUIDED" = "1" ]; then
   if [ -t 0 ] && [ -t 1 ]; then
     printf '\n[install-skills] Guided mode\n'
-    printf '  Which AI tool do you use? [1] all (default) [2] claude [3] cursor [4] opencode [5] windsurf [6] copilot\n'
+    printf '  Which AI tool do you use? [1] all (default) [2] claude [3] cursor [4] opencode [5] windsurf [6] copilot [7] muse\n'
     printf '  Your choice: '
     read -r _choice || _choice=""
     case "${_choice:-1}" in
@@ -171,6 +172,7 @@ if [ "$GUIDED" = "1" ]; then
       4 | opencode) TARGET_TOOL="opencode" ;;
       5 | windsurf) TARGET_TOOL="windsurf" ;;
       6 | copilot) TARGET_TOOL="copilot" ;;
+      7 | muse) TARGET_TOOL="muse" ;;
       *)
         warn "unknown choice '${_choice}', defaulting to 'all'"
         TARGET_TOOL="all"
@@ -317,6 +319,22 @@ install_for_copilot() {
   fi
 }
 
+install_for_muse() {
+  log "installing agents for Muse Code..."
+  if ! _download_asset "agents-muse" "${TMPDIR_SKILLS}/muse.zip"; then
+    warn "could not download muse agents package — skipping (fallback to universal skills)"
+    return 0
+  fi
+  mkdir -p "${HOME}/.config/muse/skills"
+  unzip -o "${TMPDIR_SKILLS}/muse.zip" -d "${TMPDIR_SKILLS}/muse-extracted" >/dev/null
+  # Muse skills are compatible via .agents/skills and universal store; copy agents if provided
+  if [ -d "${TMPDIR_SKILLS}/muse-extracted/.config/muse/skills" ]; then
+    cp -r "${TMPDIR_SKILLS}/muse-extracted/.config/muse/skills/." "${HOME}/.config/muse/skills/"
+  fi
+  ok "Muse Code skills installed to ${HOME}/.config/muse/skills/"
+  log "  Tip: run 'muse skills import --from claude --scope user' to sync existing Claude skills"
+}
+
 # Always install the skills library
 install_skills
 
@@ -327,14 +345,16 @@ case "$TARGET_TOOL" in
     install_for_cursor
     install_for_windsurf
     install_for_copilot
+    install_for_muse
     ;;
   claude) install_for_claude ;;
   opencode) install_for_opencode ;;
   cursor) install_for_cursor ;;
   windsurf) install_for_windsurf ;;
   copilot) install_for_copilot ;;
+  muse) install_for_muse ;;
   *)
-    warn "unknown tool: ${TARGET_TOOL}. Valid: all, claude, opencode, cursor, windsurf, copilot"
+    warn "unknown tool: ${TARGET_TOOL}. Valid: all, claude, opencode, cursor, windsurf, copilot, muse"
     ;;
 esac
 

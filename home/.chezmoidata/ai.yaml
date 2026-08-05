@@ -18,3 +18,4 @@ agents:
   opencode: false      # OpenCode terminal agent (opt-in)
   pi: false            # pi coding agent by Mario Zechner (opt-in)
   copilot_cli: false   # GitHub Copilot CLI extension (opt-in, requires gh auth)
+  muse_code: false     # Meta Muse Code terminal agent (opt-in, https://dev.meta.ai)

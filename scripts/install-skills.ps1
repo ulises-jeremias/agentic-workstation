@@ -17,7 +17,7 @@
 #   .\scripts\install-skills.ps1 -Tool claude
 
 param(
-    [ValidateSet("all", "claude", "opencode", "cursor", "windsurf", "copilot")]
+    [ValidateSet("all", "claude", "opencode", "cursor", "windsurf", "copilot", "muse")]
     [string]$Tool = $(if ($env:DOTS_WORKSTATION_TOOL) { $env:DOTS_WORKSTATION_TOOL } else { "all" }),
     [switch]$Guided = $(if ($env:DOTS_WORKSTATION_GUIDED -eq "1") { $true } else { $false }),
     [switch]$DryRun = $(if ($env:DOTS_WORKSTATION_DRY_RUN -eq "1") { $true } else { $false })
@@ -125,6 +125,7 @@ if ($Guided) {
         Write-Host "    [4] opencode"
         Write-Host "    [5] windsurf"
         Write-Host "    [6] copilot"
+        Write-Host "    [7] muse"
         $choice = Read-Host "  Your choice"
         switch ($choice) {
             "1"         { $Tool = "all" }
@@ -139,6 +140,8 @@ if ($Guided) {
             "windsurf"  { $Tool = "windsurf" }
             "6"         { $Tool = "copilot" }
             "copilot"   { $Tool = "copilot" }
+            "7"         { $Tool = "muse" }
+            "muse"      { $Tool = "muse" }
             default     {
                 Write-NWarn "unknown choice '$choice', defaulting to 'all'"
                 $Tool = "all"
@@ -269,6 +272,29 @@ function Install-ForWindsurf {
     Write-NOk "Windsurf agents installed to $WindsurfDir"
 }
 
+function Install-ForMuse {
+    Write-NLog "installing skills for Muse Code..."
+    $zipPath = Join-Path $TempDir "muse.zip"
+    if (-not (Get-Asset "agents-muse" $zipPath)) {
+        Write-NWarn "could not download muse agents — skipping (fallback to universal skills)"
+        return
+    }
+    $extractPath = Join-Path $TempDir "muse-extracted"
+    New-Item -ItemType Directory -Force -Path $extractPath | Out-Null
+    Expand-ZipTo $zipPath $extractPath
+    $museSkills = Join-Path $env:USERPROFILE "AppData/Roaming/muse/skills"
+    # XDG fallback: ~/.config/muse/skills
+    $museConfigSkills = Join-Path $env:USERPROFILE ".config/muse/skills"
+    $srcMuse = Join-Path $extractPath ".config/muse/skills"
+    if (Test-Path $srcMuse) {
+        New-Item -ItemType Directory -Force -Path $museConfigSkills | Out-Null
+        Copy-DirContents $srcMuse $museConfigSkills
+        Write-NOk "Muse Code skills installed to $museConfigSkills"
+    } else {
+        Write-NWarn "muse zip missing .config/muse/skills — skipping"
+    }
+}
+
 function Install-ForCopilot {
     Write-NLog "installing GitHub Copilot custom instructions..."
     $zipPath = Join-Path $TempDir "copilot.zip"
@@ -300,12 +326,14 @@ try {
             Install-ForCursor
             Install-ForWindsurf
             Install-ForCopilot
+            Install-ForMuse
         }
         "claude"   { Install-ForClaude }
         "opencode" { Install-ForOpenCode }
         "cursor"   { Install-ForCursor }
         "windsurf" { Install-ForWindsurf }
         "copilot"  { Install-ForCopilot }
+        "muse"     { Install-ForMuse }
     }
 
     Write-NLog ""

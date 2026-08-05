@@ -36,6 +36,9 @@
     },
     "copilot-cli": {
       "supported": false
+    },
+    "muse-code": {
+      "supported": true
     }
   }
 }

@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 <!-- markdownlint-disable MD024 -->
 ## [Unreleased]
 
+### Added
+
+- **Muse Code support (Meta, https://developer.meta.com/ai/products/muse-code/)** — Muse Code is now a first-class AI tool. `muse` CLI installs via `dev.meta.ai/install.sh` (opt-in `install_agent_muse_code`), questionnaire prompt `muse`, and `~/.config/muse/skills/<name>` + `.agents/skills` (universal) per Agent Skills spec (`muse skills import --from claude`). New Chezmoi symlinks `home/dot_config/muse/skills/symlink_*.tmpl` (21 skills), `home/dot_local/bin/executable_dots-skills` `TOOL_DIRS[muse-code]`, `scripts/validate-skills.sh` (muse-code in REQUIRED_TOOLS), `scripts/generate-compatibility.py` (new column Muse Code), `scripts/install-skills.sh/.ps1` (`--tool muse`, `install_for_muse`), `scripts/release-artifacts.json` (dots-workstation-agents-muse), and docs `AI_LAYER.md`, `PLATFORM_SUPPORT.md`, `SKILLS.md`, `README.md`, `COMPATIBILITY.md`.
+
 ## [1.3.0] — 2026-08-05
 
 ### Added

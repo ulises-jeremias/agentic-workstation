@@ -26,7 +26,7 @@
 
 **agentic-workstation** is an AI-first, chezmoi-managed workstation baseline that equips your machine with skills, agents, MCP servers, CLI helpers, and loop engineering primitives — ready to go in one command.
 
-Works with **Claude Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub Copilot**, and any AI coding tool that supports agent skills.
+Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub Copilot**, and any AI coding tool that supports agent skills.
 
 ---
 
@@ -64,7 +64,7 @@ Works with **Claude Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub C
     <td width="33%" align="center">
       <br>
       <b>🎯 Multi-Tool Sync</b><br>
-      <sub>One skill registration across Claude Code, opencode, Cursor, Copilot CLI, Pi, and Windsurf — no duplicates</sub>
+      <sub>One skill registration across Claude Code, Muse Code, opencode, Cursor, Copilot CLI, Pi, and Windsurf — no duplicates</sub>
     </td>
   </tr>
 </table>
@@ -91,7 +91,7 @@ yay -S agent-toolkit-cli && agent-toolkit install
 curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | bash
 ```
 
-Works instantly with **Claude Code, opencode, Cursor, GitHub Copilot, and Gemini CLI**. [Learn more →](https://github.com/ulises-jeremias/agentic-workstation/wiki/GUIDED_AI_INSTALL)
+Works instantly with **Claude Code, Muse Code, opencode, Cursor, GitHub Copilot, and Gemini CLI**. [Learn more →](https://github.com/ulises-jeremias/agentic-workstation/wiki/GUIDED_AI_INSTALL)
 
 ### Full workstation (dotfiles + skills + everything)
 

@@ -134,13 +134,18 @@ fi
 for d in "${HOME:-}/.claude/agents" \
   "${HOME:-}/.config/opencode/agents" \
   "${HOME:-}/.cursor/rules" \
-  "${HOME:-}/.windsurf/rules"; do
+  "${HOME:-}/.windsurf/rules" \
+  "${HOME:-}/.config/muse/skills" \
+  "${HOME:-}/.agents/skills"; do
   if [ -d "$d" ]; then
     ok "existing tool dir: $d"
   fi
 done
 if [ -f "${HOME:-}/.github/copilot-instructions.md" ]; then
   ok "existing Copilot instructions: ${HOME}/.github/copilot-instructions.md"
+fi
+if command -v muse >/dev/null 2>&1; then
+  ok "Muse Code CLI: found $(muse --version 2>/dev/null || echo 'muse')"
 fi
 
 # ---- Summary ------------------------------------------------------------

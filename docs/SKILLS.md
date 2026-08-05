@@ -47,9 +47,11 @@ flowchart LR
 
     subgraph Tools["AI Tool Symlinks"]
         T1["~/.claude/skills/"]
-        T2["~/.config/opencode/skills/"]
-        T3["~/.cursor/skills/"]
-        T4["~/.copilot/skills/"]
+        T2["~/.config/muse/skills/"]
+        T3["~/.config/opencode/skills/"]
+        T4["~/.cursor/skills/"]
+        T5["~/.copilot/skills/"]
+        T6["~/.agents/skills/ (universal)"]
     end
 
     AT --> CA --> ATI --> S1
@@ -62,6 +64,8 @@ flowchart LR
     SJ --> T2
     SJ --> T3
     SJ --> T4
+    SJ --> T5
+    SJ --> T6
 ```
 
 > [!NOTE]
