@@ -129,6 +129,48 @@ except Exception:
 "
 }
 
+# Return "true" or "false" for a tool's supported status from SKILL.md frontmatter.
+# Reads the YAML frontmatter 'tools' key (list) or 'compatibility' key (dict/list).
+# Falls back to "true" (universal) when no structured tool list is present.
+# Usage: _skill_md_supports_tool <skill_md> <tool_key>
+_skill_md_supports_tool() {
+  local file="$1" tool="$2"
+  python3 -c "
+import re, sys
+try:
+    text = open('${file}').read()
+    m = re.match(r'^---[ \t]*\n(.*?)\n---[ \t]*\n', text, re.DOTALL)
+    if not m:
+        print('true')
+        sys.exit(0)
+    fm_text = m.group(1)
+    # Try PyYAML; fall back to true if unavailable
+    try:
+        import yaml
+        fm = yaml.safe_load(fm_text) or {}
+    except ImportError:
+        print('true')
+        sys.exit(0)
+    tools_field = fm.get('tools', None)
+    compat_field = fm.get('compatibility', None)
+    # 'tools' as a list of supported tool IDs
+    if isinstance(tools_field, list):
+        print('true' if '${tool}' in tools_field else 'false')
+    # 'compatibility' as a dict (same schema as skill.json)
+    elif isinstance(compat_field, dict):
+        entry = compat_field.get('${tool}', {})
+        if isinstance(entry, dict):
+            print('true' if entry.get('supported', False) else 'false')
+        else:
+            print('true' if entry else 'false')
+    else:
+        # No structured tool list — assume universal support
+        print('true')
+except Exception:
+    print('true')
+"
+}
+
 # ── Skill discovery ───────────────────────────────────────────────────────────
 
 # List all skill directories: those with skill.json OR SKILL.md.
@@ -361,12 +403,18 @@ cmd_sync() {
       continue
     fi
 
+    local skill_md="${skill_dir}/SKILL.md"
     for tool in "${!TOOL_DIRS[@]}"; do
       local tool_dir="${TOOL_DIRS[$tool]}"
       local supported="true"
-      # If skill.json exists, respect its compatibility matrix.
-      # If not (e.g. externally sourced via chezmoiexternal), assume universal support.
-      [[ -f $manifest ]] && supported="$(_skill_supports_tool "$manifest" "$tool")"
+      if [[ -f $manifest ]]; then
+        # skill.json is authoritative — use its structured compatibility matrix.
+        supported="$(_skill_supports_tool "$manifest" "$tool")"
+      elif [[ -f $skill_md ]]; then
+        # SKILL.md frontmatter may declare a tools list or compatibility dict.
+        # Falls back to "true" when no structured field is present.
+        supported="$(_skill_md_supports_tool "$skill_md" "$tool")"
+      fi
       local link="${tool_dir}/${name}"
 
       if [[ $supported == "true" ]]; then
