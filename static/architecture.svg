@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1100" height="480" viewBox="0 0 1100 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">agentic-workstation three-layer architecture</title>
+  <desc id="desc">L1 workstation provisions L1.5 agent-toolkit capabilities into L3 project overlays.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#020617"/>
+      <stop offset="0.45" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#0b1020"/>
+    </linearGradient>
+    <radialGradient id="auraA" cx="22%" cy="20%" r="55%">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="auraB" cx="80%" cy="70%" r="45%">
+      <stop offset="0" stop-color="#a855f7" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="stroke" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="0.5" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#84cc16"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.03"/>
+    </linearGradient>
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse">
+      <path d="M 52 0 L 0 0 0 52" fill="none" stroke="#94a3b8" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1100" height="480" rx="28" fill="url(#bg)"/>
+  <rect width="1100" height="480" rx="28" fill="url(#auraA)"/>
+  <rect width="1100" height="480" rx="28" fill="url(#auraB)"/>
+  <rect width="1100" height="480" rx="28" fill="url(#grid)"/>
+
+  <text x="48" y="44" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13" font-weight="700" letter-spacing="2.4">SYSTEM MAP  |  AGENTIC-WORKSTATION</text>
+  <text x="48" y="76" fill="#ffffff" font-family="Inter, ui-sans-serif, sans-serif" font-size="28" font-weight="800">Three-layer DX model</text>
+  <text x="48" y="104" fill="#b6c7e3" font-family="Inter, ui-sans-serif, sans-serif" font-size="15">Machine baseline installs agent-toolkit; projects overlay conventions</text>
+
+  <!-- L1 -->
+  <g transform="translate(48 140)">
+    <rect width="320" height="260" rx="24" fill="#0f172a" fill-opacity="0.78" stroke="#22d3ee" stroke-opacity="0.5" filter="url(#softGlow)"/>
+    <rect x="20" y="20" width="110" height="28" rx="14" fill="#0f172a" stroke="#22d3ee" stroke-opacity="0.55"/>
+    <text x="75" y="39" text-anchor="middle" fill="#e0f2fe" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="800">L1 BASELINE</text>
+    <text x="20" y="78" fill="#ffffff" font-family="Inter, ui-sans-serif, sans-serif" font-size="20" font-weight="800">agentic-workstation</text>
+    <text x="20" y="110" fill="#7dd3fc" font-family="Inter, ui-sans-serif, sans-serif" font-size="14">chezmoi  |  shell  |  packages</text>
+    <text x="20" y="136" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">secrets &amp; LLM policy (env.d)</text>
+    <text x="20" y="162" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">dots-* helpers  |  AGENTS templates</text>
+    <text x="20" y="198" fill="#cbd5e1" font-family="Inter, ui-sans-serif, sans-serif" font-size="13" font-weight="600">installs agent-toolkit-cli</text>
+    <text x="20" y="222" fill="#64748b" font-family="Inter, ui-sans-serif, sans-serif" font-size="12">AUR ? uv ? pipx during chezmoi apply</text>
+    <text x="20" y="248" fill="#22d3ee" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="700">THIS REPO</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M378 270 H430" stroke="url(#stroke)" stroke-width="3" stroke-opacity="0.8"/>
+  <polygon points="430,262 448,270 430,278" fill="#22d3ee"/>
+  <text x="404" y="256" text-anchor="middle" fill="#67e8f9" font-family="Inter, ui-sans-serif, sans-serif" font-size="11" font-weight="700">install</text>
+
+  <!-- L1.5 -->
+  <g transform="translate(450 140)">
+    <rect width="320" height="260" rx="24" fill="#111827" fill-opacity="0.88" stroke="#a78bfa" stroke-opacity="0.55" filter="url(#softGlow)"/>
+    <rect x="20" y="20" width="120" height="28" rx="14" fill="#1e1b4b" stroke="#a78bfa" stroke-opacity="0.55"/>
+    <text x="80" y="39" text-anchor="middle" fill="#ede9fe" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="800">L1.5 CAPABILITY</text>
+    <text x="20" y="78" fill="#ffffff" font-family="Inter, ui-sans-serif, sans-serif" font-size="20" font-weight="800">agent-toolkit</text>
+    <text x="20" y="110" fill="#c4b5fd" font-family="Inter, ui-sans-serif, sans-serif" font-size="14">52 skills  |  16 agents  |  10 loops</text>
+    <text x="20" y="136" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">6 profiles  |  6 MCP templates</text>
+    <text x="20" y="162" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">3 packs  |  catalogs  |  schemas</text>
+    <rect x="20" y="188" width="280" height="42" rx="12" fill="#22d3ee" fill-opacity="0.08" stroke="#22d3ee" stroke-opacity="0.28"/>
+    <text x="160" y="206" text-anchor="middle" fill="#a5f3fc" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="700">uvx --from agent-toolkit-cli</text>
+    <text x="160" y="222" text-anchor="middle" fill="#67e8f9" font-family="Inter, ui-sans-serif, sans-serif" font-size="11">agent-toolkit install</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M780 270 H832" stroke="url(#stroke)" stroke-width="3" stroke-opacity="0.8"/>
+  <polygon points="832,262 850,270 832,278" fill="#84cc16"/>
+  <text x="806" y="256" text-anchor="middle" fill="#bef264" font-family="Inter, ui-sans-serif, sans-serif" font-size="11" font-weight="700">overlay</text>
+
+  <!-- L3 -->
+  <g transform="translate(852 140)">
+    <rect width="200" height="260" rx="24" fill="url(#card)" stroke="#84cc16" stroke-opacity="0.45"/>
+    <rect x="18" y="20" width="110" height="28" rx="14" fill="#14532d" fill-opacity="0.45" stroke="#84cc16" stroke-opacity="0.5"/>
+    <text x="73" y="39" text-anchor="middle" fill="#ecfccb" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="800">L3 OVERLAY</text>
+    <text x="18" y="82" fill="#ffffff" font-family="Inter, ui-sans-serif, sans-serif" font-size="16" font-weight="800">project repo</text>
+    <text x="18" y="114" fill="#d9f99d" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">AGENTS.md</text>
+    <text x="18" y="138" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">engagement packs</text>
+    <text x="18" y="162" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">client skills</text>
+    <text x="18" y="198" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="12">team conventions</text>
+    <text x="18" y="230" fill="#84cc16" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="700">per-project</text>
+  </g>
+
+  <text x="48" y="440" fill="#64748b" font-family="Inter, ui-sans-serif, sans-serif" font-size="12">Runtime workspace: agentic-harness (memory, loops, personas) consumes agent-toolkit CLIs</text>
+  <path d="M0 476 H1100" stroke="url(#stroke)" stroke-width="4"/>
+</svg>
