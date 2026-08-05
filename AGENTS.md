@@ -42,7 +42,7 @@ Skills, agent personas, and loop templates are distributed by [`agent-toolkit`](
 
 - **To install or update**: `dots-skills install-toolkit` (or `pip install agent-toolkit-cli && agent-toolkit install`)
 - **Skills routing**: `dots-skills sync` reads each skill's compatibility manifest and creates symlinks in per-tool directories (`~/.claude/skills/`, `~/.config/opencode/skills/`, etc.)
-- **Loop templates**: `agent-toolkit loop init <name>` or `dots-loop init <name>`
+- **Loop templates**: `agent-toolkit loop init <name>` (or `dots-loop init <name>` — now delegates to agent-toolkit)
 - **Bundled machine-local skills**: a small set ships in this repo for machine-specific workflows (`dots-workstation-triage`, `dots-workstation-assistant`, `dots-workstation-dev-companion`)
 
 See [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md) for the full integration reference.

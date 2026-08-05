@@ -731,6 +731,12 @@ if [[ ${MODE} != "issue" && ${MODE} != "json" ]]; then
   info "checks completed: ${passed}/${checks} passed"
 fi
 
+# ── agent-toolkit profile checks ──────────────────────────────────────────────
+if command -v agent-toolkit &>/dev/null && [[ ${MODE} != "issue" && ${MODE} != "json" ]]; then
+  info "running agent-toolkit doctor for profile-level checks..."
+  agent-toolkit doctor 2>/dev/null || true
+fi
+
 if [[ ${errors} -gt 0 ]]; then
   if [[ ${MODE} == "issue" ]]; then
     printf '\n### Result\n\n**NON-COMPLIANT** — %s check(s) failed. Fix items above or contact Technology / #tech-support.\n' "${errors}"

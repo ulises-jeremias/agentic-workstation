@@ -78,7 +78,6 @@ EXPECTED_SCRIPTS=(
   dots-update-check
   dots-bootstrap
   dots-devcompanion
-  dots-sync-ai
   dots-workstation-audit
   dots-mcp
   dots-security-audit
