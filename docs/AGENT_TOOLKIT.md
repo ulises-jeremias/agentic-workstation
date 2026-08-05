@@ -31,7 +31,7 @@ graph LR
         PI["Pi agent<br/>~/.pi/agent/skills/"]
     end
 
-    AW -->|pip install + agent-toolkit install| AT
+    AW -->|uv/AUR install + agent-toolkit install| AT
     AT -->|dots-skills sync| CC
     AT -->|dots-skills sync| OC
     AT -->|dots-skills sync| CU
@@ -47,10 +47,10 @@ graph LR
 |----------|-------|---------|
 | Skills | 52 (9 domains) | code-review, github-cli-workflow, jira, confluence, dbt-validation |
 | Agent personas | 16 | architect, planner, code-reviewer, security-reviewer, tdd-guide |
-| Loop templates | 10 | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-health |
+| Loop templates | 10 | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
 | Tool profiles | 6 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi |
 | MCP templates | 6 | github, slack, notion, linear, figma, clickup |
-| Solution packs | 3 | oss-ecosystem, startup-delivery, enterprise-ops |
+| Solution packs | 3 | oss-maintenance, engineering-workflow, delivery-discipline |
 
 ### Skill domains
 

@@ -1,10 +1,6 @@
 <div align="center">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="static/hero-banner.svg">
-  <source media="(prefers-color-scheme: light)" srcset="static/hero-banner.svg">
-  <img alt="agentic-workstation" src="static/hero-banner.svg" width="100%">
-</picture>
+<img alt="agentic-workstation" src="static/hero-banner.svg" width="100%">
 
 <br>
 <br>
@@ -22,7 +18,7 @@
   reproducible dotfiles, AI skills, MCP servers, agent workflows, and CLI guardrails optimized for deep flow.
 </p>
 
-[Install](#quick-start) · [Wiki](https://github.com/ulises-jeremias/agentic-workstation/wiki) · [Integrations](#integrations) · [Personal DX Stack](#personal-dx-stack) · [Docs](docs/) · [Contributing](CONTRIBUTING.md)
+[Install](#quick-start) · [Architecture](#architecture) · [Wiki](https://github.com/ulises-jeremias/agentic-workstation/wiki) · [Integrations](#integrations) · [Personal DX Stack](#personal-dx-stack) · [Docs](docs/) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -174,6 +170,22 @@ Seamless skill packs for the tools you use every day:
     <td align="center"><sub>Scaffold, run, refactor notebooks — reproducible science</sub></td>
   </tr>
 </table>
+
+---
+
+## Architecture
+
+<div align="center">
+<img src="static/architecture.svg" alt="agentic-workstation three-layer architecture" width="96%">
+</div>
+
+| Layer | Repo | Responsibility |
+|-------|------|----------------|
+| **L1** | **agentic-workstation** (this repo) | Machine provisioning — chezmoi, packages, shell, LLM policy |
+| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | Capability distribution — skills, agents, profiles, loops |
+| **L3** | Project repos | Overlays — project `AGENTS.md`, engagement packs, client skills |
+
+Details and Mermaid diagrams: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ---
 
