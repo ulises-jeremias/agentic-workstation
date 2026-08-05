@@ -1,9 +1,10 @@
 # Tool Compatibility Matrix
 
-> Auto-generated from `skill.json` compatibility fields. Run
-> `python3 scripts/generate-compatibility.py` to regenerate after editing skill manifests.
+> Thin workstation — compatibility is delegated to [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit).
+> No embedded `skill.json` files are shipped in this repository.
+> Thin workstation: skills are delegated to `agent-toolkit`. Install via `uv tool install --force agent-toolkit-cli && agent-toolkit install`.
 >
-> 21 skills indexed.
+> To regenerate from the toolkit catalog, ensure `agent-toolkit` is installed and run `agent-toolkit skills list`.
 
 ## Legend
 
@@ -17,27 +18,9 @@
 
 | Skill | Version | Universal | Claude Code | Muse Code | OpenCode | Cursor | Windsurf | Copilot CLI | Pi |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `clickup-cli` | 1.0.1 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dbt-validation` | 1.0.0 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-slack-assistant` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `figma` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `figma-code-connect-components` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `figma-create-design-system-rules` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `figma-create-new-file` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `figma-implement-design` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `gh-address-comments` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `gh-contribution-planner` | 1.0.0 | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `gh-fix-ci` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `github-cli-workflow` | 1.0.0 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `gitlab-cli-workflow` | 1.0.0 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `jupyter-notebook` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `linear` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `playwright-cli` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `slack-cli` | 1.0.0 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `snowflake-validation` | 1.0.0 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `ui-ux-pro-max` | 1.0.0 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `workflow-client-bootstrap` | 1.0.0 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `workflow-generic-project` | 1.0.0 | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| _delegated_ | — | — | — | — | — | — | — | — | — |
+
+> This placeholder will be replaced by `agent-toolkit`'s catalog at install time (`agent-toolkit install`).
 
 ## Tools
 
@@ -45,6 +28,7 @@
 |------|-------------|
 | Universal | Included for every AI tool that supports markdown skills |
 | Claude Code | Anthropic Claude Code CLI (`~/.claude/skills/`) |
+| Muse Code | Meta Muse Code (`~/.config/muse/skills/`) |
 | OpenCode | OpenCode (`~/.config/opencode/skills/`) |
 | Cursor | Cursor IDE (`~/.cursor/skills/`) |
 | Windsurf | Windsurf IDE (`~/.windsurf/skills/`) |

@@ -27,6 +27,9 @@
 **agentic-workstation** is an AI-first, chezmoi-managed workstation baseline that equips your machine with skills, agents, MCP servers, CLI helpers, and loop engineering primitives — ready to go in one command.
 
 Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub Copilot**, and any AI coding tool that supports agent skills.
+> **Thin workstation** — this repository ships no embedded `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `agents/*`, or `packs/teams`. All capabilities are delegated to `agent-toolkit` via `uv tool install --force agent-toolkit-cli && agent-toolkit install`. The `SKILL.md` catalog is provided by the toolkit at runtime. Workstation-only runner logic (`dev-companion/runner`) is retained. See [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md) and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+
 
 ---
 
@@ -81,8 +84,8 @@ Add 52+ AI skill packs to your existing setup — powered by **[agent-toolkit](h
 # Option A: one-shot via uvx (no install required)
 uvx agent-toolkit-cli install
 
-# Option B: install permanently
-uv tool install agent-toolkit-cli && agent-toolkit install
+# Option B: install permanently (thin workstation canonical)
+uv tool install --force agent-toolkit-cli && agent-toolkit install
 
 # Option C: Arch Linux via AUR
 yay -S agent-toolkit-cli && agent-toolkit install
@@ -181,8 +184,8 @@ Seamless skill packs for the tools you use every day:
 
 | Layer | Repo | Responsibility |
 |-------|------|----------------|
-| **L1** | **agentic-workstation** (this repo) | Machine provisioning — chezmoi, packages, shell, LLM policy |
-| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | Capability distribution — skills, agents, profiles, loops |
+| **L1** | **agentic-workstation** (thin, this repo) | Machine provisioning + runner — chezmoi, packages, shell, LLM policy, `dev-companion/runner` (thin, no embedded skills) |
+| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | **Sole** capability distribution — skills, agents, profiles, loops, MCP, prompts, packs |
 | **L3** | Project repos | Overlays — project `AGENTS.md`, engagement packs, client skills |
 
 Details and Mermaid diagrams: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).

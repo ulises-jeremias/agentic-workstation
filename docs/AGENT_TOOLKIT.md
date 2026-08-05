@@ -1,26 +1,23 @@
 # Agent Toolkit Integration
 
-> agentic-workstation provisions the machine. agent-toolkit distributes capabilities.
+> **Thin workstation** — agentic-workstation provisions the machine, agent-toolkit distributes all capabilities via `uv`.
 
 ---
 
 ## Overview
 
-[`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit) is the capability distribution
-layer for agentic-workstation. It provides a curated library of skills, agent personas, loop
-templates, and tool profiles — one source of truth deployed to every major AI coding assistant.
+[`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit) is the **sole capability distribution layer** for agentic-workstation. It provides the curated library of skills, agent personas, loop templates, MCP templates, prompts, packs, and tool profiles — one source of truth deployed to every major AI coding assistant.
 
-agentic-workstation's role is **machine provisioning**: chezmoi, shell tools, packages, and LLM
-policy. Skills, agents, and profiles are agent-toolkit's responsibility.
+agentic-workstation's role is **machine provisioning and runner logic only**: chezmoi, shell tools, packages, LLM policy, and the dev-companion queue runner. All skills/packs/personas/agents/MCPs/loops/prompts are delegated.
 
 ```mermaid
 graph LR
-    subgraph "agentic-workstation (L1)"
-        AW["chezmoi apply<br/>dots-* CLIs<br/>LLM policy"]
+    subgraph "agentic-workstation (L1 - thin)"
+        AW["chezmoi apply<br/>dots-* CLIs<br/>LLM policy<br/>dev-companion runner"]
     end
 
     subgraph "agent-toolkit (L1.5)"
-        AT["52 skills / 9 domains<br/>16 agent personas<br/>10 loop templates<br/>6 tool profiles"]
+        AT["52 skills / 9 domains<br/>16 agent personas<br/>10 loop templates<br/>6 tool profiles<br/>6 MCP templates<br/>3 solution packs"]
     end
 
     subgraph "AI tools"
@@ -29,15 +26,19 @@ graph LR
         CU["Cursor<br/>~/.cursor/"]
         WS["Windsurf<br/>~/.codeium/windsurf/"]
         PI["Pi agent<br/>~/.pi/agent/skills/"]
+        MC["Muse<br/>~/.config/muse/skills/"]
     end
 
-    AW -->|AUR → uv → pipx + agent-toolkit install| AT
-    AT -->|dots-skills sync| CC
-    AT -->|dots-skills sync| OC
-    AT -->|dots-skills sync| CU
-    AT -->|dots-skills sync| WS
-    AT -->|dots-skills sync| PI
+    AW -->|"uv tool install --force agent-toolkit-cli<br/>agent-toolkit install"| AT
+    AT -->|dots-skills sync (delegated)| CC
+    AT -->|dots-skills sync (delegated)| OC
+    AT -->|dots-skills sync (delegated)| CU
+    AT -->|dots-skills sync (delegated)| WS
+    AT -->|dots-skills sync (delegated)| PI
+    AT -->|dots-skills sync (delegated)| MC
 ```
+
+> **SKILL.md catalog is provided by the toolkit** — not embedded. The repository ships no `home/dot_local/share/agentic-workstation/skills/*` content; the catalog is discovered at runtime via `agent-toolkit install`.
 
 ---
 
@@ -48,9 +49,10 @@ graph LR
 | Skills | 52 (9 domains) | code-review, github-cli-workflow, jira, confluence, dbt-validation |
 | Agent personas | 16 | architect, planner, code-reviewer, security-reviewer, tdd-guide |
 | Loop templates | 10 | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
-| Tool profiles | 6 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi |
+| Tool profiles | 6 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
 | MCP templates | 6 | github, slack, notion, linear, figma, clickup |
 | Solution packs | 3 | oss-maintenance, engineering-workflow, delivery-discipline |
+| Prompts | — | clickup-cli, engineering-review, ui-ux-pro-max |
 
 ### Skill domains
 
@@ -68,56 +70,51 @@ graph LR
 
 ---
 
-## How agentic-workstation integrates agent-toolkit
+## How agentic-workstation integrates agent-toolkit (thin)
 
-### Automatic install via chezmoi
+### Automatic install via chezmoi — thin workstation
 
-Two scripts handle installation:
+Only **one install path** is supported:
 
-- **`run_once_after_50-install-agent-toolkit.sh.tmpl`** — runs once on first `chezmoi init`.
-  Installs `agent-toolkit-cli` (AUR on Arch → `uv tool` → `pipx`) and
-  runs `agent-toolkit install --force` to deploy profiles for all detected AI tools.
+- **`run_once_after_50-install-agent-toolkit.sh.tmpl`** — runs once on first `chezmoi init`. Executes only:
+  ```bash
+  uv tool install --force agent-toolkit-cli
+  agent-toolkit install
+  ```
+  This deploys skills, agents, profiles, loops, and MCP templates for all detected AI tools.
 
-- **`run_onchange_45-install-ai-agents.sh.tmpl`** — runs on every `chezmoi apply` when
-  the script content changes. Checks if `agent-toolkit` is installed and up-to-date,
-  then runs `agent-toolkit install` and calls `dots-skills sync` on success.
+- **`run_onchange_45-install-ai-agents.sh.tmpl`** — retained for chezmoi onchange hashing. In the thin workstation it delegates to the same two commands (`uv tool install --force agent-toolkit-cli` + `agent-toolkit install`) and then runs `dots-skills sync`. Workstation-only runner logic (`dev-companion/runner`, LLM policy) is not delegated.
 
-Installation order: `yay/paru` (Arch AUR) → `uv tool` → `pipx` (no bare `pip`/`pip3`).
+No AUR / pipx / pip fallbacks are used — `uv` is the sole installer.
 
 ### Manual install / update
 
 ```bash
-# Via dots-skills (recommended — installs, deploys, and syncs)
+# Thin workstation canonical path
+uv tool install --force agent-toolkit-cli
+agent-toolkit install
+
+# Via dots-skills (delegates to the same two commands)
 dots-skills install-toolkit
 
-# On Arch Linux via AUR
-yay -S agent-toolkit-cli
-agent-toolkit install
-
-# Or directly via uv/pip
-uv tool install agent-toolkit-cli
-# or: uv tool install agent-toolkit-cli
-agent-toolkit install
-
 # Update to latest
-dots-skills install-toolkit    # upgrades package + re-deploys
+uv tool install --force agent-toolkit-cli
+agent-toolkit install
+# or: dots-skills install-toolkit
 ```
 
 ### dots-skills delegates to agent-toolkit
 
-`dots-skills` is the agentic-workstation CLI for skill management. It works alongside chezmoi and
-wraps `agent-toolkit` for the primary skill library:
+`dots-skills` is a thin wrapper that delegates to `agent-toolkit`:
 
 ```
-dots-skills install-toolkit      Install or update agent-toolkit
-dots-skills sync                 Regenerate per-tool symlinks (works for all skill sources)
-dots-skills list                 List all installed skills with per-tool symlink status
-dots-skills check                Validate required CLI tools for each skill
+dots-skills install-toolkit      uv tool install --force agent-toolkit-cli + agent-toolkit install
+dots-skills sync                 delegates to agent-toolkit install (regenerates per-tool symlinks)
+dots-skills list                 delegates to agent-toolkit skills list (falls back to local when toolkit unavailable)
+dots-skills check                delegates to agent-toolkit doctor
 ```
 
 ### dots-loop wraps agent-toolkit loop
-
-`dots-loop` is a thin wrapper around both `agent-toolkit loop` and `ai-workspace`'s `bin/loop`:
 
 ```bash
 dots-loop init oss-pr-monitor    # init from agent-toolkit loop template
@@ -128,27 +125,28 @@ agent-toolkit loop sync          # pull latest loop templates from agent-toolkit
 
 ---
 
-## Skill sources after integration
-
-agentic-workstation now has three layers of skills:
+## Skill sources — thin workstation
 
 | Source | Install mechanism | Location | Examples |
 |--------|------------------|----------|---------|
-| **agent-toolkit** | `agent-toolkit install` (via chezmoi) | `~/.local/share/agentic-workstation/skills-external/agent-toolkit/` | 52 cross-domain skills |
-| **Bundled (machine-local)** | chezmoi source state | `~/.local/share/agentic-workstation/skills/` | dots-workstation-triage, dots-workstation-assistant |
-| **External** | `dots-skills install` / chezmoiexternal | `~/.local/share/agentic-workstation/skills-external/` | jira-assistant pack, npm skills |
+| **agent-toolkit** | `uv tool install --force agent-toolkit-cli && agent-toolkit install` | `~/.local/share/agentic-workstation/skills-external/agent-toolkit/` | 52 cross-domain skills, catalog via SKILL.md |
 
-> [!NOTE]
-> agentic-workstation's bundled skills are intentionally small — they handle machine-local
-> workflows (triage, assistant orchestration, dev-companion, harness sync). Everything else
-> comes from agent-toolkit.
+> [!IMPORTANT]
+> **No bundled skills are shipped in this repository.** The `home/dot_local/share/agentic-workstation/skills/` directory is intentionally empty (placeholder README only). All capabilities come from `agent-toolkit`. Workstation-only runner logic lives in `home/dot_local/share/agentic-workstation/dev-companion/runner`.
+
+---
+
+## Validation & compatibility — delegated
+
+- `scripts/validate-skills.sh` — delegates to `agent-toolkit` when no embedded skills exist (thin workstation exits 0).
+- `scripts/generate-compatibility.py` — delegates to `agent-toolkit` or generates a thin-workstation placeholder `docs/COMPATIBILITY.md`.
+- `scripts/dots-skills-search.py` — index is generated from the toolkit catalog at runtime.
 
 ---
 
 ## LLM policy is agentic-workstation-only
 
-`dots-devcompanion` LLM policy enforcement stays entirely in agentic-workstation. agent-toolkit has
-no LLM provider awareness — it distributes static skill/agent content only.
+`dots-devcompanion` LLM policy enforcement stays entirely in agentic-workstation. agent-toolkit has no LLM provider awareness — it distributes static skill/agent content only.
 
 For client engagements, configure the policy before queuing any background jobs:
 
@@ -162,10 +160,9 @@ See [`docs/DEV_COMPANION_LLM.md`](DEV_COMPANION_LLM.md) for the full policy refe
 
 ---
 
-## Claude Code Plugin Marketplace
+## Claude Code Plugin Marketplace (alternative)
 
-agent-toolkit also ships as Claude Code and Cursor plugin bundles for users who prefer the
-marketplace install path (no pip required):
+agent-toolkit also ships as Claude Code and Cursor plugin bundles:
 
 ```
 /plugin marketplace add ulises-jeremias/agent-toolkit
@@ -174,8 +171,7 @@ marketplace install path (no pip required):
 /plugin install agent-toolkit-forge@agent-toolkit
 ```
 
-This is an alternative to the chezmoi-managed install. On agentic-workstation machines, the
-`chezmoi apply` path is preferred because it also configures per-tool profiles and loop templates.
+On agentic-workstation machines, the `chezmoi apply` path (`uv tool install --force agent-toolkit-cli && agent-toolkit install`) is preferred because it also configures per-tool profiles and loop templates.
 
 ---
 
@@ -183,7 +179,7 @@ This is an alternative to the chezmoi-managed install. On agentic-workstation ma
 
 - [SKILLS.md](SKILLS.md) — Full skills system documentation
 - [LOOPS.md](LOOPS.md) — Loop engineering and reference patterns
-- [ARCHITECTURE.md](ARCHITECTURE.md) — Three-layer architecture (L1 / L1.5 / L3)
+- [ARCHITECTURE.md](ARCHITECTURE.md) — Three-layer architecture (L1 / L1.5 / L3) — thin workstation
 - [AI_LAYER.md](AI_LAYER.md) — AI directory structure and Ralph Loop model
 - [DEV_COMPANION_LLM.md](DEV_COMPANION_LLM.md) — LLM policy (agentic-workstation-only)
 - [agent-toolkit repo](https://github.com/ulises-jeremias/agent-toolkit) — capability source

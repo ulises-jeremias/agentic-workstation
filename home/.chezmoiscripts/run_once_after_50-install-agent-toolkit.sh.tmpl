@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # chezmoi:template:left-delimiter="{{" right-delimiter="}}"
+# Thin workstation — delegates all skills/packs/personas/agents/MCPs/loops
+# to agent-toolkit via uv.
 set -euo pipefail
 
 log() { printf '\033[1;34m[agent-toolkit]\033[0m %s\n' "$*"; }
@@ -13,34 +15,29 @@ if [ "${CI:-}" = "true" ] || [ -n "${HERMETIC_PORT:-}" ] || [ -n "${GITHUB_ACTIO
   exit 0
 fi
 
-log "Installing agent-toolkit..."
+log "Installing agent-toolkit (thin workstation)..."
 
-# Installer chain (no pip / pip3 — they bypass the uv-tools-reinstall pacman hook):
-#   1. AUR (yay/paru)     — Arch Linux native, survives Python upgrades automatically
-#   2. uv tool install    — preferred for Python CLI tools; hook auto-reinstalls after upgrades
-#   3. pipx install       — fallback; pipx-reinstall hook keeps it alive after Python upgrades
-if has_cmd pacman && { has_cmd yay || has_cmd paru; }; then
-  if has_cmd yay; then
-    yay -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || true
-  else
-    paru -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || true
-  fi
-elif has_cmd uv; then
-  uv tool install agent-toolkit-cli
-elif has_cmd pipx; then
-  pipx install agent-toolkit-cli
-else
-  warn "No supported package manager found (yay/paru/uv/pipx)."
-  warn "Install uv: curl -LsSf https://astral.sh/uv/install.sh | sh"
+if ! has_cmd uv; then
+  warn "uv not found — install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
   warn "Then re-run: chezmoi apply"
   exit 1
 fi
 
-# Deploy profiles to all detected AI tools
+log "Running: uv tool install --force agent-toolkit-cli"
+if ! uv tool install --force agent-toolkit-cli; then
+  warn "uv tool install --force agent-toolkit-cli failed"
+  exit 1
+fi
+
+# Ensure ~/.local/bin is on PATH for this session so agent-toolkit is found
+if ! has_cmd agent-toolkit; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
 if has_cmd agent-toolkit; then
-  log "Deploying profiles..."
-  if agent-toolkit install --force; then
-    ok "agent-toolkit installed and profiles deployed"
+  log "Deploying profiles via: agent-toolkit install"
+  if agent-toolkit install; then
+    ok "agent-toolkit installed and profiles deployed (thin workstation)"
   else
     warn "agent-toolkit install failed — run 'agent-toolkit install' after restarting shell"
     exit 1

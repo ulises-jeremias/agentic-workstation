@@ -1,8 +1,0 @@
-{
-  "name": "slack",
-  "command": "mcp-slack-server",
-  "env": {
-    "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
-    "SLACK_APP_TOKEN": "${SLACK_APP_TOKEN}"
-  }
-}

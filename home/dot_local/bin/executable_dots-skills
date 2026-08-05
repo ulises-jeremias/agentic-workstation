@@ -246,6 +246,17 @@ sys.exit(0)
 # ── Commands ──────────────────────────────────────────────────────────────────
 
 cmd_list() {
+  # Thin workstation: delegate to agent-toolkit when available
+  if command -v agent-toolkit >/dev/null 2>&1; then
+    if agent-toolkit --help 2>&1 | grep -qi "skills.*list\|list.*skills"; then
+      exec agent-toolkit skills list "$@" 2>&1 || true
+      return 0
+    fi
+    # Fallback: try generic toolkit list
+    if agent-toolkit skills list >/dev/null 2>&1; then
+      exec agent-toolkit skills list
+    fi
+  fi
   _require_python3
   # One Python process for the entire table. The previous implementation called
   # python3 once per metadata field and once per tool column per skill (O(skills
@@ -380,6 +391,16 @@ PY
 }
 
 cmd_sync() {
+  # Thin workstation: delegate to agent-toolkit's install/sync when available
+  if command -v agent-toolkit >/dev/null 2>&1; then
+    info "delegating sync to agent-toolkit..."
+    if agent-toolkit install >/dev/null 2>&1; then
+      ok "agent-toolkit install complete (sync delegated)"
+      return 0
+    fi
+    # Fallback to local sync if toolkit install failed
+    warn "agent-toolkit install failed — falling back to local sync"
+  fi
   _require_python3
   info "syncing skills to all AI tool directories..."
 
@@ -460,6 +481,15 @@ cmd_sync() {
 }
 
 cmd_check() {
+  # Thin workstation: delegate to agent-toolkit doctor/check when available
+  if command -v agent-toolkit >/dev/null 2>&1; then
+    if agent-toolkit doctor >/dev/null 2>&1; then
+      exec agent-toolkit doctor
+    fi
+    if agent-toolkit skills check >/dev/null 2>&1; then
+      exec agent-toolkit skills check
+    fi
+  fi
   _require_python3
   info "checking skill requirements..."
 
@@ -542,50 +572,15 @@ print('\n'.join(d.get('pip_packages', [])))
 }
 
 cmd_install_toolkit() {
-  info "installing / updating agent-toolkit..."
+  info "installing / updating agent-toolkit (thin workstation)..."
 
-  # Determine the Python package installer (prefer uv, then pipx, then pip3, then pip)
-  local installer=""
-  if command -v uv &>/dev/null; then
-    installer="uv"
-  elif command -v pipx &>/dev/null; then
-    installer="pipx"
-  elif command -v pip3 &>/dev/null; then
-    installer="pip3"
-  elif command -v pip &>/dev/null; then
-    installer="pip"
-  else
-    die "No Python package manager found (uv/pipx/pip3/pip). Install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
+  if ! command -v uv &>/dev/null; then
+    die "uv is required for thin workstation. Install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
   fi
 
-  # Install agent-toolkit-cli
-  info "installing agent-toolkit-cli via ${installer}..."
-  case "$installer" in
-    uv)
-      if uv tool list 2>/dev/null | grep -q "^agent-toolkit-cli "; then
-        ok "agent-toolkit-cli already installed (uv tool) — upgrading..."
-        uv tool upgrade agent-toolkit-cli || warn "uv tool upgrade failed; trying install --force"
-        uv tool install --force agent-toolkit-cli
-      else
-        uv tool install agent-toolkit-cli
-      fi
-      ;;
-    pipx)
-      if pipx list --short 2>/dev/null | grep -q "^agent-toolkit-cli "; then
-        ok "agent-toolkit-cli already installed (pipx) — upgrading..."
-        pipx upgrade agent-toolkit-cli || warn "pipx upgrade failed; trying reinstall"
-        pipx reinstall agent-toolkit-cli
-      else
-        pipx install agent-toolkit-cli
-      fi
-      ;;
-    pip3)
-      pip3 install --user --upgrade agent-toolkit-cli
-      ;;
-    pip)
-      pip install --user --upgrade agent-toolkit-cli
-      ;;
-  esac
+  # Thin install: only uv tool install --force, then agent-toolkit install
+  info "installing agent-toolkit-cli via uv tool install --force..."
+  uv tool install --force agent-toolkit-cli
 
   # Verify the CLI is now available
   if ! command -v agent-toolkit &>/dev/null; then
