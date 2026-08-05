@@ -36,14 +36,48 @@ All shell scripts must:
 - Internal helper commands use `dots-` prefix.
 - Keep docs in uppercase file names under `docs/`.
 
+## Ecosystem — Three-Tier Model
+
+This repo is **L1 (machine provisioning)** in a three-tier personal DX stack:
+
+| Layer | Repo | Role |
+|-------|------|------|
+| **L1** | **agentic-workstation** (this repo) | Machine provisioning — chezmoi, shell, packages, LLM policy |
+| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | Capability distribution — 52 skills, loops, profiles, MCP |
+| **L3** | [agentic-harness](https://github.com/ulises-jeremias/agentic-harness) | AI workspace scaffold for multi-repo orchestration |
+
 ## Skills and agents
 
 Skills, agent personas, and loop templates are distributed by [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit).
 
-- **To install or update**: `dots-skills install-toolkit` (or `pip install agent-toolkit-cli && agent-toolkit install`)
-- **Skills routing**: `dots-skills sync` reads each skill's compatibility manifest and creates symlinks in per-tool directories (`~/.claude/skills/`, `~/.config/opencode/skills/`, etc.)
-- **Loop templates**: `agent-toolkit loop init <name>` (or `dots-loop init <name>` — now delegates to agent-toolkit)
+```bash
+# Install agent-toolkit (done automatically by chezmoi apply)
+uvx agent-toolkit-cli                          # one-shot, no install required
+uv tool install agent-toolkit-cli                  # permanent install
+yay -S agent-toolkit-cli                       # Arch Linux via AUR
+
+# Install/update skills and profiles
+agent-toolkit install [--force]                # deploy to all detected AI tools
+dots-skills install-toolkit                    # same — also runs dots-skills sync
+
+# Discover capabilities
+agent-toolkit inventory                        # list all 52+ skills
+agent-toolkit doctor                           # verify installation health
+dots-skills list                               # list skills with per-tool status
+
+# Loops
+agent-toolkit loop init <name>                 # scaffold from template
+agent-toolkit loop run <name>                  # execute one iteration
+agent-toolkit loop status                      # show all loop instances
+
+# MCP providers
+agent-toolkit mcp list                         # available providers
+agent-toolkit mcp setup <provider>             # interactive setup wizard
+```
+
 - **Bundled machine-local skills**: a small set ships in this repo for machine-specific workflows (`dots-workstation-triage`, `dots-workstation-assistant`, `dots-workstation-dev-companion`)
+- `dots-skills sync` reads SKILL.md compatibility and creates symlinks in `~/.claude/skills/`, `~/.config/opencode/skills/`, etc.
+
 
 See [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md) for the full integration reference.
 
@@ -66,3 +100,8 @@ See [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md) for the full integration re
 - Test monitor scripts for false ALL_DONE events before arming
 - Use exponential backoff: start at 15s, double up to 60s — no fixed 5s polling
 - Prefer a dedicated `ci-wait` helper (from `ai-workspace/bin/ci-wait`) over inline monitoring logic
+
+## Cross-Repo Links
+
+- **agent-toolkit** → [`AGENTS.md`](https://github.com/ulises-jeremias/agent-toolkit/blob/main/AGENTS.md) | [`README.md`](https://github.com/ulises-jeremias/agent-toolkit)
+- **agentic-harness** → [`AGENTS.md`](https://github.com/ulises-jeremias/agentic-harness/blob/main/AGENTS.md) | uses `agent-toolkit` for all workspace operations

@@ -96,7 +96,7 @@ agent-toolkit install
 
 # Or directly via uv/pip
 uv tool install agent-toolkit-cli
-# or: pip install agent-toolkit-cli
+# or: uv tool install agent-toolkit-cli
 agent-toolkit install
 
 # Update to latest

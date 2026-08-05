@@ -22,18 +22,13 @@ if has_cmd pacman && { has_cmd yay || has_cmd paru; }; then
   else
     paru -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || true
   fi
-# Python-based installers: uv tool > pipx > pip3 > pip
+# uv tool install (preferred Python method — no pip)
 elif has_cmd uv; then
   uv tool install agent-toolkit-cli
-elif has_cmd pipx; then
-  pipx install agent-toolkit-cli
-elif has_cmd pip3; then
-  pip3 install --user agent-toolkit-cli
-elif has_cmd pip; then
-  pip install --user agent-toolkit-cli
 else
-  warn "No package manager found (pacman/yay/paru/uv/pipx/pip3/pip)."
-  warn "Install agent-toolkit-cli manually, then run: chezmoi apply"
+  warn "No supported package manager found (pacman/yay/paru/uv)."
+  warn "Install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
+  warn "Then re-run: chezmoi apply"
   exit 1
 fi
 
@@ -43,7 +38,7 @@ if has_cmd agent-toolkit; then
   if agent-toolkit install --force; then
     ok "agent-toolkit installed and profiles deployed"
   else
-    warn "agent-toolkit install failed — run 'dots-skills install-toolkit' to retry"
+    warn "agent-toolkit install failed — run 'agent-toolkit install' after restarting shell"
     exit 1
   fi
 else
