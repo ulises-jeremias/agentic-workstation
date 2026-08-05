@@ -15,19 +15,23 @@ fi
 
 log "Installing agent-toolkit..."
 
-# Prefer AUR on Arch Linux (avoids Python env management entirely)
+# Installer chain (no pip / pip3 — they bypass the uv-tools-reinstall pacman hook):
+#   1. AUR (yay/paru)     — Arch Linux native, survives Python upgrades automatically
+#   2. uv tool install    — preferred for Python CLI tools; hook auto-reinstalls after upgrades
+#   3. pipx install       — fallback; pipx-reinstall hook keeps it alive after Python upgrades
 if has_cmd pacman && { has_cmd yay || has_cmd paru; }; then
   if has_cmd yay; then
     yay -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || true
   else
     paru -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || true
   fi
-# uv tool install (preferred Python method — no pip)
 elif has_cmd uv; then
   uv tool install agent-toolkit-cli
+elif has_cmd pipx; then
+  pipx install agent-toolkit-cli
 else
-  warn "No supported package manager found (pacman/yay/paru/uv)."
-  warn "Install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
+  warn "No supported package manager found (yay/paru/uv/pipx)."
+  warn "Install uv: curl -LsSf https://astral.sh/uv/install.sh | sh"
   warn "Then re-run: chezmoi apply"
   exit 1
 fi

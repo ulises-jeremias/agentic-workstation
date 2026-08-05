@@ -58,7 +58,9 @@ aur_install() {
   fi
 }
 
-# Install a Python CLI tool via uv tool (no pip fallbacks).
+# Install a Python CLI tool.
+# Chain: uv tool install → pipx install  (no pip/pip3 — they bypass the
+# uv-tools-reinstall and pipx-reinstall pacman hooks that survive Python upgrades).
 # Usage: install_python_tool <pkg>
 install_python_tool() {
   local pkg="$1"
@@ -66,10 +68,16 @@ install_python_tool() {
     if uv tool list 2>/dev/null | grep -q "^${pkg} "; then
       ok "${pkg} already installed (uv tool)"
     else
-      uv tool install "$pkg" && ok "${pkg} installed via uv tool" || warn "uv tool install ${pkg} failed"
+      uv tool install --force "$pkg" && ok "${pkg} installed via uv tool" || warn "uv tool install ${pkg} failed"
+    fi
+  elif has_cmd pipx; then
+    if pipx list --short 2>/dev/null | grep -q "^${pkg} "; then
+      ok "${pkg} already installed (pipx)"
+    else
+      pipx install "$pkg" && ok "${pkg} installed via pipx" || warn "pipx install ${pkg} failed"
     fi
   else
-    warn "uv not found — cannot install ${pkg}."
+    warn "uv/pipx not found — cannot install ${pkg}."
     warn "Install uv: curl -LsSf https://astral.sh/uv/install.sh | sh"
   fi
 }
