@@ -20,16 +20,16 @@ has_cmd() { command -v "$1" >/dev/null 2>&1; }
 
 # Skip in CI/hermetic environments
 if [ "${CI:-}" = "true" ] || [ -n "${HERMETIC_PORT:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
-  log "CI environment detected — skipping (thin workstation delegates to agent-toolkit)"
-  exit 0
+	log "CI environment detected — skipping (thin workstation delegates to agent-toolkit)"
+	exit 0
 fi
 
 log "Thin workstation: delegating capability install to agent-toolkit"
 
 # Ensure uv is available (required for thin install)
 if ! has_cmd uv; then
-  warn "uv not found — install via python-baseline or: curl -LsSf https://astral.sh/uv/install.sh | sh"
-  exit 0
+	warn "uv not found — install via python-baseline or: curl -LsSf https://astral.sh/uv/install.sh | sh"
+	exit 0
 fi
 
 # Thin install: uv tool install --force agent-toolkit-cli then agent-toolkit install
@@ -37,19 +37,19 @@ log "Running: uv tool install --force agent-toolkit-cli"
 uv tool install --force agent-toolkit-cli || warn "uv tool install failed (may already be installed)"
 
 if has_cmd agent-toolkit; then
-  log "Running: agent-toolkit install"
-  if agent-toolkit install; then
-    ok "agent-toolkit install complete"
-  else
-    warn "agent-toolkit install failed — retry with: dots-skills install-toolkit"
-  fi
-  # Keep per-tool symlinks in sync if dots-skills is available
-  if has_cmd dots-skills; then
-    log "Syncing skill symlinks via dots-skills sync"
-    dots-skills sync || warn "dots-skills sync failed"
-  fi
+	log "Running: agent-toolkit install"
+	if agent-toolkit install; then
+		ok "agent-toolkit install complete"
+	else
+		warn "agent-toolkit install failed — retry with: dots-skills install-toolkit"
+	fi
+	# Keep per-tool symlinks in sync if dots-skills is available
+	if has_cmd dots-skills; then
+		log "Syncing skill symlinks via dots-skills sync"
+		dots-skills sync || warn "dots-skills sync failed"
+	fi
 else
-  warn "agent-toolkit not in PATH after install — ensure ~/.local/bin is in PATH"
+	warn "agent-toolkit not in PATH after install — ensure ~/.local/bin is in PATH"
 fi
 
 ok "ai-agents thin delegation complete (runner logic kept in dev-companion/runner)"

@@ -66,8 +66,8 @@ fi
 # Fallback: if skills exist (e.g. legacy checkout), run original validation
 # This keeps CI compatible during transition
 info "Found ${SKILL_COUNT} embedded skill(s) — running local validation (legacy fallback)"
-info "Schema: ${SCHEMA#${REPO_ROOT}/}"
-info "Skills: ${SKILLS_DIR#${REPO_ROOT}/}"
+info "Schema: ${SCHEMA#"${REPO_ROOT}"/}"
+info "Skills: ${SKILLS_DIR#"${REPO_ROOT}"/}"
 echo ""
 
 # Ordered list of tools every bundled skill should declare
@@ -129,7 +129,7 @@ if [[ ! -f ${SCHEMA} ]]; then
 fi
 
 while IFS= read -r -d '' skill_json; do
-  name="${skill_json#${SKILLS_DIR}/}"
+  name="${skill_json#"${SKILLS_DIR}"/}"
   name="${name%/skill.json}"
   COUNT=$((COUNT + 1))
   skill_md="${SKILLS_DIR}/${name}/SKILL.md"
