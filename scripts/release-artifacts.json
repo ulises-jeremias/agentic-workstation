@@ -7,56 +7,92 @@
       "id": "dots-workstation-skills",
       "output": "dist/dots-workstation-skills-{VERSION}.zip",
       "engine": "zip_materialize",
-      "roots": [{ "path": ".local/share/agentic-workstation/skills" }]
+      "roots": [
+        {
+          "path": ".local/share/agentic-workstation/skills"
+        }
+      ]
     },
     {
       "id": "dots-workstation-agents-claude",
       "output": "dist/dots-workstation-agents-claude-{VERSION}.zip",
       "engine": "zip_materialize",
       "roots": [
-        { "path": ".claude/agents" },
-        { "path": ".claude/settings.json", "optional": true }
+        {
+          "path": ".claude/agents"
+        },
+        {
+          "path": ".claude/settings.json",
+          "optional": true
+        }
       ]
     },
     {
       "id": "dots-workstation-agents-opencode",
       "output": "dist/dots-workstation-agents-opencode-{VERSION}.zip",
       "engine": "zip_materialize",
-      "roots": [{ "path": ".config/opencode/agents" }]
+      "roots": [
+        {
+          "path": ".config/opencode/agents"
+        }
+      ]
     },
     {
       "id": "dots-workstation-agents-cursor",
       "output": "dist/dots-workstation-agents-cursor-{VERSION}.zip",
       "engine": "zip_materialize",
-      "roots": [{ "path": ".cursor/rules" }]
+      "roots": [
+        {
+          "path": ".cursor/rules"
+        }
+      ]
     },
     {
       "id": "dots-workstation-agents-windsurf",
       "output": "dist/dots-workstation-agents-windsurf-{VERSION}.zip",
       "engine": "zip_materialize",
       "roots": [
-        { "path": ".windsurf/rules" },
-        { "path": ".config/windsurf/rules", "optional": true }
+        {
+          "path": ".windsurf/rules"
+        },
+        {
+          "path": ".config/windsurf/rules",
+          "optional": true
+        }
       ]
     },
     {
       "id": "dots-workstation-agents-copilot",
       "output": "dist/dots-workstation-agents-copilot-{VERSION}.zip",
       "engine": "zip_materialize",
-      "roots": [{ "path": ".github/copilot-instructions.md" }]
+      "roots": [
+        {
+          "path": ".github/copilot-instructions.md"
+        }
+      ]
     },
     {
       "id": "dots-workstation-agents-muse",
       "output": "dist/dots-workstation-agents-muse-{VERSION}.zip",
       "engine": "zip_materialize",
-      "roots": [{ "path": ".config/muse/skills" }]
+      "roots": [
+        {
+          "path": ".config/muse/skills",
+          "optional": true
+        }
+      ]
     },
     {
       "id": "dots-workstation-assets-full",
       "output": "dist/dots-workstation-assets-full-{VERSION}.tar.gz",
       "engine": "tar_gz",
       "base_relative": ".local/share/agentic-workstation",
-      "members": ["skills", "prompts", "templates", "mcp"],
+      "members": [
+        "skills",
+        "prompts",
+        "templates",
+        "mcp"
+      ],
       "archive_prefix": "dots-workstation-assets"
     }
   ]
