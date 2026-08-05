@@ -9,7 +9,8 @@
       "engine": "zip_materialize",
       "roots": [
         {
-          "path": ".local/share/agentic-workstation/skills"
+          "path": ".local/share/agentic-workstation/skills",
+          "optional": true
         }
       ]
     },
@@ -19,7 +20,8 @@
       "engine": "zip_materialize",
       "roots": [
         {
-          "path": ".claude/agents"
+          "path": ".claude/agents",
+          "optional": true
         },
         {
           "path": ".claude/settings.json",
@@ -33,7 +35,8 @@
       "engine": "zip_materialize",
       "roots": [
         {
-          "path": ".config/opencode/agents"
+          "path": ".config/opencode/agents",
+          "optional": true
         }
       ]
     },
@@ -43,7 +46,8 @@
       "engine": "zip_materialize",
       "roots": [
         {
-          "path": ".cursor/rules"
+          "path": ".cursor/rules",
+          "optional": true
         }
       ]
     },
@@ -53,7 +57,8 @@
       "engine": "zip_materialize",
       "roots": [
         {
-          "path": ".windsurf/rules"
+          "path": ".windsurf/rules",
+          "optional": true
         },
         {
           "path": ".config/windsurf/rules",
@@ -67,7 +72,8 @@
       "engine": "zip_materialize",
       "roots": [
         {
-          "path": ".github/copilot-instructions.md"
+          "path": ".github/copilot-instructions.md",
+          "optional": true
         }
       ]
     },
