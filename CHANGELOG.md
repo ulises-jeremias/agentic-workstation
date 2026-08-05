@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 <!-- markdownlint-disable MD024 -->
 ## [Unreleased]
 
+## [1.3.0] — 2026-08-05
+
 ### Added
 
 - **agent-toolkit integration** ([`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md)): agentic-workstation now delegates skill, agent persona, and profile distribution to [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit). During `chezmoi apply`, `run_onchange_45-install-ai-agents.sh.tmpl` installs `agent-toolkit-cli` (via uv/pipx/pip) and runs `agent-toolkit install` to deploy 52 skills across 9 domains, 16 agent personas, 10 loop templates, and 6 tool profiles before `dots-skills sync` runs. A new `dots-skills install-toolkit` subcommand provides the manual equivalent.
@@ -102,5 +104,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-[Unreleased]: https://github.com/ulises-jeremias/agentic-workstation/compare/main...HEAD
+[Unreleased]: https://github.com/ulises-jeremias/agentic-workstation/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/ulises-jeremias/agentic-workstation/releases/tag/v1.3.0
+[1.2.0]: https://github.com/ulises-jeremias/agentic-workstation/releases/tag/v1.2.0
 [0.1.0]: https://github.com/ulises-jeremias/agentic-workstation/commits/main
