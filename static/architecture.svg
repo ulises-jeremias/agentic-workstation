@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1100" height="480" viewBox="0 0 1100 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">agentic-workstation three-layer architecture</title>
   <desc id="desc">L1 workstation provisions L1.5 agent-toolkit capabilities into L3 project overlays.</desc>
@@ -41,7 +42,7 @@
   <rect width="1100" height="480" rx="28" fill="url(#auraB)"/>
   <rect width="1100" height="480" rx="28" fill="url(#grid)"/>
 
-  <text x="48" y="44" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13" font-weight="700" letter-spacing="2.4">SYSTEM MAP · AGENTIC-WORKSTATION</text>
+  <text x="48" y="44" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13" font-weight="700" letter-spacing="2.4">SYSTEM MAP  |  AGENTIC-WORKSTATION</text>
   <text x="48" y="76" fill="#ffffff" font-family="Inter, ui-sans-serif, sans-serif" font-size="28" font-weight="800">Three-layer DX model</text>
   <text x="48" y="104" fill="#b6c7e3" font-family="Inter, ui-sans-serif, sans-serif" font-size="15">Machine baseline installs agent-toolkit; projects overlay conventions</text>
 
@@ -51,9 +52,9 @@
     <rect x="20" y="20" width="110" height="28" rx="14" fill="#0f172a" stroke="#22d3ee" stroke-opacity="0.55"/>
     <text x="75" y="39" text-anchor="middle" fill="#e0f2fe" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="800">L1 BASELINE</text>
     <text x="20" y="78" fill="#ffffff" font-family="Inter, ui-sans-serif, sans-serif" font-size="20" font-weight="800">agentic-workstation</text>
-    <text x="20" y="110" fill="#7dd3fc" font-family="Inter, ui-sans-serif, sans-serif" font-size="14">chezmoi · shell · packages</text>
+    <text x="20" y="110" fill="#7dd3fc" font-family="Inter, ui-sans-serif, sans-serif" font-size="14">chezmoi  |  shell  |  packages</text>
     <text x="20" y="136" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">secrets &amp; LLM policy (env.d)</text>
-    <text x="20" y="162" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">dots-* helpers · AGENTS templates</text>
+    <text x="20" y="162" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">dots-* helpers  |  AGENTS templates</text>
     <text x="20" y="198" fill="#cbd5e1" font-family="Inter, ui-sans-serif, sans-serif" font-size="13" font-weight="600">installs agent-toolkit-cli</text>
     <text x="20" y="222" fill="#64748b" font-family="Inter, ui-sans-serif, sans-serif" font-size="12">AUR / uv / pip during chezmoi apply</text>
     <text x="20" y="248" fill="#22d3ee" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="700">THIS REPO</text>
@@ -70,9 +71,9 @@
     <rect x="20" y="20" width="120" height="28" rx="14" fill="#1e1b4b" stroke="#a78bfa" stroke-opacity="0.55"/>
     <text x="80" y="39" text-anchor="middle" fill="#ede9fe" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="800">L1.5 CAPABILITY</text>
     <text x="20" y="78" fill="#ffffff" font-family="Inter, ui-sans-serif, sans-serif" font-size="20" font-weight="800">agent-toolkit</text>
-    <text x="20" y="110" fill="#c4b5fd" font-family="Inter, ui-sans-serif, sans-serif" font-size="14">52 skills · 16 agents · 10 loops</text>
-    <text x="20" y="136" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">6 profiles · 6 MCP templates</text>
-    <text x="20" y="162" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">3 packs · catalogs · schemas</text>
+    <text x="20" y="110" fill="#c4b5fd" font-family="Inter, ui-sans-serif, sans-serif" font-size="14">52 skills  |  16 agents  |  10 loops</text>
+    <text x="20" y="136" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">6 profiles  |  6 MCP templates</text>
+    <text x="20" y="162" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">3 packs  |  catalogs  |  schemas</text>
     <rect x="20" y="188" width="280" height="42" rx="12" fill="#22d3ee" fill-opacity="0.08" stroke="#22d3ee" stroke-opacity="0.28"/>
     <text x="160" y="206" text-anchor="middle" fill="#a5f3fc" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="700">uvx --from agent-toolkit-cli</text>
     <text x="160" y="222" text-anchor="middle" fill="#67e8f9" font-family="Inter, ui-sans-serif, sans-serif" font-size="11">agent-toolkit install</text>
