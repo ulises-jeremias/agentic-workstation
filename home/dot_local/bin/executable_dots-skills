@@ -245,6 +245,7 @@ sys.exit(0)
 
 # ── Commands ──────────────────────────────────────────────────────────────────
 
+# shellcheck disable=SC2120
 cmd_list() { # args: optional skill filter
 	# Thin workstation: delegate to agent-toolkit when available
 	if command -v agent-toolkit >/dev/null 2>&1; then
@@ -784,7 +785,7 @@ command="${1:-}"
 shift || true
 
 case "$command" in
-list) cmd_list ;;
+list) cmd_list "$@" ;;
 sync) cmd_sync ;;
 install-toolkit) cmd_install_toolkit ;;
 install) cmd_install "${1:-}" ;;
