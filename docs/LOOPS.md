@@ -29,13 +29,13 @@ and [ai-workspace](https://github.com/ulises-jeremias/ai-workspace)'s `bin/loop`
 dots-loop status
 
 # Initialize a loop from a reference pattern (sourced from agent-toolkit)
-dots-loop init daily-triage
+dots-loop init oss-daily-briefing
 
 # Run it once (L1: observe only)
-dots-loop run daily-triage
+dots-loop run oss-daily-briefing
 
 # Audit past runs
-dots-loop audit daily-triage
+dots-loop audit oss-daily-briefing
 
 # Update loop templates from agent-toolkit
 agent-toolkit loop sync
@@ -88,8 +88,8 @@ To use a reference pattern:
 ```bash
 # Patterns are installed by agent-toolkit during chezmoi apply.
 # Copy one to your workspace and start it:
-cp -r ~/.local/share/agentic-workstation/loops/daily-triage ~/.ai-workspace/loops/
-dots-loop init daily-triage   # or: edit LOOP.md directly
+cp -r ~/.local/share/agentic-workstation/loops/oss-daily-briefing ~/.ai-workspace/loops/
+dots-loop init oss-daily-briefing   # or: edit LOOP.md directly
 
 # Or use agent-toolkit's loop command directly:
 agent-toolkit loop init oss-pr-monitor

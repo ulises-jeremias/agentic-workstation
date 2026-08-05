@@ -24,6 +24,7 @@ This document describes the agentic-workstation skill system — how skills are 
 ```mermaid
 flowchart LR
     subgraph Sources
+        AT[agent-toolkit<br/>pip/AUR install]
         B[Bundled<br/>chezmoi source]
         N[npm<br/>dots-skills install]
         G[GitHub/URL<br/>chezmoiexternal]
@@ -31,6 +32,7 @@ flowchart LR
 
     subgraph Install["Installation"]
         CA[chezmoi apply]
+        ATI[agent-toolkit install]
         NS[dots-skills install]
     end
 
@@ -40,7 +42,7 @@ flowchart LR
     end
 
     subgraph Sync["dots-skills sync"]
-        SJ["Read skill.json<br/>compatibility"]
+        SJ["Read SKILL.md<br/>compatibility"]
     end
 
     subgraph Tools["AI Tool Symlinks"]
@@ -50,6 +52,7 @@ flowchart LR
         T4["~/.copilot/skills/"]
     end
 
+    AT --> CA --> ATI --> S1
     B --> CA --> S1
     N --> NS --> S1
     G --> CA --> S2
@@ -145,7 +148,7 @@ Skills can come from five sources, using three different installation mechanisms
 | `github` | **chezmoi `.chezmoiexternal`** | `ulises-jeremias/JIRA-Assistant-Skills` |
 | `url` | **chezmoi `.chezmoiexternal`** | `https://example.com/skill.tar.gz` |
 
-**`agent-toolkit` is the primary source for cross-domain skills.** It is installed automatically during `chezmoi apply` via the `run_onchange_45-install-ai-agents.sh.tmpl` script. `dots-skills install-toolkit` provides the manual equivalent.
+**`agent-toolkit` is the primary source for cross-domain skills.** It is installed automatically during `chezmoi init` via `run_once_after_50-install-agent-toolkit.sh.tmpl` (and kept current by `run_onchange_45-install-ai-agents.sh.tmpl` on subsequent `chezmoi apply` runs). `dots-skills install-toolkit` provides the manual equivalent.
 
 **`github` and `url` sources are managed natively by chezmoi** via `.chezmoiexternal.toml.tmpl`. This means:
 - No custom download code — chezmoi handles HTTP, extraction, caching
@@ -387,7 +390,7 @@ mkdir -p ~/.config/agentic-workstation/env.d
 $EDITOR ~/.config/agentic-workstation/env.d/jira.env
 
 # Example ~/.config/agentic-workstation/env.d/jira.env:
-# export JIRA_API_TOKEN="your-token"
+# export JIRA_API_TOKEN="your-token-here"  # checkov:skip=CKV_SECRET_6:example placeholder
 # export JIRA_EMAIL="you@company.com"
 # export JIRA_SITE_URL="https://company.atlassian.net"
 

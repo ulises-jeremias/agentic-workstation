@@ -85,9 +85,13 @@ graph TD
         PO3["Client-specific skills"]
     end
 
-    AW1 -->|installs via chezmoi| AT1
-    AW1 -->|installs via chezmoi| AT2
-    AW3 -->|delegates to| AT1
+    AW1 -->|"pip/AUR install → agent-toolkit install"| AT1
+    AW1 -->|"pip/AUR install → agent-toolkit install"| AT2
+    AW1 -->|"pip/AUR install → agent-toolkit install"| AT3
+    AW1 -->|"pip/AUR install → agent-toolkit install"| AT4
+    AW1 -->|"pip/AUR install → agent-toolkit install"| AT5
+    AW3 -->|"dots-skills sync"| AT1
+    AW3 -->|"dots-loop init"| AT3
     AT1 --> PO3
     AT4 --> PO1
 ```

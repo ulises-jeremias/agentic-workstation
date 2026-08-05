@@ -47,9 +47,9 @@ if [[ ${skill_count} -lt 3 ]]; then
   exit 1
 fi
 
-dump_nonempty "${HOME}/.cursor/rules" "Cursor rules"
 dump_nonempty "${HOME}/.config/opencode/agents" "OpenCode agents"
 dump_nonempty "${HOME}/.claude/agents" "Claude agents"
+# Cursor rules are deployed by agent-toolkit, not chezmoi — not a chezmoi dump target.
 
 if [[ ! -f "${HOME}/.github/copilot-instructions.md" ]]; then
   echo "verify-release-dump: missing ~/.github/copilot-instructions.md" >&2

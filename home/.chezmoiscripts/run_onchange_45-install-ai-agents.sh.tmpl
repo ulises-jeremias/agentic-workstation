@@ -355,26 +355,35 @@ if command -v agent-toolkit &>/dev/null; then
   ok "agent-toolkit already installed: $(agent-toolkit --version 2>/dev/null || echo 'ok')"
 else
   log "agent-toolkit not found — installing agent-toolkit-cli..."
-  install_python_tool "agent-toolkit-cli"
+  # On Arch Linux prefer AUR (yay/paru) — avoids Python env management entirely
+  if has_cmd pacman && has_cmd yay; then
+    yay -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || install_python_tool "agent-toolkit-cli"
+  elif has_cmd pacman && has_cmd paru; then
+    paru -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || install_python_tool "agent-toolkit-cli"
+  else
+    install_python_tool "agent-toolkit-cli"
+  fi
 fi
 
 if command -v agent-toolkit &>/dev/null; then
   log "running agent-toolkit install (deploys skills, agents, profiles, loops)..."
-  agent-toolkit install || warn "agent-toolkit install failed — run 'dots-skills install-toolkit' to retry"
+  if agent-toolkit install; then
+    # ---------------------------------------------------------------------------
+    # Skills sync — regenerate AI tool symlinks based on SKILL.md compatibility
+    # ---------------------------------------------------------------------------
+    log "syncing skills across AI tools..."
+    if command -v dots-skills &>/dev/null; then
+      dots-skills sync
+    else
+      warn "dots-skills not found in PATH; skipping skills sync"
+      warn "Run 'chezmoi apply' again after the workstation is fully bootstrapped"
+    fi
+  else
+    warn "agent-toolkit install failed — run 'dots-skills install-toolkit' to retry"
+  fi
 else
   warn "agent-toolkit still not in PATH; skipping capability deployment"
   warn "Run 'dots-skills install-toolkit' after ensuring ~/.local/bin is in PATH"
-fi
-
-# ---------------------------------------------------------------------------
-# Skills sync — regenerate AI tool symlinks based on skill.json compatibility
-# ---------------------------------------------------------------------------
-log "syncing skills across AI tools..."
-if command -v dots-skills &>/dev/null; then
-  dots-skills sync
-else
-  warn "dots-skills not found in PATH; skipping skills sync"
-  warn "Run 'chezmoi apply' again after the workstation is fully bootstrapped"
 fi
 
 log "ai-agents setup complete"

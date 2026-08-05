@@ -72,27 +72,35 @@ graph LR
 
 ### Automatic install via chezmoi
 
-During `chezmoi apply`, the `run_onchange_45-install-ai-agents.sh.tmpl` script:
+Two scripts handle installation:
 
-1. Checks if `agent-toolkit` is installed
-2. If not: installs `agent-toolkit-cli` via uv/pipx/pip
-3. Runs `agent-toolkit install` — deploys skills, agents, and profiles for all detected AI tools
-4. Calls `dots-skills sync` — creates per-tool symlinks from the deployed skill directories
+- **`run_once_after_50-install-agent-toolkit.sh.tmpl`** — runs once on first `chezmoi init`.
+  Installs `agent-toolkit-cli` (prefers AUR on Arch Linux, then uv/pipx/pip3/pip) and
+  runs `agent-toolkit install --force` to deploy profiles for all detected AI tools.
+
+- **`run_onchange_45-install-ai-agents.sh.tmpl`** — runs on every `chezmoi apply` when
+  the script content changes. Checks if `agent-toolkit` is installed and up-to-date,
+  then runs `agent-toolkit install` and calls `dots-skills sync` on success.
+
+Installation order: `yay/paru` (Arch AUR) → `uv tool` → `pipx` → `pip3` → `pip`.
 
 ### Manual install / update
 
 ```bash
-# Via dots-skills (recommended — also runs sync)
+# Via dots-skills (recommended — installs, deploys, and syncs)
 dots-skills install-toolkit
 
-# Or directly via pip + agent-toolkit
-pip install agent-toolkit-cli
+# On Arch Linux via AUR
+yay -S agent-toolkit-cli
+agent-toolkit install
+
+# Or directly via uv/pip
+uv tool install agent-toolkit-cli
+# or: pip install agent-toolkit-cli
 agent-toolkit install
 
 # Update to latest
 dots-skills install-toolkit    # upgrades package + re-deploys
-# or:
-pip install --upgrade agent-toolkit-cli && agent-toolkit install
 ```
 
 ### dots-skills delegates to agent-toolkit
