@@ -19,7 +19,7 @@ check_dir_nonempty() {
   local target="$1"
   local label="$2"
   local min_files="${3:-1}"
-  if [[ ! -d "${target}" ]]; then
+  if [[ ! -d ${target} ]]; then
     echo "verify-release-dump: missing directory for ${label} (${target})" >&2
     exit 1
   fi
@@ -34,7 +34,7 @@ check_dir_nonempty() {
 check_file_exists() {
   local target="$1"
   local label="$2"
-  if [[ ! -f "${target}" ]]; then
+  if [[ ! -f ${target} ]]; then
     echo "verify-release-dump: missing ${label} (${target})" >&2
     exit 1
   fi
