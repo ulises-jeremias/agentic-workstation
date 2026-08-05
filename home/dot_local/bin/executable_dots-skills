@@ -11,12 +11,16 @@ set -eo pipefail
 ## Commands:
 ##     list                 List installed skills and their status per AI tool.
 ##     sync                 Regenerate symlinks for all skills (reads skill.json compatibility).
+##     install-toolkit      Install or update agent-toolkit (pip install + agent-toolkit install).
 ##     install <name>       Install an npm-sourced skill from the registry.
 ##     check                Validate that required tools and pip packages are installed.
 ##     add <source>         Add an npm skill to the registry: npm:<pkg>.
 ##
 ## Note: github and url skills are managed by chezmoi (.chezmoiexternal).
 ##       Enable them in chezmoi config and run: chezmoi apply
+##
+## Note: The bulk of cross-domain skills (52 skills) come from agent-toolkit.
+##       Use 'dots-skills install-toolkit' or 'chezmoi apply' to install/update them.
 ##
 ## Options:
 ##     -h, --help           Show this help message.
@@ -122,6 +126,48 @@ try:
     print('true' if entry.get('supported', False) else 'false')
 except Exception:
     print('false')
+"
+}
+
+# Return "true" or "false" for a tool's supported status from SKILL.md frontmatter.
+# Reads the YAML frontmatter 'tools' key (list) or 'compatibility' key (dict/list).
+# Falls back to "true" (universal) when no structured tool list is present.
+# Usage: _skill_md_supports_tool <skill_md> <tool_key>
+_skill_md_supports_tool() {
+  local file="$1" tool="$2"
+  python3 -c "
+import re, sys
+try:
+    text = open('${file}').read()
+    m = re.match(r'^---[ \t]*\n(.*?)\n---[ \t]*\n', text, re.DOTALL)
+    if not m:
+        print('true')
+        sys.exit(0)
+    fm_text = m.group(1)
+    # Try PyYAML; fall back to true if unavailable
+    try:
+        import yaml
+        fm = yaml.safe_load(fm_text) or {}
+    except ImportError:
+        print('true')
+        sys.exit(0)
+    tools_field = fm.get('tools', None)
+    compat_field = fm.get('compatibility', None)
+    # 'tools' as a list of supported tool IDs
+    if isinstance(tools_field, list):
+        print('true' if '${tool}' in tools_field else 'false')
+    # 'compatibility' as a dict (same schema as skill.json)
+    elif isinstance(compat_field, dict):
+        entry = compat_field.get('${tool}', {})
+        if isinstance(entry, dict):
+            print('true' if entry.get('supported', False) else 'false')
+        else:
+            print('true' if entry else 'false')
+    else:
+        # No structured tool list — assume universal support
+        print('true')
+except Exception:
+    print('true')
 "
 }
 
@@ -357,12 +403,18 @@ cmd_sync() {
       continue
     fi
 
+    local skill_md="${skill_dir}/SKILL.md"
     for tool in "${!TOOL_DIRS[@]}"; do
       local tool_dir="${TOOL_DIRS[$tool]}"
       local supported="true"
-      # If skill.json exists, respect its compatibility matrix.
-      # If not (e.g. externally sourced via chezmoiexternal), assume universal support.
-      [[ -f $manifest ]] && supported="$(_skill_supports_tool "$manifest" "$tool")"
+      if [[ -f $manifest ]]; then
+        # skill.json is authoritative — use its structured compatibility matrix.
+        supported="$(_skill_supports_tool "$manifest" "$tool")"
+      elif [[ -f $skill_md ]]; then
+        # SKILL.md frontmatter may declare a tools list or compatibility dict.
+        # Falls back to "true" when no structured field is present.
+        supported="$(_skill_md_supports_tool "$skill_md" "$tool")"
+      fi
       local link="${tool_dir}/${name}"
 
       if [[ $supported == "true" ]]; then
@@ -486,6 +538,74 @@ print('\n'.join(d.get('pip_packages', [])))
     return 1
   fi
   info "all skill requirements satisfied"
+}
+
+cmd_install_toolkit() {
+  info "installing / updating agent-toolkit..."
+
+  # Determine the Python package installer (prefer uv, then pipx, then pip3, then pip)
+  local installer=""
+  if command -v uv &>/dev/null; then
+    installer="uv"
+  elif command -v pipx &>/dev/null; then
+    installer="pipx"
+  elif command -v pip3 &>/dev/null; then
+    installer="pip3"
+  elif command -v pip &>/dev/null; then
+    installer="pip"
+  else
+    die "No Python package manager found (uv/pipx/pip3/pip). Install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
+  fi
+
+  # Install agent-toolkit-cli
+  info "installing agent-toolkit-cli via ${installer}..."
+  case "$installer" in
+    uv)
+      if uv tool list 2>/dev/null | grep -q "^agent-toolkit-cli "; then
+        ok "agent-toolkit-cli already installed (uv tool) — upgrading..."
+        uv tool upgrade agent-toolkit-cli || warn "uv tool upgrade failed; trying install --force"
+        uv tool install --force agent-toolkit-cli
+      else
+        uv tool install agent-toolkit-cli
+      fi
+      ;;
+    pipx)
+      if pipx list --short 2>/dev/null | grep -q "^agent-toolkit-cli "; then
+        ok "agent-toolkit-cli already installed (pipx) — upgrading..."
+        pipx upgrade agent-toolkit-cli || warn "pipx upgrade failed; trying reinstall"
+        pipx reinstall agent-toolkit-cli
+      else
+        pipx install agent-toolkit-cli
+      fi
+      ;;
+    pip3)
+      pip3 install --user --upgrade agent-toolkit-cli
+      ;;
+    pip)
+      pip install --user --upgrade agent-toolkit-cli
+      ;;
+  esac
+
+  # Verify the CLI is now available
+  if ! command -v agent-toolkit &>/dev/null; then
+    warn "agent-toolkit not found in PATH after install."
+    warn "If you used uv or pipx, ensure their bin dirs are in PATH (e.g. ~/.local/bin)."
+    # shellcheck disable=SC2016  # literal instruction for user to type
+    warn 'Try: export PATH="$HOME/.local/bin:$PATH" then re-run.'
+    return 1
+  fi
+
+  ok "agent-toolkit installed: $(agent-toolkit --version 2>/dev/null || echo 'ok')"
+
+  # Run agent-toolkit install to deploy skills/profiles for detected AI tools
+  info "running agent-toolkit install..."
+  agent-toolkit install
+
+  # Sync symlinks so all AI tool directories pick up the new skills
+  info "syncing skill symlinks..."
+  cmd_sync
+
+  ok "agent-toolkit integration complete"
 }
 
 cmd_install() {
@@ -670,6 +790,7 @@ shift || true
 case "$command" in
   list) cmd_list ;;
   sync) cmd_sync ;;
+  install-toolkit) cmd_install_toolkit ;;
   install) cmd_install "${1:-}" ;;
   check) cmd_check ;;
   add) cmd_add "${1:-}" ;;

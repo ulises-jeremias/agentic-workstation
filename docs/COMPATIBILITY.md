@@ -3,7 +3,7 @@
 > Auto-generated from `skill.json` compatibility fields. Run
 > `python3 scripts/generate-compatibility.py` to regenerate after editing skill manifests.
 >
-> 52 skills indexed.
+> 21 skills indexed.
 
 ## Legend
 
@@ -19,38 +19,7 @@
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `clickup-cli` | 1.0.1 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dbt-validation` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-harness-knowledge-sync` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `dots-slack-assistant` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `dots-workstation-adr` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-agreement` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-assistant` | 2.1.3 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-bug` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-decision-log` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-dev-companion` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-development-workflow` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-docs-generator` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `dots-workstation-epic` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-incident` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-llm-cost-advisor` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `dots-workstation-loop-runner` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| `dots-workstation-management-unit-assessment` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-meeting-minutes` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-onboarding` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `dots-workstation-output-handshake` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-planning` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-pr-fallback` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-prd` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-project-assessment` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-project-assessment-evidence` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-spike` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-task` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-technical-unit-assessment` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-trd` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-triage` | 1.1.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-user-story` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-work-item` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-workflow-client-bootstrap` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| `dots-workstation-workflow-generic-project` | 1.0.0 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
 | `figma` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `figma-code-connect-components` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | `figma-create-design-system-rules` | 1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
