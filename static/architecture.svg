@@ -56,7 +56,7 @@
     <text x="20" y="136" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">secrets &amp; LLM policy (env.d)</text>
     <text x="20" y="162" fill="#94a3b8" font-family="Inter, ui-sans-serif, sans-serif" font-size="13">dots-* helpers  |  AGENTS templates</text>
     <text x="20" y="198" fill="#cbd5e1" font-family="Inter, ui-sans-serif, sans-serif" font-size="13" font-weight="600">installs agent-toolkit-cli</text>
-    <text x="20" y="222" fill="#64748b" font-family="Inter, ui-sans-serif, sans-serif" font-size="12">AUR / uv / pip during chezmoi apply</text>
+    <text x="20" y="222" fill="#64748b" font-family="Inter, ui-sans-serif, sans-serif" font-size="12">AUR ? uv ? pipx during chezmoi apply</text>
     <text x="20" y="248" fill="#22d3ee" font-family="Inter, ui-sans-serif, sans-serif" font-size="12" font-weight="700">THIS REPO</text>
   </g>
 

@@ -87,11 +87,11 @@ graph TD
         PO3["Client-specific skills"]
     end
 
-    AW1 -->|"uv/AUR install → agent-toolkit install"| AT1
-    AW1 -->|"uv/AUR install → agent-toolkit install"| AT2
-    AW1 -->|"uv/AUR install → agent-toolkit install"| AT3
-    AW1 -->|"uv/AUR install → agent-toolkit install"| AT4
-    AW1 -->|"uv/AUR install → agent-toolkit install"| AT5
+    AW1 -->|"AUR → uv → pipx → agent-toolkit install"| AT1
+    AW1 -->|"AUR → uv → pipx → agent-toolkit install"| AT2
+    AW1 -->|"AUR → uv → pipx → agent-toolkit install"| AT3
+    AW1 -->|"AUR → uv → pipx → agent-toolkit install"| AT4
+    AW1 -->|"AUR → uv → pipx → agent-toolkit install"| AT5
     AW3 -->|"dots-skills sync"| AT1
     AW3 -->|"dots-loop init"| AT3
     AT1 --> PO3

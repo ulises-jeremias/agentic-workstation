@@ -31,7 +31,7 @@ graph LR
         PI["Pi agent<br/>~/.pi/agent/skills/"]
     end
 
-    AW -->|uv/AUR install + agent-toolkit install| AT
+    AW -->|AUR → uv → pipx + agent-toolkit install| AT
     AT -->|dots-skills sync| CC
     AT -->|dots-skills sync| OC
     AT -->|dots-skills sync| CU
@@ -64,7 +64,7 @@ graph LR
 | `data` | 5 | dbt-validation, snowflake-validation, pipeline-review |
 | `tooling` | 6 | git-worktrees, docker, ci-cd, env-setup, keybindings |
 | `ops` | 3 | incident, security-review, performance-optimizer |
-| `loops` | 10 | oss-pr-monitor, oss-triage, ci-health, release-notes |
+| `loops` | 10 | oss-pr-monitor, oss-triage, ci-sweeper, changelog-drafter |
 
 ---
 
@@ -75,14 +75,14 @@ graph LR
 Two scripts handle installation:
 
 - **`run_once_after_50-install-agent-toolkit.sh.tmpl`** — runs once on first `chezmoi init`.
-  Installs `agent-toolkit-cli` (prefers AUR on Arch Linux, then uv/pipx/pip3/pip) and
+  Installs `agent-toolkit-cli` (AUR on Arch → `uv tool` → `pipx`) and
   runs `agent-toolkit install --force` to deploy profiles for all detected AI tools.
 
 - **`run_onchange_45-install-ai-agents.sh.tmpl`** — runs on every `chezmoi apply` when
   the script content changes. Checks if `agent-toolkit` is installed and up-to-date,
   then runs `agent-toolkit install` and calls `dots-skills sync` on success.
 
-Installation order: `yay/paru` (Arch AUR) → `uv tool` → `pipx` → `pip3` → `pip`.
+Installation order: `yay/paru` (Arch AUR) → `uv tool` → `pipx` (no bare `pip`/`pip3`).
 
 ### Manual install / update
 
