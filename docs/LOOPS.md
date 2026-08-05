@@ -21,7 +21,7 @@
 ## Quick Start
 
 Loop templates come from [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) —
-the capability distribution layer for agentic-workstation. `dots-loop` wraps `agent-toolkit loop`
+the capability distribution layer for agentic-workstation. `dots-loop` delegates to `agent-toolkit loop`
 and [ai-workspace](https://github.com/ulises-jeremias/ai-workspace)'s `bin/loop`:
 
 ```bash

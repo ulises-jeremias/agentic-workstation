@@ -1,68 +1,28 @@
 #!/usr/bin/env bash
-# dots-loop — thin wrapper around ai-workspace's bin/loop CLI.
+# dots-loop — wrapper around agent-toolkit loop CLI.
 #
-# Discovers the loop CLI from:
-#   1. AI_WORKSPACE_LOOP_BIN environment variable
-#   2. ~/.ai-workspace/bin/loop  (canonical ai-workspace install path)
-#   3. AI_WORKSPACE_DIR/bin/loop (if AI_WORKSPACE_DIR is set)
+# agent-toolkit loop is the canonical loop engineering runtime.
+# Install: uvx agent-toolkit-cli  or  pip install agent-toolkit-cli
 #
 # Usage:
 #   dots-loop <subcommand> [args...]
-#   dots-loop init daily-triage
-#   dots-loop run daily-triage
+#   dots-loop init oss-daily-briefing
+#   dots-loop run oss-pr-monitor
 #   dots-loop status
 #   dots-loop audit
-#   dots-loop cost daily-triage
+#   dots-loop cost oss-pr-monitor
 #   dots-loop sync
 #   dots-loop help
 
 set -euo pipefail
 
-_c() { [[ -t 1 ]] && printf '\033[%sm%s\033[0m' "$1" "$2" || printf '%s' "$2"; }
-_err() {
-  _c "1;31" "[dots-loop] error:"
-  echo " $*" >&2
-}
-_warn() {
-  _c "1;33" "[dots-loop] warn:"
-  echo " $*" >&2
-}
-_info() {
-  _c "1;34" "[dots-loop]"
-  echo " $*"
-}
-
-# ── Discover loop CLI ──────────────────────────────────────────────────────────
-
-LOOP_BIN="${AI_WORKSPACE_LOOP_BIN:-}"
-
-if [[ -z ${LOOP_BIN} ]]; then
-  # Canonical install paths (in priority order)
-  for candidate in \
-    "${HOME}/.ai-workspace/bin/loop" \
-    "${AI_WORKSPACE_DIR:-}/bin/loop"; do
-    if [[ -x ${candidate} ]]; then
-      LOOP_BIN="${candidate}"
-      break
-    fi
-  done
-fi
-
-if [[ -z ${LOOP_BIN} || ! -x ${LOOP_BIN} ]]; then
-  _err "Could not find ai-workspace loop CLI."
-  echo ""
-  echo "To install ai-workspace:"
-  echo "  git clone https://github.com/ulises-jeremias/ai-workspace ~/.ai-workspace"
-  echo "  chmod +x ~/.ai-workspace/bin/loop"
-  echo ""
-  echo "Or set AI_WORKSPACE_LOOP_BIN to the path of the loop binary."
+if ! command -v agent-toolkit &>/dev/null; then
+  printf '\033[1;31m[dots-loop] error:\033[0m agent-toolkit not found.\n' >&2
+  echo "" >&2
+  echo "Install it:" >&2
+  echo "  uvx agent-toolkit-cli            # one-shot, no install" >&2
+  echo "  pip install agent-toolkit-cli    # permanent install" >&2
   exit 1
 fi
 
-# ── Forward to loop CLI ────────────────────────────────────────────────────────
-
-if [[ $# -eq 0 ]]; then
-  exec python3 "${LOOP_BIN}" help
-fi
-
-exec python3 "${LOOP_BIN}" "$@"
+exec agent-toolkit loop "$@"
