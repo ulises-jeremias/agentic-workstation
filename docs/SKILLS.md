@@ -12,7 +12,7 @@ This document describes the agentic-workstation skill system — how skills are 
 > ```bash
 > # agent-toolkit is installed automatically by chezmoi apply.
 > # To install or update manually:
-> pip install agent-toolkit-cli
+> uv tool install agent-toolkit-cli
 > agent-toolkit install
 >
 > # Or via dots-skills (delegates to agent-toolkit):

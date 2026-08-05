@@ -113,7 +113,7 @@ graph TD
 
 Skills are distributed by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) — a separate repo with 52 skills, 16 agent personas, and 10 loop templates. agentic-workstation installs agent-toolkit during `chezmoi apply` and uses `dots-skills` to sync the resulting skills to per-tool directories.
 
-- **agent-toolkit skills** — installed via `agent-toolkit install` (or `pip install agent-toolkit-cli && agent-toolkit install`)
+- **agent-toolkit skills** — installed via `agent-toolkit install` (or `uv tool install agent-toolkit-cli && agent-toolkit install`)
 - **Bundled workstation skills** — a small set of agentic-workstation-specific skills (triage, dev-companion, assistant) shipped in this repo for machine-local workflows
 - **External skills** — installed from npm, GitHub, or URLs by `dots-skills install`, placed in `~/.local/share/agentic-workstation/skills-external/`
 

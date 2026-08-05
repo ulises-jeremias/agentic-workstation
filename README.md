@@ -41,7 +41,7 @@ Works with **Claude Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub C
     <td width="33%" align="center">
       <br>
       <b>🧩 Skills System</b><br>
-      <sub>52 reusable skill packs for Jira, Confluence, ClickUp, Figma, GitHub, GitLab, Slack, dbt, Snowflake, Playwright, and more</sub>
+      <sub>52 reusable skill packs via <a href="https://github.com/ulises-jeremias/agent-toolkit">agent-toolkit</a> — Jira, Confluence, ClickUp, Figma, GitHub, GitLab, Slack, dbt, Snowflake, Playwright, and more</sub>
     </td>
     <td width="33%" align="center">
       <br>
@@ -58,7 +58,7 @@ Works with **Claude Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub C
     <td width="33%" align="center">
       <br>
       <b>🛠️ CLI Helpers</b><br>
-      <sub><code>dots-doctor</code> · <code>dots-skills</code> · <code>dots-mcp</code> · <code>dots-loop</code> · <code>dots-loadenv</code> — 60+ CLI commands</sub>
+      <sub><code>agent-toolkit</code> · <code>dots-doctor</code> · <code>dots-skills</code> · <code>dots-mcp</code> · <code>dots-loadenv</code> — agent-toolkit powers skills, loops, MCP, and workspace operations</sub>
     </td>
     <td width="33%" align="center">
       <br>
@@ -79,9 +79,19 @@ Works with **Claude Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub C
 
 ### Just want the AI skills?
 
-Add 52+ AI skill packs to your existing setup in one command — **no dotfiles, no chezmoi, no shell changes**:
+Add 52+ AI skill packs to your existing setup — powered by **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)**:
 
 ```bash
+# Option A: one-shot via uvx (no install required)
+uvx agent-toolkit-cli install
+
+# Option B: install permanently
+uv tool install agent-toolkit-cli && agent-toolkit install
+
+# Option C: Arch Linux via AUR
+yay -S agent-toolkit-cli && agent-toolkit install
+
+# Option D: install-skills.sh (agentic-workstation wrapper)
 curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | bash
 ```
 
