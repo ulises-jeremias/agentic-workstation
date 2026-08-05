@@ -46,6 +46,12 @@
       "roots": [{ "path": ".github/copilot-instructions.md" }]
     },
     {
+      "id": "dots-workstation-agents-muse",
+      "output": "dist/dots-workstation-agents-muse-{VERSION}.zip",
+      "engine": "zip_materialize",
+      "roots": [{ "path": ".config/muse/skills" }]
+    },
+    {
       "id": "dots-workstation-assets-full",
       "output": "dist/dots-workstation-assets-full-{VERSION}.tar.gz",
       "engine": "tar_gz",

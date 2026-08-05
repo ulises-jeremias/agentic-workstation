@@ -40,6 +40,9 @@
     },
     "universal": {
       "supported": false
+    },
+    "muse-code": {
+      "supported": true
     }
   }
 }

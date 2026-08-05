@@ -28,10 +28,12 @@ Skills support multiple AI tools through a compatibility matrix in `skill.json`.
 | Tool | Skills directory |
 |------|-----------------|
 | Claude Code | `~/.claude/skills/` |
+| Muse Code | `~/.config/muse/skills/` / `~/.agents/skills/` (project) |
 | GitHub Copilot CLI | `~/.copilot/skills/` |
 | Cursor | `~/.cursor/skills/` |
 | OpenCode | `~/.config/opencode/skills/` |
 | pi agent | `~/.pi/agent/skills/` |
+| Universal (any tool) | `~/.agents/skills/` |
 
 See [docs/SKILLS.md](SKILLS.md) for the full skills system documentation including how to add bundled or external skills.
 

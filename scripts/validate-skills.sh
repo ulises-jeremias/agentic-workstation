@@ -26,7 +26,7 @@ for arg in "$@"; do
 done
 
 # Ordered list of tools every bundled skill should declare
-REQUIRED_TOOLS=(claude-code opencode cursor windsurf copilot-cli pi universal)
+REQUIRED_TOOLS=(claude-code opencode cursor windsurf copilot-cli pi muse-code universal)
 
 # ── colors ────────────────────────────────────────────────────────────────────
 _c() { [[ -t 1 ]] && printf '\033[%sm%s\033[0m' "$1" "$2" || printf '%s' "$2"; }

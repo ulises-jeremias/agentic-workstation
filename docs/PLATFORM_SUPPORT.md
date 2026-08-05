@@ -28,7 +28,7 @@
 curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | sh
 
 # Flags
---tool <claude|opencode|cursor|windsurf|copilot|all>   Install for a specific AI tool (default: all)
+--tool <claude|opencode|cursor|windsurf|copilot|muse|all>   Install for a specific AI tool (default: all)
 --guided                                                Interactive prompts for tool selection
 --dry-run                                               Preview install plan, no changes
 ```
@@ -40,7 +40,7 @@ curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/lates
 irm https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.ps1 | iex
 
 # Parameters
--Tool <claude|opencode|cursor|windsurf|copilot|all>    Install for a specific AI tool (default: all)
+-Tool <claude|opencode|cursor|windsurf|copilot|muse|all>    Install for a specific AI tool (default: all)
 -Guided                                                 Interactive prompts for tool selection
 -DryRun                                                 Preview install plan, no changes
 ```
@@ -59,6 +59,8 @@ After install, skills are symlinked to the AI tool's expected directory:
 | Windsurf | `~/.windsurf/skills/` |
 | Copilot CLI | `~/.copilot/skills/` |
 | Pi agent | `~/.pi/agent/skills/` |
+| Muse Code | `~/.config/muse/skills/` (user) / `.agents/skills/` (project) |
+| Universal | `~/.agents/skills/` |
 | Universal | `~/.agents/skills/` |
 
 ---

@@ -58,6 +58,7 @@ REGISTRY_FILE="${DOTS_WORKSTATION_SHARE}/skills-registry.yaml"
 declare -A TOOL_DIRS=(
   ["universal"]="${HOME}/.agents/skills"
   ["claude-code"]="${HOME}/.claude/skills"
+  ["muse-code"]="${HOME}/.config/muse/skills"
   ["pi"]="${HOME}/.pi/agent/skills"
   ["windsurf"]="${HOME}/.windsurf/skills"
 )

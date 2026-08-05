@@ -42,6 +42,7 @@
 {{- $installAgentOpencode := index . "install_agent_opencode"     | default false -}}
 {{- $installAgentPi       := index . "install_agent_pi"           | default false -}}
 {{- $installAgentCopilot  := index . "install_agent_copilot_cli"  | default false -}}
+{{- $installAgentMuse     := index . "install_agent_muse_code"    | default false -}}
 
 {{- $installEditorVscode := index . "install_editor_vscode" | default false -}}
 {{- $installEditorCursor := index . "install_editor_cursor" | default false -}}
@@ -133,7 +134,7 @@
 {{-     $installNode       = eq "yes" (promptChoice (printf "%s\n  Install Node.js tooling (fnm + Node LTS + pnpm)?"           $grpBanner) $yesNo $dNode) -}}
 {{-     $installPython     = eq "yes" (promptChoice "  Install Python tooling (python + uv + pipx)?"                                   $yesNo $dPython) -}}
 {{-     $installDocker     = eq "yes" (promptChoice "  Install Docker CLI?"                                                             $yesNo $dDocker) -}}
-{{-     $installAi         = eq "yes" (promptChoice "  Install AI coding agents group? (Claude Code, OpenCode, pi, Copilot CLI)"       $yesNo $dAi) -}}
+{{-     $installAi         = eq "yes" (promptChoice "  Install AI coding agents group? (Claude Code, OpenCode, pi, Copilot CLI, Muse)" $yesNo $dAi) -}}
 {{-     $installJira       = eq "yes" (promptChoice "  Install JIRA Assistant skill pack (14 skills)?"                                  $yesNo $dJira) -}}
 {{-     $installConfluence = eq "yes" (promptChoice "  Install Confluence Assistant skill pack (17 skills)?"                            $yesNo $dConfluence) -}}
 {{-     $installProd       = eq "yes" (promptChoice "  Install productivity CLIs (clickup, slack, rtk, uipro-cli)?"                     $yesNo $dProd) -}}
@@ -141,7 +142,7 @@
 
 {{/* ── Step 4: AI agents (only asked when ai group is enabled) ──────────── */}}
 {{-   if $installAi -}}
-{{-     $agentsBanner := "\n  ──────────────────────────── AI AGENTS ────────────────────────────\n  Enter a comma-separated list. Shortcuts: all, none, recommended\n  Options: claude-code, opencode, pi, copilot-cli" -}}
+{{-     $agentsBanner := "\n  ──────────────────────────── AI AGENTS ────────────────────────────\n  Enter a comma-separated list. Shortcuts: all, none, recommended\n  Options: claude-code, opencode, pi, copilot-cli, muse" -}}
 {{-     $agentsRaw = promptString (printf "%s\n  Agents" $agentsBanner) $agentsRaw -}}
 {{-     $agentList := splitList "," (lower (trim $agentsRaw)) -}}
 {{-     $normalized := list -}}
@@ -156,11 +157,13 @@
 {{-       $installAgentOpencode = false -}}
 {{-       $installAgentPi = false -}}
 {{-       $installAgentCopilot = false -}}
+{{-       $installAgentMuse = false -}}
 {{-     else -}}
 {{-       $installAgentClaude   = or $all (has "claude-code" $normalized) -}}
 {{-       $installAgentOpencode = or $all $rec (has "opencode" $normalized) -}}
 {{-       $installAgentPi       = or $all (has "pi" $normalized) -}}
 {{-       $installAgentCopilot  = or $all (has "copilot-cli" $normalized) -}}
+{{-       $installAgentMuse     = or $all (has "muse" $normalized) -}}
 {{-     end -}}
 {{-   end -}}
 
@@ -253,6 +256,7 @@
   install_agent_opencode               = {{ $installAgentOpencode }}
   install_agent_pi                     = {{ $installAgentPi }}
   install_agent_copilot_cli            = {{ $installAgentCopilot }}
+  install_agent_muse_code              = {{ $installAgentMuse }}
 
   # ── Productivity CLIs (one group toggle drives all four) ─────────────────
   install_agent_clickup_cli            = {{ $installProd }}

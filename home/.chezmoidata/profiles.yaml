@@ -58,7 +58,7 @@ groups:
     description: "Docker CLI (Engine install is OS-specific)."
   ai:
     flag: install_group_ai
-    description: "AI coding agents (Claude Code, OpenCode, pi, Copilot CLI)."
+    description: "AI coding agents (Claude Code, OpenCode, pi, Copilot CLI, Muse)."
   skills_jira:
     flag: install_skill_jira_assistant
     description: "JIRA Assistant skill pack (14 skills)."

@@ -25,10 +25,11 @@ SKILLS_DIR = REPO_ROOT / "home" / "dot_local" / "share" / "agentic-workstation" 
 OUT_FILE = REPO_ROOT / "docs" / "COMPATIBILITY.md"
 
 # Ordered list of tools (columns in the table)
-TOOLS = ["universal", "claude-code", "opencode", "cursor", "windsurf", "copilot-cli", "pi"]
+TOOLS = ["universal", "claude-code", "muse-code", "opencode", "cursor", "windsurf", "copilot-cli", "pi"]
 TOOL_LABELS = {
     "universal":  "Universal",
     "claude-code": "Claude Code",
+    "muse-code":  "Muse Code",
     "opencode":   "OpenCode",
     "cursor":     "Cursor",
     "windsurf":   "Windsurf",

@@ -4,16 +4,17 @@
 # AI coding agents + productivity CLIs + skill-pack Python CLIs.
 # Every section below is individually template-gated; if nothing is
 # enabled the rendered script is a no-op that just exits 0.
-{{- $gAi := index . "install_group_ai" | default false -}}
-{{- $gProd := index . "install_group_skills_productivity" | default false -}}
-{{- $gSkJ := index . "install_skill_jira_assistant" | default false -}}
-{{- $gSkC := index . "install_skill_confluence_assistant" | default false -}}
-{{- $aClaude := index . "install_agent_claude_code" | default false -}}
-{{- $aOpencode := index . "install_agent_opencode" | default false -}}
-{{- $aPi := index . "install_agent_pi" | default false -}}
-{{- $aCopilot := index . "install_agent_copilot_cli" | default false -}}
-{{- $anyAgent := or $aClaude $aOpencode $aPi $aCopilot -}}
-{{- $anyWork := or $gProd $gSkJ $gSkC $anyAgent -}}
+{{- $gAi    := index . "install_group_ai"                  | default false -}}
+{{- $gProd  := index . "install_group_skills_productivity" | default false -}}
+{{- $gSkJ   := index . "install_skill_jira_assistant"       | default false -}}
+{{- $gSkC   := index . "install_skill_confluence_assistant" | default false -}}
+{{- $aClaude   := index . "install_agent_claude_code"  | default false -}}
+{{- $aOpencode := index . "install_agent_opencode"     | default false -}}
+{{- $aPi       := index . "install_agent_pi"           | default false -}}
+{{- $aCopilot  := index . "install_agent_copilot_cli"  | default false -}}
+{{- $aMuse     := index . "install_agent_muse_code"    | default false -}}
+{{- $anyAgent  := or $aClaude $aOpencode $aPi $aCopilot $aMuse -}}
+{{- $anyWork   := or $gProd $gSkJ $gSkC $anyAgent -}}
 {{- if $anyWork -}}
 set -eo pipefail
 
@@ -35,14 +36,14 @@ ok() { printf '%b[ai-agents]%b %s\n' "$c_green" "$c_reset" "$*"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
 can_sudo() { sudo -n true >/dev/null 2>&1; }
 
-is_arch() { has_cmd pacman; }
-is_macos() { [[ "$(uname -s)" == "Darwin" ]]; }
-has_brew() { has_cmd brew; }
-has_npm() { has_cmd npm; }
-has_go() { has_cmd go; }
+is_arch()   { has_cmd pacman; }
+is_macos()  { [[ "$(uname -s)" == "Darwin" ]]; }
+has_brew()  { has_cmd brew; }
+has_npm()   { has_cmd npm; }
+has_go()    { has_cmd go; }
 
 is_official_slack_cli() {
-  (has_cmd slack && slack --help 2>/dev/null | grep -q "create, run, and deploy Slack apps") ||
+  (has_cmd slack && slack --help 2>/dev/null | grep -q "create, run, and deploy Slack apps") || \
     (has_cmd slack-dev && slack-dev --help 2>/dev/null | grep -q "create, run, and deploy Slack apps")
 }
 
@@ -58,9 +59,7 @@ aur_install() {
   fi
 }
 
-# Install a Python CLI tool.
-# Chain: uv tool install → pipx install  (no pip/pip3 — they bypass the
-# uv-tools-reinstall and pipx-reinstall pacman hooks that survive Python upgrades).
+# Install a Python CLI tool via uv tool, pipx, or pip (in that order).
 # Usage: install_python_tool <pkg>
 install_python_tool() {
   local pkg="$1"
@@ -76,9 +75,12 @@ install_python_tool() {
     else
       pipx install "$pkg" && ok "${pkg} installed via pipx" || warn "pipx install ${pkg} failed"
     fi
+  elif has_cmd pip3; then
+    pip3 install --user --quiet "$pkg" && ok "${pkg} installed via pip3" || warn "pip3 install ${pkg} failed"
+  elif has_cmd pip; then
+    pip install --user --quiet "$pkg" && ok "${pkg} installed via pip" || warn "pip install ${pkg} failed"
   else
-    warn "uv/pipx not found — cannot install ${pkg}."
-    warn "Install uv: curl -LsSf https://astral.sh/uv/install.sh | sh"
+    warn "uv/pipx/pip3/pip not found — cannot install ${pkg}. Install uv first."
   fi
 }
 
@@ -141,7 +143,7 @@ else
   mkdir -p "$HOME/.local/bin"
   if is_macos; then
     _slackcli_arch="$(uname -m)"
-    if [[ $_slackcli_arch == "arm64" ]]; then
+    if [[ "$_slackcli_arch" == "arm64" ]]; then
       _slackcli_asset="slackcli-macos-arm64"
     else
       _slackcli_asset="slackcli-macos"
@@ -282,6 +284,19 @@ fi
 {{- end }}
 
 # ---------------------------------------------------------------------------
+# Muse Code (opt-in, https://dev.meta.ai)
+# ---------------------------------------------------------------------------
+{{- if $aMuse }}
+log "checking Muse Code..."
+if has_cmd muse; then
+  ok "muse already installed: $(muse --version 2>/dev/null || echo 'unknown')"
+else
+  log "installing Muse Code via https://dev.meta.ai/install.sh..."
+  curl -fsSL https://dev.meta.ai/install.sh | bash || warn "muse install failed"
+fi
+{{- end }}
+
+# ---------------------------------------------------------------------------
 # Prerequisite verification — ensure uv and node are available
 # ---------------------------------------------------------------------------
 log "verifying prerequisites for AI tooling..."
@@ -347,42 +362,14 @@ fi
 {{- end }}
 
 # ---------------------------------------------------------------------------
-# agent-toolkit — install skills, agents, profiles, and loop templates
+# Skills sync — regenerate AI tool symlinks based on skill.json compatibility
 # ---------------------------------------------------------------------------
-log "installing / updating agent-toolkit..."
-if command -v agent-toolkit &>/dev/null; then
-  ok "agent-toolkit already installed: $(agent-toolkit --version 2>/dev/null || echo 'ok')"
+log "syncing skills across AI tools..."
+if command -v dots-skills &>/dev/null; then
+  dots-skills sync
 else
-  log "agent-toolkit not found — installing agent-toolkit-cli..."
-  # On Arch Linux prefer AUR (yay/paru) — avoids Python env management entirely
-  if has_cmd pacman && has_cmd yay; then
-    yay -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || install_python_tool "agent-toolkit-cli"
-  elif has_cmd pacman && has_cmd paru; then
-    paru -S --noconfirm --needed agent-toolkit-cli 2>/dev/null || install_python_tool "agent-toolkit-cli"
-  else
-    install_python_tool "agent-toolkit-cli"
-  fi
-fi
-
-if command -v agent-toolkit &>/dev/null; then
-  log "running agent-toolkit install (deploys skills, agents, profiles, loops)..."
-  if agent-toolkit install; then
-    # ---------------------------------------------------------------------------
-    # Skills sync — regenerate AI tool symlinks based on SKILL.md compatibility
-    # ---------------------------------------------------------------------------
-    log "syncing skills across AI tools..."
-    if command -v dots-skills &>/dev/null; then
-      dots-skills sync
-    else
-      warn "dots-skills not found in PATH; skipping skills sync"
-      warn "Run 'chezmoi apply' again after the workstation is fully bootstrapped"
-    fi
-  else
-    warn "agent-toolkit install failed — run 'dots-skills install-toolkit' to retry"
-  fi
-else
-  warn "agent-toolkit still not in PATH; skipping capability deployment"
-  warn "Run 'dots-skills install-toolkit' after ensuring ~/.local/bin is in PATH"
+  warn "dots-skills not found in PATH; skipping skills sync"
+  warn "Run 'chezmoi apply' again after the workstation is fully bootstrapped"
 fi
 
 log "ai-agents setup complete"
