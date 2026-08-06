@@ -190,6 +190,35 @@ Seamless skill packs for the tools you use every day:
 
 Details and Mermaid diagrams: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
+### Agent Toolkit Swarms — tmux + Herdr
+
+> **Workstation installs tools, Toolkit owns orchestration.** agentic-workstation provisions the machine-level swarm dependencies (tmux + Herdr + OpenCode integration); all swarm orchestration lives in [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit).
+
+- **tmux** — terminal multiplexer installed via your system package manager (`apt`/`brew`/`pacman`/`dnf`). Verified: `tmux -V`. Workstation uses an isolated socket `agent-toolkit-swarm-<run-id>` and never overwrites `~/.tmux.conf`.
+- **Herdr** — terminal-native app for orchestrating agents. Installed idempotently via `brew` → `mise` → `curl -fsSL https://herdr.dev/install.sh | sh` fallback. Check: `herdr --version`. Skipped in CI unless `SWARM_FORCE_INSTALL=1`.
+- **OpenCode Herdr integration** — `herdr integration install opencode` (idempotent). Creates `~/.config/opencode` if missing, safe and credential-free. Verify: `herdr integration list --json`. Update outdated integrations with the same command.
+
+**Verify swarm provisioning:**
+
+```bash
+dots-doctor                 # includes tmux, herdr, and swarm checks
+dots-doctor --json | jq
+agent-toolkit swarm doctor  # toolkit-level swarm health check
+```
+
+**Run a swarm (Toolkit owns orchestration):**
+
+```bash
+herdr                                          # start Herdr app
+herdr integration install opencode             # one-time OpenCode integration
+agent-toolkit swarm doctor                     # validate swarm prerequisites
+agent-toolkit swarm start --recipe pair --ui herdr --runner opencode "Implement feature X"
+agent-toolkit swarm start --recipe pair --ui tmux --runner opencode "Implement feature X"
+# See agent-toolkit docs: agent-toolkit swarm --help
+```
+
+Profiles `technical`, `non-technical`, `ai`, and `data` enable the swarm group (`install_group_swarm`) by default; opt-out via `custom` questionnaire. See [`docs/SWARM_SETUP.md`](docs/SWARM_SETUP.md), [`docs/PLATFORM_SUPPORT.md`](docs/PLATFORM_SUPPORT.md), and [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md).
+
 ---
 
 ## 📂 Repository Map

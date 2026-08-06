@@ -51,11 +51,11 @@ graph TD
 1. **Data model** (`home/.chezmoidata`)
    Shared configuration for package groups, AI settings, profiles. Skills registry is empty — catalog comes from toolkit.
 2. **Bootstrap scripts** (`home/.chezmoiscripts`)
-   Thin install: `run_once_after_50-install-agent-toolkit.sh.tmpl` runs `uv tool install --force agent-toolkit-cli && agent-toolkit install`. `run_onchange_45` delegates to the same.
+   Thin install: `run_once_after_50-install-agent-toolkit.sh.tmpl` runs `uv tool install --force agent-toolkit-cli && agent-toolkit install`. `run_onchange_42-install-swarm-tooling.sh.tmpl` installs swarm prerequisites (tmux + Herdr + `herdr integration install opencode`) when `install_group_swarm=true`. `run_onchange_45` delegates to `agent-toolkit install`.
 3. **Shared assets — thin** (`home/dot_local/share/agentic-workstation`)
-   Only workstation-only runner logic: `dev-companion/runner`, `scopes`, `telemetry`, `pacman-hooks`. No `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `packs/teams`.
+   Only workstation-only runner logic: `dev-companion/runner`, `scopes`, `telemetry`, `pacman-hooks`. No `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `packs/teams`. Swarm isolation uses per-run tmux socket `agent-toolkit-swarm-<run-id>`; no `~/.tmux.conf` overwrite.
 4. **CLI helpers — thin** (`home/dot_local/bin`)
-   `dots-skills`, `dots-loop`, `dots-devcompanion` etc. delegate to `agent-toolkit` where applicable.
+   `dots-skills`, `dots-loop`, `dots-devcompanion` etc. delegate to `agent-toolkit` where applicable. `dots-doctor` validates swarm prerequisites (`tmux`, `herdr`, `agent-toolkit swarm doctor`, `herdr integration list --json`).
 
 ---
 
@@ -127,6 +127,31 @@ Each toolkit skill contains `SKILL.md` frontmatter that declares compatibility. 
 
 ---
 
+## Swarm provisioning — Workstation installs, Toolkit orchestrates
+
+> **Workstation installs tools, Toolkit owns orchestration.** agentic-workstation provisions the host dependencies for [Agent Toolkit Swarms](SWARM_SETUP.md) (tmux + Herdr + OpenCode integration) via profile-driven chezmoi. Swarm orchestration, recipes, and isolated tmux sessions are owned by `agent-toolkit`.
+
+- **tmux** — always installed in core + swarm group (apt/brew/pacman/dnf). Verified: `tmux -V`. Uses isolated socket `agent-toolkit-swarm-<run-id>`; no `~/.tmux.conf` overwrite.
+- **Herdr** — idempotent install via `brew` → `mise` → `curl -fsSL https://herdr.dev/install.sh | sh` fallback (logged to `/tmp/herdr-install.log`). Skip in CI unless `SWARM_FORCE_INSTALL=1`. Check: `herdr --version`. When `install_group_swarm=false`, missing herdr is a warning; when true, `tmux` missing is a failure and `herdr` missing is a warning (tmux fallback).
+- **OpenCode Herdr integration** — optional, idempotent: `herdr integration install opencode` when both binaries are present. Creates `~/.config/opencode` safely if missing. Verify: `herdr integration list --json`. Re-run when `herdr integration list --json` reports `outdated`.
+
+**Doctor & recipes (Toolkit owns orchestration):**
+
+```bash
+dots-doctor                 # includes tmux, herdr, and swarm checks (profile-aware)
+agent-toolkit swarm doctor  # toolkit-level swarm validation
+herdr integration install opencode
+agent-toolkit swarm start --recipe pair --ui herdr --runner opencode "Task"
+agent-toolkit swarm start --recipe pair --ui tmux --runner opencode "Task"
+# Swarm help lives in toolkit: agent-toolkit swarm --help
+```
+
+Profile mapping: `technical`, `non-technical`, `ai`, `data` enable `swarm` group (`install_group_swarm=true`) via `home/.chezmoidata/profiles.yaml`; `custom` can opt-in via questionnaire `Install Agent Toolkit Swarms (tmux + Herdr)?`. Non-interactive: `WORKSTATION_PROFILE=custom chezmoi init --apply ... --promptString install_group_swarm=yes`. Update re-runs `run_onchange_42-install-swarm-tooling.sh.tmpl` idempotently; `dots-uninstall` does not auto-remove tmux/herdr; no destructive `~/.tmux.conf` overwrite.
+
+See [SWARM_SETUP.md](SWARM_SETUP.md) for full provisioning, doctor, and troubleshooting reference. Also see [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) and [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md).
+
+---
+
 ## Source state convention
 
 - `.chezmoiroot` points to `home`.
@@ -143,7 +168,12 @@ Each toolkit skill contains `SKILL.md` frontmatter that declares compatibility. 
 
 - [SKILLS.md](SKILLS.md) — full skills system documentation
 - [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — agent-toolkit integration — thin workstation (uv only)
+- [SWARM_SETUP.md](SWARM_SETUP.md) — swarm provisioning — tmux + Herdr (Workstation installs, Toolkit orchestrates)
+- [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) — platform support and swarm install paths
+- [COMPATIBILITY.md](COMPATIBILITY.md) — compatibility matrix and swarm troubleshooting
 - [AI_LAYER.md](AI_LAYER.md) — AI directory structure and Ralph Loop model
 - [AGENTIC_HARNESS.md](AGENTIC_HARNESS.md) — three-layer architecture framework
 - [wiki/PROFILES.md](wiki/PROFILES.md) — profile selection and feature groups
+- [wiki/QUESTIONNAIRE.md](wiki/QUESTIONNAIRE.md) — init questionnaire including swarm opt-in
+- [wiki/CLI.md](wiki/CLI.md) — CLI helpers including swarm doctor
 - [adrs/](adrs/) — architecture decision records

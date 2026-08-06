@@ -74,3 +74,14 @@ See [`agent-toolkit` docs](https://github.com/ulises-jeremias/agent-toolkit) —
 ## Security
 
 No credentials read/written. `curl | sh` only after brew/mise fallback, with log to `/tmp/herdr-install.log`. No sudo required for Herdr; tmux via package manager respects `can_sudo` check.
+
+---
+
+## See Also
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) — swarm provisioning layer (Workstation installs, Toolkit orchestrates)
+- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — swarm orchestration owned by toolkit
+- [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) — platform support including swarm tooling
+- [COMPATIBILITY.md](COMPATIBILITY.md) — swarm troubleshooting
+- [`home/.chezmoidata/profiles.yaml`](../home/.chezmoidata/profiles.yaml) — profile group `swarm`
+- [`home/.chezmoi.toml.tmpl`](../home/.chezmoi.toml.tmpl) — questionnaire prompt `Install Agent Toolkit Swarms (tmux + Herdr)?`

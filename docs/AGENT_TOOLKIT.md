@@ -125,6 +125,42 @@ agent-toolkit loop sync          # pull latest loop templates from agent-toolkit
 
 ---
 
+## Swarm orchestration — Workstation installs, Toolkit orchestrates
+
+> **Workstation installs tools, Toolkit owns orchestration.** agentic-workstation provisions `tmux` + `Herdr` + `herdr integration install opencode` idempotently via `run_onchange_42-install-swarm-tooling.sh.tmpl` (gated by `install_group_swarm`). `agent-toolkit` owns swarm recipes, isolated tmux sockets (`agent-toolkit-swarm-<run-id>`), and orchestration lifecycle.
+
+### What Workstation provisions
+
+- **tmux** — package manager install (apt/brew/pacman/dnf), respects `can_sudo`. Verify: `tmux -V`. No `~/.tmux.conf` overwrite.
+- **Herdr** — brew → mise → `curl -fsSL https://herdr.dev/install.sh | sh` fallback, logged to `/tmp/herdr-install.log`, no sudo. Verify: `herdr --version`. Skipped in CI unless `SWARM_FORCE_INSTALL=1`.
+- **OpenCode Herdr integration** — `herdr integration install opencode` when both present; `mkdir -p ~/.config/opencode` safe if missing. Verify: `herdr integration list --json`; if `outdated`, re-run the install. Herdr is the preferred UI; tmux is the fallback.
+
+### Doctor — Workstation + Toolkit
+
+```bash
+dots-doctor                 # profile-aware: tmux, herdr, herdr integration, agent-toolkit swarm doctor
+dots-doctor --json | jq
+agent-toolkit swarm doctor  # toolkit-level swarm health check (owned by toolkit)
+herdr integration list --json  # inspect opencode integration status
+```
+
+When `install_group_swarm=false`, missing herdr is a warning (not failure). When `install_group_swarm=true`, `tmux` missing is a failure and `herdr` missing is a warning (tmux fallback).
+
+### Recipes — Toolkit owns orchestration
+
+```bash
+herdr                                          # start Herdr UI
+herdr integration install opencode             # ensure OpenCode integration (idempotent)
+agent-toolkit swarm doctor                     # validate prerequisites
+agent-toolkit swarm start --recipe pair --ui herdr --runner opencode "Implement feature X"
+agent-toolkit swarm start --recipe pair --ui tmux --runner opencode "Implement feature X"
+agent-toolkit swarm --help                     # full recipe/UI/runner reference lives in toolkit
+```
+
+See [SWARM_SETUP.md](SWARM_SETUP.md) for complete provisioning, questionnaire, and troubleshooting. Toolkit is the source of truth for swarm orchestration — Workstation only ensures the host tools exist.
+
+---
+
 ## Skill sources — thin workstation
 
 | Source | Install mechanism | Location | Examples |
@@ -177,9 +213,12 @@ On agentic-workstation machines, the `chezmoi apply` path (`uv tool install --fo
 
 ## See Also
 
+- [SWARM_SETUP.md](SWARM_SETUP.md) — swarm provisioning — tmux + Herdr (Workstation installs, Toolkit orchestrates)
+- [ARCHITECTURE.md](ARCHITECTURE.md) — Three-layer architecture (L1 / L1.5 / L3) — thin workstation
+- [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) — platform support including swarm tooling
+- [COMPATIBILITY.md](COMPATIBILITY.md) — tool compatibility and swarm troubleshooting
 - [SKILLS.md](SKILLS.md) — Full skills system documentation
 - [LOOPS.md](LOOPS.md) — Loop engineering and reference patterns
-- [ARCHITECTURE.md](ARCHITECTURE.md) — Three-layer architecture (L1 / L1.5 / L3) — thin workstation
 - [AI_LAYER.md](AI_LAYER.md) — AI directory structure and Ralph Loop model
 - [DEV_COMPANION_LLM.md](DEV_COMPANION_LLM.md) — LLM policy (agentic-workstation-only)
 - [agent-toolkit repo](https://github.com/ulises-jeremias/agent-toolkit) — capability source

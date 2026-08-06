@@ -47,6 +47,32 @@ irm https://github.com/ulises-jeremias/agentic-workstation/releases/latest/downl
 
 ---
 
+## Swarm Tooling — tmux + Herdr (Agent Toolkit Swarms)
+
+> **Workstation installs tools, Toolkit owns orchestration.** See [SWARM_SETUP.md](SWARM_SETUP.md).
+
+| Component | Purpose | Install method | Verify | Platform notes |
+|-----------|---------|----------------|--------|----------------|
+| **tmux** | Terminal multiplexer for swarm panes | `apt` / `brew` / `pacman` / `dnf` (via `run_onchange_42-install-swarm-tooling.sh.tmpl`, gated by `install_group_swarm`) | `tmux -V` | Respects `can_sudo`; uses isolated socket `agent-toolkit-swarm-<run-id>`; no `~/.tmux.conf` overwrite |
+| **Herdr** | Orchestration UI for Agent Toolkit Swarms | `brew` → `mise` → `curl -fsSL https://herdr.dev/install.sh \| sh` fallback | `herdr --version` | No sudo; logged to `/tmp/herdr-install.log`; skipped in CI unless `SWARM_FORCE_INSTALL=1` |
+| **OpenCode Herdr integration** | Connects `opencode` runner to Herdr | `herdr integration install opencode` (idempotent) | `herdr integration list --json` | Creates `~/.config/opencode` if missing; safe, no credentials; re-run if `outdated` |
+
+**Profile gating:** `technical`, `non-technical`, `ai`, `data` profiles enable swarm (`install_group_swarm=true`) in `home/.chezmoidata/profiles.yaml`; `custom` prompts `Install Agent Toolkit Swarms (tmux + Herdr)?` in `home/.chezmoi.toml.tmpl`. Non-interactive: `WORKSTATION_PROFILE=technical chezmoi init --apply ...` or `WORKSTATION_PROFILE=custom chezmoi init --apply ... --promptString install_group_swarm=yes`.
+
+**Doctor & usage:**
+
+```bash
+dots-doctor                 # includes tmux/herdr/swarm checks
+agent-toolkit swarm doctor  # toolkit-level check
+herdr integration install opencode
+agent-toolkit swarm start --recipe pair --ui herdr --runner opencode "Task"
+agent-toolkit swarm start --recipe pair --ui tmux --runner opencode "Task"
+```
+
+Toolkit owns all orchestration (`agent-toolkit swarm --help`); Workstation only ensures host tools exist. Full reference: [SWARM_SETUP.md](SWARM_SETUP.md), [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md).
+
+---
+
 ## Skill Installation Paths
 
 After install, skills are symlinked to the AI tool's expected directory:
@@ -60,7 +86,6 @@ After install, skills are symlinked to the AI tool's expected directory:
 | Copilot CLI | `~/.copilot/skills/` |
 | Pi agent | `~/.pi/agent/skills/` |
 | Muse Code | `~/.config/muse/skills/` (user) / `.agents/skills/` (project) |
-| Universal | `~/.agents/skills/` |
 | Universal | `~/.agents/skills/` |
 
 ---
@@ -81,3 +106,11 @@ See `.github/workflows/install-methods-matrix.yml` for the full matrix.
 
 - **WSL2** is not independently tested in CI because WSL2 == Ubuntu under the hood. The `ubuntu-latest` jobs cover it transitively.
 - **Arch Linux** installs are also not directly tested in CI matrix, but may fail on Docker pull limits (known flaky: `One-liner install.sh (archlinux)` — this is a Docker Hub rate-limit issue, not a code issue).
+
+---
+
+## See Also
+
+- [SWARM_SETUP.md](SWARM_SETUP.md) — swarm provisioning — tmux + Herdr (Workstation installs, Toolkit orchestrates)
+- [ARCHITECTURE.md](ARCHITECTURE.md) — three-layer architecture and swarm provisioning
+- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — agent-toolkit integration including swarm orchestration

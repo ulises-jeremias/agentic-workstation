@@ -31,7 +31,11 @@ User-facing setup belongs in the wiki. Technical design and maintainer contracts
 | [MULTI_AGENT_ORCHESTRATION.md](MULTI_AGENT_ORCHESTRATION.md) | Multi-agent runtime and persona constraints |
 | [REPOSITORY_GOVERNANCE.md](REPOSITORY_GOVERNANCE.md) | Change management and quality gates |
 | [SKILLS.md](SKILLS.md) | Skills schema, registry, publishing, compatibility |
-| [SWARM_SETUP.md](SWARM_SETUP.md) | Swarm provisioning — tmux + Herdr for Agent Toolkit Swarms |
+| [SWARM_SETUP.md](SWARM_SETUP.md) | Swarm provisioning — tmux + Herdr for Agent Toolkit Swarms (Workstation installs, Toolkit orchestrates: `herdr integration install opencode`, `agent-toolkit swarm doctor` / `start --recipe pair`) |
+| [PLATFORM_SUPPORT.md](PLATFORM_SUPPORT.md) | Platform support including swarm tooling (tmux/herdr) |
+| [COMPATIBILITY.md](COMPATIBILITY.md) | Tool compatibility and swarm troubleshooting |
+| [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) | Agent-toolkit integration including swarm orchestration |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Layered design model including swarm provisioning |
 | [adrs/](adrs/) | Architecture Decision Records |
 
 ## User Guides

@@ -11,7 +11,12 @@
 | Missing command (e.g., `opencode`) | Install the tool manually, then re-run `chezmoi apply` |
 | Missing directory | Run `chezmoi apply` — it creates expected directories |
 | Missing skill symlinks | Run `dots-skills sync` to regenerate |
+| `tmux: command not found` (swarm enabled) | `sudo apt install tmux` / `brew install tmux` / `sudo pacman -S tmux` |
+| `herdr: command not found` | `brew install herdr` or `curl -fsSL https://herdr.dev/install.sh \| sh`; or use `--ui tmux` fallback |
+| `herdr integration outdated` | `herdr integration install opencode` and verify `herdr integration list --json` |
 | `NON-COMPLIANT` status | Fix all reported failures, then re-run `dots-doctor` |
+
+Swarm details: `dots-doctor` includes `tmux`/`herdr`/`herdr integration`; `agent-toolkit swarm doctor` is the toolkit-level check (see [SWARM_SETUP](../../docs/SWARM_SETUP.md) and [COMPATIBILITY](../../docs/COMPATIBILITY.md)). When `install_group_swarm=false`, `herdr` missing is a warning, not failure; when `true`, `tmux` missing is failure and `herdr` missing is warning (tmux fallback).
 
 ---
 
@@ -42,6 +47,30 @@ Agents are installed to tool-specific directories during `chezmoi apply`:
 - OpenCode: `~/.config/opencode/agents/`
 
 Verify the files exist, then restart the tool.
+
+---
+
+## Swarm troubleshooting
+
+> **Workstation installs tools, Toolkit owns orchestration.** `herdr`, `herdr integration install opencode`, `agent-toolkit swarm doctor`, and `agent-toolkit swarm start --recipe pair` details live in [SWARM_SETUP](../../docs/SWARM_SETUP.md).
+
+| Symptom | Fix |
+|---------|-----|
+| `herdr: command not found` | Install via https://herdr.dev/docs/install/ — preferred `brew install herdr` then `herdr --version`; fallback `curl -fsSL https://herdr.dev/install.sh \| sh` (logged to `/tmp/herdr-install.log`). Or use `agent-toolkit swarm start --recipe pair --ui tmux --runner opencode` |
+| `tmux: command not found` | `sudo apt install tmux` / `brew install tmux` / `sudo pacman -S tmux` / `sudo dnf install tmux` — then `tmux -V` |
+| `herdr integration outdated` or `herdr integration list --json` shows no `opencode` | `mkdir -p ~/.config/opencode` (safe, script does it), then `herdr integration install opencode`; check `/tmp/herdr-integration-opencode.log` |
+| `OpenCode config dir missing` | Script creates `~/.config/opencode` safely; no credentials written |
+| CI skips Herdr/tmux | Expected when `CI=true` and `SWARM_FORCE_INSTALL` unset; mock with fake `herdr` in `PATH` or run `SWARM_FORCE_INSTALL=1 chezmoi apply` |
+| `agent-toolkit swarm doctor` fails | Run `agent-toolkit swarm doctor` (Toolkit-owned) for recipe/UI/runner diagnostics; provision missing tools via `chezmoi update` / `dots-doctor` |
+
+**Verification:**
+
+```bash
+dots-doctor; echo "---"; agent-toolkit swarm doctor; herdr --version; tmux -V; herdr integration list --json | jq
+herdr integration install opencode   # idempotent, safe to re-run
+```
+
+Profiles `technical`/`non-technical`/`ai`/`data` enable swarm by default (`install_group_swarm=true` in `home/.chezmoidata/profiles.yaml`); `custom` can opt-out. `chezmoi update` re-runs `run_onchange_42-install-swarm-tooling.sh.tmpl` idempotently. No `~/.tmux.conf` overwrite; Toolkit uses isolated socket `agent-toolkit-swarm-<run-id>`.
 
 ---
 

@@ -8,7 +8,7 @@
 
 | Command | Description |
 |---------|-------------|
-| `dots-doctor` | Health check — validates tools, directories, compliance, plus **system snapshot**; use `--issue` for ticket-friendly Markdown |
+| `dots-doctor` | Health check — validates tools, directories, compliance, **swarm (tmux/herdr/agent-toolkit swarm doctor)**, plus **system snapshot**; use `--issue` / `--json` |
 | `dots-skills list` | Show installed skills and their per-tool symlink status |
 | `dots-skills sync` | Regenerate symlinks for all skills across AI tools |
 | `dots-skills install <name>` | Install a skill from the registry |
@@ -19,6 +19,11 @@
 | `dots-bootstrap` | Re-run `chezmoi apply` with dry-run preview |
 | `dots-workstation-audit` | Inventory AI tool installs, auth hints, and privacy/config metadata without printing secrets |
 | `dots-security-audit` | Run shallow workstation security checks for sensitive permissions and baseline paths |
+| `agent-toolkit swarm doctor` | **Toolkit-owned** swarm health check (run after `dots-doctor`) |
+| `agent-toolkit swarm start --recipe pair --ui herdr\|tmux --runner opencode "Task"` | **Toolkit-owned** swarm orchestration — starts a swarm. Workstation only provisions `tmux`/`herdr`/`herdr integration install opencode` |
+| `herdr` | Herdr app UI; `herdr integration install opencode` ensures OpenCode integration; `herdr integration list --json` to verify |
+
+> **Workstation installs tools, Toolkit owns orchestration.** `dots-doctor` checks `tmux -V`, `herdr --version`, `herdr integration list --json`; `agent-toolkit swarm doctor` and `agent-toolkit swarm start --recipe pair` are owned by Toolkit (see [SWARM_SETUP](../../docs/SWARM_SETUP.md)).
 
 ---
 
@@ -28,9 +33,25 @@
 
 ```bash
 dots-doctor
+dots-doctor --json | jq
+agent-toolkit swarm doctor
+herdr integration list --json | jq
 ```
 
-Checks: installed commands, expected directories, compliance status. Default output includes host/OS/disk/profile context, **integrations** (`env.d` file names, `gh` / `clickup` / `glab` auth — no secrets); `dots-doctor --issue` emits Markdown for issues; `dots-doctor --json` prints one JSON line (needs `python3`).
+Checks: installed commands, expected directories, compliance status, **swarm (tmux/herdr/herdr integration)**. Default output includes host/OS/disk/profile context, **integrations** (`env.d` file names, `gh` / `clickup` / `glab` auth — no secrets); `dots-doctor --issue` emits Markdown for issues; `dots-doctor --json` prints one JSON line (needs `python3`). When `install_group_swarm=true`, `tmux` missing is a failure and `herdr` missing is a warning (tmux fallback); when `false`, `herdr` missing is not a failure.
+
+### Work with Agent Toolkit Swarms
+
+```bash
+herdr                                          # start Herdr app
+herdr integration install opencode             # idempotent OpenCode integration
+agent-toolkit swarm doctor                     # toolkit-level check
+agent-toolkit swarm start --recipe pair --ui herdr --runner opencode "Implement X"
+agent-toolkit swarm start --recipe pair --ui tmux --runner opencode "Implement X"
+# See toolkit: agent-toolkit swarm --help
+```
+
+> **Workstation installs tools, Toolkit owns orchestration.** See [SWARM_SETUP](../../docs/SWARM_SETUP.md).
 
 ### Update to latest baseline
 
