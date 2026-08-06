@@ -30,6 +30,12 @@ package_groups:
     - fd           # fast find alternative
     - zsh          # Z shell
     - gh           # GitHub CLI
+    - tmux         # terminal multiplexer (swarm fallback)
+
+  # Swarm profile — multiplexer + Herdr UI
+  swarm:
+    - tmux         # terminal multiplexer
+    - herdr        # Herdr agent workspace UI
 
   # Node.js profile — runtime, package manager, version manager
   node:
