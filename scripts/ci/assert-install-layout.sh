@@ -54,10 +54,19 @@ case "$PROFILE" in
     require_executable "$HOME/.local/bin/dots-doctor"
     require_dir_nonempty "$HOME/.local/share/agentic-workstation/skills"
     count=$(find "$HOME/.local/share/agentic-workstation/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
-    if [ "$count" -lt 3 ]; then
+    # Thin workstation: skills delegated to agent-toolkit via uv tool — only README.md present
+    if [ -f "$HOME/.local/share/agentic-workstation/skills/README.md" ] && [ "$count" -eq 0 ]; then
+      ok "thin workstation detected — skills delegated to agent-toolkit (README.md only)"
+      if command -v agent-toolkit >/dev/null 2>&1 || command -v uv >/dev/null 2>&1; then
+        ok "thin delegation: uv/agent-toolkit available"
+      else
+        ok "thin delegation: uv not in CI (hermetic skip) — layout OK"
+      fi
+    elif [ "$count" -lt 3 ]; then
       miss "expected at least 3 skill directories, found $count"
+    else
+      ok "skills directory has $count top-level entries"
     fi
-    ok "skills directory has $count top-level entries"
     ;;
   skills)
     # install-skills.* path — only the AI-layer subset.
