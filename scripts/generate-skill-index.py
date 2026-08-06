@@ -31,8 +31,9 @@ def load_catalog() -> list[dict[str, Any]]:
         print("PyYAML is required", file=sys.stderr)
         sys.exit(1)
     if not path.exists():
-        print(f"Catalog not found at {path}", file=sys.stderr)
-        sys.exit(1)
+        # Thin workstation: skills delegated to agent-toolkit via uv tool
+        print(f"Catalog not found at {path} — thin workstation delegates to agent-toolkit", file=sys.stderr)
+        return []
     text = path.read_text(encoding="utf-8")
     data = yaml.safe_load(text)
     return data.get("skills", []) if isinstance(data, dict) else []
@@ -413,8 +414,8 @@ def generate_html(skills: list[dict[str, Any]]) -> str:
 def main() -> None:
     skills = load_catalog()
     if not skills:
-        print("No skills found in catalog.", file=sys.stderr)
-        sys.exit(1)
+        print("No skills found in catalog — thin workstation delegates to agent-toolkit, generating empty index.", file=sys.stderr)
+        skills = []
 
     html = generate_html(skills)
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
