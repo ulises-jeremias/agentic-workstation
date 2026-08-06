@@ -40,10 +40,14 @@ check_file_exists() {
   fi
 }
 
-# Critical paths used by release-artifacts.json
-check_dir_nonempty "${DEST}/.local/share/agentic-workstation/skills" "skill store" 3
-check_dir_nonempty "${DEST}/.config/opencode/agents" "OpenCode agents" 1
-check_dir_nonempty "${DEST}/.claude/agents" "Claude agents" 1
+# Critical paths — thin workstation delegates skills/agents to agent-toolkit via uv tool
+if [[ -f "${DEST}/.local/share/agentic-workstation/skills/README.md" ]] && [[ $(find "${DEST}/.local/share/agentic-workstation/skills" -mindepth 1 -maxdepth 1 -type d | wc -l) -eq 0 ]]; then
+  echo "verify-release-dump: thin workstation detected — skills delegated to agent-toolkit (README.md only), skipping embedded checks"
+else
+  check_dir_nonempty "${DEST}/.local/share/agentic-workstation/skills" "skill store" 3
+  check_dir_nonempty "${DEST}/.config/opencode/agents" "OpenCode agents" 1
+  check_dir_nonempty "${DEST}/.claude/agents" "Claude agents" 1
+fi
 # Cursor rules are deployed by agent-toolkit, not chezmoi.
 check_file_exists "${DEST}/.github/copilot-instructions.md" "Copilot instructions"
 
