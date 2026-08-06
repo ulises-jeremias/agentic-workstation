@@ -629,6 +629,7 @@ fi
 : "${DOTS_WORKSTATION_DOCTOR_GROUP_PYTHON:=true}"
 : "${DOTS_WORKSTATION_DOCTOR_GROUP_DOCKER:=true}"
 : "${DOTS_WORKSTATION_DOCTOR_GROUP_AI:=true}"
+: "${DOTS_WORKSTATION_DOCTOR_GROUP_SWARM:=false}"
 : "${DOTS_WORKSTATION_DOCTOR_GROUP_SKILLS_PRODUCTIVITY:=false}"
 : "${DOTS_WORKSTATION_DOCTOR_SKILL_JIRA:=false}"
 : "${DOTS_WORKSTATION_DOCTOR_SKILL_CONFLUENCE:=false}"
@@ -652,6 +653,7 @@ else
 fi
 
 core_cmds=(git curl wget jq rg fd zsh gh)
+swarm_cmds=(tmux herdr)
 node_cmds=(fnm node)
 python_cmds=(uv python3)
 docker_cmds=(docker)
@@ -699,6 +701,66 @@ if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_DOCKER} == true ]]; then
       check_cmd "$cmd"
     fi
   done
+fi
+if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_SWARM} == true ]]; then
+  for cmd in "${swarm_cmds[@]}"; do
+    if [[ ${MODE} == "issue" ]]; then
+      # Swarm cmds are optional: warn not fail when missing
+      if ! command -v "$cmd" >/dev/null 2>&1; then
+        printf -- "- [ ] \`%s\` — **missing (swarm optional — install tmux/herdr)**\\n" "$cmd"
+      else
+        check_cmd_issue "$cmd"
+      fi
+    elif [[ ${MODE} == "json" ]]; then
+      # Optional in json too — don't count as failure if missing, just note
+      if command -v "$cmd" >/dev/null 2>&1; then
+        check_cmd_quiet "$cmd"
+      else
+        checks=$((checks + 1))
+        passed=$((passed + 1))
+      fi
+    else
+      # Human mode: show but don't fail workstation if swarm tools missing when swarm disabled? Swarm group enabled => must pass
+      if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_SWARM} == true ]]; then
+        # When swarm enabled, herdr is optional (tmux fallback)
+        if [[ "$cmd" == "herdr" ]]; then
+          checks=$((checks + 1))
+          if command -v herdr >/dev/null 2>&1; then
+            ok "herdr available ($(herdr --version 2>/dev/null | head -n1))"
+            passed=$((passed + 1))
+          else
+            warn "herdr missing — swarm will use tmux fallback (install: https://herdr.dev/docs/install/)"
+            passed=$((passed + 1))
+          fi
+        else
+          check_cmd "$cmd"
+        fi
+      fi
+    fi
+  done
+  # Additional swarm checks: agent-toolkit and opencode integration
+  if [[ ${MODE} != "json" && ${MODE} != "issue" ]]; then
+    if command -v agent-toolkit >/dev/null 2>&1; then
+      checks=$((checks + 1))
+      if agent-toolkit swarm doctor >/dev/null 2>&1; then
+        ok "agent-toolkit swarm doctor"
+        passed=$((passed + 1))
+      else
+        warn "agent-toolkit swarm doctor reported issues"
+        passed=$((passed + 1))
+      fi
+    fi
+    if command -v herdr >/dev/null 2>&1 && command -v opencode >/dev/null 2>&1; then
+      checks=$((checks + 1))
+      if herdr integration list --json 2>/dev/null | grep -q opencode; then
+        ok "herdr opencode integration"
+        passed=$((passed + 1))
+      else
+        warn "herdr opencode integration not installed — run: herdr integration install opencode"
+        passed=$((passed + 1))
+      fi
+    fi
+  fi
 fi
 
 if [[ ${MODE} == "issue" ]]; then

@@ -17,13 +17,13 @@
 profiles:
   technical:
     description: "Full developer stack (node, python, docker, AI, productivity skills)."
-    groups: [core, node, python, docker, ai, skills_jira, skills_confluence, skills_productivity]
+    groups: [core, node, python, docker, ai, skills_jira, skills_confluence, skills_productivity, swarm]
   non-technical:
     description: "Productivity + AI only, no language runtimes."
-    groups: [core, ai, skills_productivity]
+    groups: [core, ai, skills_productivity, swarm]
   ai:
     description: "AI agents and productivity tooling, no language runtimes."
-    groups: [core, ai, skills_productivity]
+    groups: [core, ai, skills_productivity, swarm]
   node:
     description: "Node.js developer stack."
     groups: [core, node, skills_productivity]
@@ -32,7 +32,7 @@ profiles:
     groups: [core, python, skills_productivity]
   data:
     description: "Data engineering stack (python + AI + JIRA/Confluence skills)."
-    groups: [core, python, ai, skills_jira, skills_confluence, skills_productivity]
+    groups: [core, python, ai, skills_jira, skills_confluence, skills_productivity, swarm]
   infra:
     description: "Infrastructure stack (docker + node + python)."
     groups: [core, docker, node, python, skills_productivity]
@@ -47,6 +47,9 @@ groups:
   core:
     always_on: true
     description: "Baseline CLI: ripgrep, fd, jq, git, shellcheck, etc."
+  swarm:
+    flag: install_group_swarm
+    description: "Agent Toolkit Swarms — tmux + Herdr (multi-agent orchestration)."
   node:
     flag: install_group_node
     description: "fnm + Node.js LTS + pnpm."
