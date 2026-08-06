@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 <!-- markdownlint-disable MD024 -->
 ## [Unreleased]
 
+## [1.6.0] — 2026-08-06
+
+### Added
+
+- **Agent Toolkit Swarms — tmux + Herdr provisioning** — Workstation now provisions Agent Toolkit Swarms dependencies: `tmux` + `Herdr` (brew→mise→`https://herdr.dev/install.sh` fallback) + `herdr integration install opencode` (idempotent). New installer `home/.chezmoiscripts/run_onchange_42-install-swarm-tooling.sh.tmpl`, profile group `swarm` (`install_group_swarm`) enabled for `technical`/`non-technical`/`ai`/`data` in `home/.chezmoidata/profiles.yaml` + questionnaire prompt `Install Agent Toolkit Swarms (tmux + Herdr)?` in `home/.chezmoi.toml.tmpl`, health checks in `home/dot_local/bin/executable_dots-doctor`, and docs `docs/SWARM_SETUP.md`, `docs/ARCHITECTURE.md`, `docs/AGENT_TOOLKIT.md`, `docs/PLATFORM_SUPPORT.md`, `docs/COMPATIBILITY.md` (`Workstation installs tools, Toolkit owns orchestration`).
+
 ### Added
 
 - **Muse Code support (Meta, https://developer.meta.com/ai/products/muse-code/)** — Muse Code is now a first-class AI tool. `muse` CLI installs via `dev.meta.ai/install.sh` (opt-in `install_agent_muse_code`), questionnaire prompt `muse`, and `~/.config/muse/skills/<name>` + `.agents/skills` (universal) per Agent Skills spec (`muse skills import --from claude`). New Chezmoi symlinks `home/dot_config/muse/skills/symlink_*.tmpl` (21 skills), `home/dot_local/bin/executable_dots-skills` `TOOL_DIRS[muse-code]`, `scripts/validate-skills.sh` (muse-code in REQUIRED_TOOLS), `scripts/generate-compatibility.py` (new column Muse Code), `scripts/install-skills.sh/.ps1` (`--tool muse`, `install_for_muse`), `scripts/release-artifacts.json` (dots-workstation-agents-muse), and docs `AI_LAYER.md`, `PLATFORM_SUPPORT.md`, `SKILLS.md`, `README.md`, `COMPATIBILITY.md`.
