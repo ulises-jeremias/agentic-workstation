@@ -25,10 +25,22 @@ for arg in "$@"; do
 done
 
 _c() { [[ -t 1 ]] && printf '\033[%sm%s\033[0m' "$1" "$2" || printf '%s' "$2"; }
-ok() { _c "1;32" "  ✓"; echo " $*"; }
-fail() { _c "1;31" "  ✗"; echo " $*"; }
-info() { _c "1;34" "  →"; echo " $*"; }
-warn() { _c "1;33" "  ⚠"; echo " $*"; }
+ok() {
+  _c "1;32" "  ✓"
+  echo " $*"
+}
+fail() {
+  _c "1;31" "  ✗"
+  echo " $*"
+}
+info() {
+  _c "1;34" "  →"
+  echo " $*"
+}
+warn() {
+  _c "1;33" "  ⚠"
+  echo " $*"
+}
 
 echo ""
 echo "Skill Manifest Validation (thin workstation)"
@@ -36,12 +48,12 @@ echo "-------------------------------------------"
 
 # Thin workstation: no embedded skills — delegate to agent-toolkit
 SKILL_COUNT=$(find "${SKILLS_DIR}" -name "skill.json" -print 2>/dev/null | wc -l | tr -d ' ')
-if [[ "$SKILL_COUNT" -eq 0 ]]; then
+if [[ $SKILL_COUNT -eq 0 ]]; then
   if command -v agent-toolkit >/dev/null 2>&1; then
     info "No embedded skills found — delegating to agent-toolkit"
     # Try toolkit's own validation if available; fall back to success
     if agent-toolkit --help 2>&1 | grep -qi "validate"; then
-      if [[ "$STRICT" == "true" ]]; then
+      if [[ $STRICT == "true" ]]; then
         exec agent-toolkit skills validate --strict 2>&1 || true
       else
         exec agent-toolkit skills validate 2>&1 || true
