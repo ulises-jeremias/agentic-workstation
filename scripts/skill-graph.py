@@ -69,11 +69,15 @@ def _satisfies(installed: str, constraint: str) -> bool:
 
 def _load_yaml(path: pathlib.Path) -> dict[str, Any]:
     if not path.exists():
+        # Thin workstation: catalog delegated to agent-toolkit — treat as empty
+        if "skill-catalog.yaml" in str(path):
+            print(f"[thin] catalog not found at {path} — delegated to agent-toolkit, treating as empty", file=sys.stderr)
+            return {"skills": []}
         print(f"File not found: {path}", file=sys.stderr)
         sys.exit(1)
     text = path.read_text(encoding="utf-8")
     if _YAML:
-        return yaml.safe_load(text)
+        return yaml.safe_load(text) or {}
     else:
         print("[warn] PyYAML not installed", file=sys.stderr)
         return {}
@@ -83,6 +87,9 @@ def load_catalog() -> dict[str, list[dict | str]]:
     """Return {skill_name: [dep_name_or_object, ...]} from skill-catalog.yaml."""
     data = _load_yaml(CATALOG_PATH)
     if not isinstance(data, dict) or "skills" not in data:
+        # Thin workstation: empty catalog is valid
+        if not data or data == {"skills": []}:
+            return {}
         print("Unexpected catalog format — expected {version, skills: [...]}", file=sys.stderr)
         sys.exit(1)
 

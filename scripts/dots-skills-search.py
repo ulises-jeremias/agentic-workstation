@@ -65,6 +65,9 @@ def load_skill_json(name: str) -> dict:
 
 def load_all_skills() -> list[dict]:
     """Load skill.json + catalog entry merged for every skill."""
+    # Thin workstation: skills are delegated to agent-toolkit via uv tool — no embedded catalog
+    if not SKILLS_DIR.exists() or not any(SKILLS_DIR.iterdir()):
+        return []
     catalog = {e["name"]: e for e in load_catalog()}
     skills = []
     for d in sorted(SKILLS_DIR.iterdir()):
@@ -316,8 +319,8 @@ def generate_index_content(skills: list[dict]) -> str:
 def cmd_generate_index() -> int:
     skills = load_all_skills()
     if not skills:
-        print("No skills found.", file=sys.stderr)
-        return 1
+        print("No embedded skills — thin workstation delegates to agent-toolkit.", file=sys.stderr)
+        return 0
     content = generate_index_content(skills)
     INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
     INDEX_PATH.write_text(content, encoding="utf-8")
@@ -328,8 +331,8 @@ def cmd_generate_index() -> int:
 def cmd_check_index() -> int:
     skills = load_all_skills()
     if not skills:
-        print("No skills found.", file=sys.stderr)
-        return 1
+        print("No embedded skills — thin workstation delegates to agent-toolkit.", file=sys.stderr)
+        return 0
     content = generate_index_content(skills)
     if INDEX_PATH.exists() and INDEX_PATH.read_text(encoding="utf-8") == content:
         print(f"  ✓ {INDEX_PATH.relative_to(REPO_ROOT)} is up to date ({len(skills)} skills)")
