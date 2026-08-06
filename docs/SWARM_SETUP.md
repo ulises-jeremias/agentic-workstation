@@ -54,7 +54,7 @@ agent-toolkit swarm start --recipe pair --ui herdr --runner opencode "Task"
 agent-toolkit swarm start --recipe pair --ui tmux --runner opencode "Task"
 ```
 
-See `agent-toolkit` docs: `docs/SWARMS.md`, `docs/SWARM_HERDR.md`, `docs/SWARM_TMUX.md`.
+See [`agent-toolkit` docs](https://github.com/ulises-jeremias/agent-toolkit) — swarm orchestration lives there (`agent-toolkit swarm --help`).
 
 ## Updates & Removal
 

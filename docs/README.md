@@ -31,6 +31,7 @@ User-facing setup belongs in the wiki. Technical design and maintainer contracts
 | [MULTI_AGENT_ORCHESTRATION.md](MULTI_AGENT_ORCHESTRATION.md) | Multi-agent runtime and persona constraints |
 | [REPOSITORY_GOVERNANCE.md](REPOSITORY_GOVERNANCE.md) | Change management and quality gates |
 | [SKILLS.md](SKILLS.md) | Skills schema, registry, publishing, compatibility |
+| [SWARM_SETUP.md](SWARM_SETUP.md) | Swarm provisioning — tmux + Herdr for Agent Toolkit Swarms |
 | [adrs/](adrs/) | Architecture Decision Records |
 
 ## User Guides
