@@ -40,7 +40,7 @@ Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CL
     <td width="33%" align="center">
       <br>
       <b>🧩 Skills System</b><br>
-      <sub>60 reusable skill packs via <a href="https://github.com/ulises-jeremias/agent-toolkit">agent-toolkit</a> — Jira, Confluence, ClickUp, Figma, GitHub, GitLab, Slack, dbt, Snowflake, Playwright, and more</sub>
+      <sub>60 reusable skill packs via <a href="https://github.com/ulises-jeremias/agent-toolkit">agent-toolkit</a> — ClickUp, Figma, GitHub, GitLab, Slack, dbt, Snowflake, Playwright, and more<br/><em>Jira (14) & Confluence (17) are opt-in third-party packs via <code>skills-external/</code> — <code>install_skill_jira_assistant=true</code> / <code>install_skill_confluence_assistant=true</code></em></sub>
     </td>
     <td width="33%" align="center">
       <br>

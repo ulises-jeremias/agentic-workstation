@@ -11,7 +11,7 @@ set -eo pipefail
 ## Commands:
 ##     list                 List installed skills and their status per AI tool.
 ##     sync                 Regenerate symlinks for all skills (reads skill.json compatibility).
-##     install-toolkit      Install or update agent-toolkit (pip install + agent-toolkit install).
+##     install-toolkit      Install or update agent-toolkit (uv tool install --force + agent-toolkit install).
 ##     install <name>       Install an npm-sourced skill from the registry.
 ##     check                Validate that required tools and pip packages are installed.
 ##     add <source>         Add an npm skill to the registry: npm:<pkg>.
@@ -19,7 +19,7 @@ set -eo pipefail
 ## Note: github and url skills are managed by chezmoi (.chezmoiexternal).
 ##       Enable them in chezmoi config and run: chezmoi apply
 ##
-## Note: The bulk of cross-domain skills (52 skills) come from agent-toolkit.
+## Note: The bulk of cross-domain skills (60 skills) come from agent-toolkit.
 ##       Use 'dots-skills install-toolkit' or 'chezmoi apply' to install/update them.
 ##
 ## Options:
