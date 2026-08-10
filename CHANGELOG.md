@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 <!-- markdownlint-disable MD024 -->
 ## [Unreleased]
 
+### Changed
+
+- **Thin-workstation cleanup — duplicate skills and `ui-ux-pro-max` removal** ([#197](https://github.com/ulises-jeremias/agentic-workstation/pull/197)) — `home/.chezmoidata/skills-registry.yaml` (and deployed `home/dot_local/share/agentic-workstation/skills-registry.yaml`) slimmed from 47 to **9** workstation-only entries; removed 16 cross-domain skills now in `agent-toolkit` (60 skills: `clickup-cli`, `github-cli-workflow`, `figma*`, `dbt-validation`, etc.), 21 `dots-workstation-*` delivery skills (`prd`, `trd`, `adr`, etc. → `agent-toolkit` `delivery/*`/`core/*`), and the third-party `ui-ux-pro-max` (`uipro-cli`) npm pack. Added `.chezmoiremove` on **every** target (`skills/`, `.claude/skills/`, `.agents/skills/`, `.config/muse/skills/`, `.config/opencode/skills/`, `.cursor/rules/`, `.windsurf/rules/`, `.pi/agent/skills/`) to delete legacy flat installs now at `skills-external/agent-toolkit/`. Updated docs `README.md` 52→60, `AGENTS.md` L1.5 52→60, `docs/SKILLS.md` thin tree + 60, `docs/AGENT_TOOLKIT.md` + `docs/ARCHITECTURE.md` 52→60 and new “Third-party boundary” (`plugins/` vs `skills-external/`), `docs/SKILL_INDEX.md` 21→20, `docs/COMPATIBILITY.md` regenerated thin, `docs/wiki/*` and `docs/AI_LAYER.md`. `home/.chezmoidata/profiles.yaml` `skills_productivity` drops `uipro-cli`.
+
 ## [1.6.0] — 2026-08-06
 
 ### Added

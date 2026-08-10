@@ -6,7 +6,7 @@
 <br>
 
 [![Layer](https://img.shields.io/badge/L1-Workstation%20Baseline-22d3ee?style=for-the-badge&labelColor=020617)](#personal-dx-stack)
-[![Skills](https://img.shields.io/badge/52%2B-AI%20Skill%20Packs-a78bfa?style=for-the-badge&labelColor=020617)](#what-you-get)
+[![Skills](https://img.shields.io/badge/60-AI%20Skill%20Packs-a78bfa?style=for-the-badge&labelColor=020617)](#what-you-get)
 [![MCP](https://img.shields.io/badge/MCP-Ready-84cc16?style=for-the-badge&labelColor=020617)](#what-you-get)
 [![CI](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/devcontainer-chezmoi-validate.yml?style=for-the-badge&label=CI&labelColor=020617&color=22d3ee)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/devcontainer-chezmoi-validate.yml)
 [![Discord](https://img.shields.io/discord/1527933660764831825?style=for-the-badge&label=Discord&logo=discord&logoColor=white&labelColor=020617)](https://discord.gg/bR5VyATgka)
@@ -40,7 +40,7 @@ Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CL
     <td width="33%" align="center">
       <br>
       <b>🧩 Skills System</b><br>
-      <sub>52 reusable skill packs via <a href="https://github.com/ulises-jeremias/agent-toolkit">agent-toolkit</a> — Jira, Confluence, ClickUp, Figma, GitHub, GitLab, Slack, dbt, Snowflake, Playwright, and more</sub>
+      <sub>60 reusable skill packs via <a href="https://github.com/ulises-jeremias/agent-toolkit">agent-toolkit</a> — Jira, Confluence, ClickUp, Figma, GitHub, GitLab, Slack, dbt, Snowflake, Playwright, and more</sub>
     </td>
     <td width="33%" align="center">
       <br>
@@ -78,7 +78,7 @@ Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CL
 
 ### Just want the AI skills?
 
-Add 52+ AI skill packs to your existing setup — powered by **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)**:
+Add 60 AI skill packs to your existing setup — powered by **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)**:
 
 ```bash
 # Option A: one-shot via uvx (no install required)

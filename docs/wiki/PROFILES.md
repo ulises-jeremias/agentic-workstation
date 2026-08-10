@@ -46,7 +46,7 @@ technical + ai + data → full data AI stack
 | `node` | `install_group_node` | fnm + Node.js LTS + pnpm |
 | `python` | `install_group_python` | Python + uv + pipx |
 | `docker` | `install_group_docker` | Docker CLI |
-| `skills_productivity` | `install_group_skills_productivity` | Productivity CLIs (clickup, slack, rtk, uipro-cli) |
+| `skills_productivity` | `install_group_skills_productivity` | Productivity CLIs (clickup, slack, rtk) |
 
 > **Workstation installs tools, Toolkit owns orchestration.** Workstation ensures `tmux` + `Herdr` (+ `herdr integration install opencode`) exist; Toolkit owns `agent-toolkit swarm doctor` and `agent-toolkit swarm start --recipe pair --ui herdr|tmux --runner opencode`.
 
