@@ -41,7 +41,7 @@ agentic-workstation is the **thin L1 machine-provisioning layer**. It sources ca
 | Tool profiles | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) |
 | Prompts and packs | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) |
 
-See [docs/AGENT_TOOLKIT.md](docs/AGENT_TOOLKIT.md) for the full thin-workstation integration reference and the architecture diagram.
+See [docs/AGENT_TOOLKIT.md](docs/AGENT_TOOLKIT.md) for the full thin-workstation integration reference and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the architecture diagram.
 
 ## Scope
 
