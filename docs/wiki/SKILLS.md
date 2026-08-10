@@ -33,9 +33,9 @@ Each skill contains:
 
 ---
 
-## Best Practices and Assessment Skills
+## Best Practices and Assessment Skills (delegated to agent-toolkit)
 
-The bundled Best Practices skills are intentionally atomic. The orchestrator loads the smallest skill needed instead of one large process document.
+Best-practice delivery skills are intentionally atomic and now live in [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) (delivery domain). The orchestrator loads the smallest skill needed instead of one large process document.
 
 ### Output handshake
 
@@ -50,12 +50,14 @@ This applies to PRDs, TRDs, ADRs, work items, meeting minutes, assessment report
 
 Project assessments use four skills:
 
-| Skill | Role |
-|-------|------|
-| `dots-workstation-project-assessment` | Defines assessment purpose, period, audience, units, findings, and action plan |
-| `dots-workstation-project-assessment-evidence` | Asks where evidence lives and tracks source quality, freshness, missing evidence, assumptions, and confidence |
-| `dots-workstation-technical-unit-assessment` | Scores technical workloads: repositories, frontend, backend, infrastructure, data, UI/UX, and AI-native structural readiness |
-| `dots-workstation-management-unit-assessment` | Scores management scope: governance, delivery, collaboration, culture, and AI-native management readiness |
+| Skill | Role | Source |
+|-------|------|--------|
+| `project-assessment` | Defines assessment purpose, period, audience, units, findings, and action plan | `agent-toolkit` |
+| `project-assessment-evidence` | Asks where evidence lives and tracks source quality, freshness, missing evidence, assumptions, and confidence | `agent-toolkit` |
+| `technical-unit-assessment` | Scores technical workloads: repositories, frontend, backend, infrastructure, data, UI/UX, and AI-native structural readiness | `agent-toolkit` |
+| `management-unit-assessment` | Scores management scope: governance, delivery, collaboration, culture, and AI-native management readiness | `agent-toolkit` |
+
+> Workstation previously shipped these as `dots-workstation-*` — now delegated to `agent-toolkit`. Use `agent-toolkit` names above.
 
 The assistant must not score indicators without evidence. If evidence is unavailable, it should mark the indicator as missing evidence, not assessed, or low confidence with the assumption clearly stated.
 
@@ -65,7 +67,7 @@ End-to-end assessment:
 
 ```text
 User: Run a project assessment for this engagement.
-Assistant: I will use dots-workstation-project-assessment. Where should the final report live, and who will review it?
+Assistant: I will use project-assessment (via agent-toolkit). Where should the final report live, and who will review it?
 User: Put the draft in docs/assessment.md. I will review it.
 Assistant: What period and units should be assessed? Should this cover management, technical units, or both?
 User: Last quarter, both. Backend and data pipelines are in scope.
@@ -76,14 +78,14 @@ Technical-only assessment:
 
 ```text
 User: Assess the cloud infrastructure and CI/CD maturity.
-Assistant: I will use dots-workstation-project-assessment-evidence and dots-workstation-technical-unit-assessment. Where are the IaC repo, pipeline history, deployment docs, monitoring dashboards, security scans, and incident records?
+Assistant: I will use project-assessment-evidence and technical-unit-assessment (via agent-toolkit). Where are the IaC repo, pipeline history, deployment docs, monitoring dashboards, security scans, and incident records?
 ```
 
 Management-only assessment:
 
 ```text
 User: Review governance and delivery health.
-Assistant: I will use dots-workstation-project-assessment-evidence and dots-workstation-management-unit-assessment. Where are the board, backlog, planning notes, retrospectives, risks, delivery reports, decisions, agreements, and stakeholder feedback?
+Assistant: I will use project-assessment-evidence and management-unit-assessment (via agent-toolkit). Where are the board, backlog, planning notes, retrospectives, risks, delivery reports, decisions, agreements, and stakeholder feedback?
 ```
 
 Missing evidence:
@@ -111,11 +113,11 @@ Assistant: I can inspect the repository, but observability scoring also needs da
 
 ---
 
-## Skill lifecycle
+## Skill lifecycle (thin workstation)
 
-1. Skills are defined in `home/dot_local/share/agentic-workstation/skills/`
-2. `chezmoi apply` deploys them to `~/.local/share/agentic-workstation/skills/`
-3. `dots-skills sync` reads each `skill.json` and creates symlinks to supported AI tools
+1. Workstation-specific skills are defined in `home/dot_local/share/agentic-workstation/skills/`; cross-domain skills (60) are provided by `agent-toolkit` at `skills-external/agent-toolkit/` via `uv tool install --force agent-toolkit-cli && agent-toolkit install`
+2. `chezmoi apply` deploys workstation skills to `~/.local/share/agentic-workstation/skills/` and triggers `agent-toolkit install` for the cross-domain catalog
+3. `dots-skills sync` (or delegated `agent-toolkit install`) reads each `skill.json`/`SKILL.md` and creates symlinks to supported AI tools
 4. AI tools load `SKILL.md` at startup
 
 ---

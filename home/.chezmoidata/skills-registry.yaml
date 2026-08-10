@@ -34,6 +34,7 @@ skills:
   - name: dots-workstation-workflow-generic-project
     source: bundled
     enabled: true
+    # depends_on: github-cli-workflow and output-handshake now via agent-toolkit (60 skills) — delegated, not bundled
 
   - name: dots-workstation-dev-companion
     source: bundled

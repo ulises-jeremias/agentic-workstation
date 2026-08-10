@@ -37,8 +37,8 @@ flowchart LR
     end
 
     subgraph Store["Skill Store"]
-        S1["~/.local/share/agentic-workstation/skills/"]
-        S2["~/.local/share/agentic-workstation/skills-external/"]
+        S1["~/.local/share/agentic-workstation/skills/<br/>(workstation-only)"]
+        S2["~/.local/share/agentic-workstation/skills-external/<br/>agent-toolkit/ + jira/confluence + npm"]
     end
 
     subgraph Sync["dots-skills sync"]
@@ -54,9 +54,9 @@ flowchart LR
         T6["~/.agents/skills/ (universal)"]
     end
 
-    AT --> CA --> ATI --> S1
+    AT --> ATI --> S2
     B --> CA --> S1
-    N --> NS --> S1
+    N --> NS --> S2
     G --> CA --> S2
     S1 --> SJ
     S2 --> SJ
@@ -223,14 +223,21 @@ Known tool keys:
 
 ```yaml
 skills:
-  # Bundled: installed by chezmoi source state
-  - name: clickup-cli
+  # Bundled: workstation-specific orchestration (only these remain bundled)
+  - name: dots-workstation-assistant
     source: bundled
     enabled: true
 
   - name: workflow-generic-project
     source: bundled
     enabled: true
+    # NOTE: workflow-generic-project is a DEPRECATED alias (enabled: false in registry);
+    # prefer dots-workstation-workflow-generic-project.
+
+  # Cross-domain skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
+  # are NOT registered here — they are provided by agent-toolkit (60 skills) via
+  # `uv tool install --force agent-toolkit-cli && agent-toolkit install` at
+  # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
 
   # npm: third-party skills (installed via dots-skills add npm:<pkg> — none bundled after ui-ux-pro-max removal)
 
@@ -396,7 +403,7 @@ chezmoi apply         # downloads pack via chezmoiexternal + installs jira-as + 
 ```
 dots-skills list                 List installed skills and their status per AI tool
 dots-skills sync                 Regenerate symlinks (reads skill.json or defaults to all tools)
-dots-skills install-toolkit      Install or update agent-toolkit (pip install + agent-toolkit install)
+dots-skills install-toolkit      Install or update agent-toolkit (uv tool install --force + agent-toolkit install)
 dots-skills install <name>       Install an npm-sourced skill from the registry
 dots-skills check                Validate required CLI tools and pip packages for each skill
 dots-skills add npm:<pkg>        Add an npm skill to the registry

@@ -1,76 +1,32 @@
 # Skill Index
 
-> Auto-generated from `skill-catalog.yaml` and `skill.json` manifests.
-> Run `python3 scripts/dots-skills-search.py generate-index` to regenerate.
->
-> 20 skills indexed.
+> Thin workstation — skill catalog is delegated to [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit).
+> No embedded `skill.json` manifests are shipped in this repository.
+> Run `agent-toolkit skills list` at runtime to list the 60 cross-domain skills,
+> or see [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for the full catalog reference.
 
-## Workflow
+> To regenerate from the toolkit catalog, ensure `agent-toolkit` is installed and run:
+> `agent-toolkit skills list` or `python3 scripts/dots-skills-search.py generate-index` (thin placeholder).
 
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `workflow-client-bootstrap` | DEPRECATED alias. Use dots-workstation-workflow-client-bootstrap inste | `universal`, `claude-code`, `windsurf`, `pi` |
-| `workflow-generic-project` | DEPRECATED alias. Use dots-workstation-workflow-generic-project instea | `universal`, `claude-code`, `windsurf`, `pi` |
+## Thin-workstation skills (workstation-specific only)
 
-## Other
+| Skill | Purpose |
+|-------|---------|
+| `dots-workstation-assistant` | Workspace orchestration and routing |
+| `dots-workstation-triage` | Workstation health triage |
+| `dots-workstation-dev-companion` | Dev companion delivery layer |
+| `dots-workstation-workflow-generic-project` | Generic project delivery phases |
+| `dots-workstation-workflow-client-bootstrap` | Client bootstrap workflow |
+| `dots-slack-assistant` | Slack workspace ops |
+| `dots-harness-knowledge-sync` | Session knowledge persistence |
 
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `gh-contribution-planner` | Daily GitHub contribution planner — analyzes the gh-logged-in user's n | `claude-code`, `opencode`, `cursor`, `windsurf`, `copilot-cli`, `pi` |
+> All other cross-domain skills (60 skills across 9 domains — `delivery`, `forge`, `integrations`, `data`, `tooling`, etc.)
+> are provided by `agent-toolkit` via `uv tool install --force agent-toolkit-cli && agent-toolkit install`
+> and installed at `~/.local/share/agentic-workstation/skills-external/agent-toolkit/`.
+> Third-party packs (JIRA 14, Confluence 17) live in `skills-external/{jira,confluence}-assistant/` and never in `plugins/`.
 
-## Clickup
+## See Also
 
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `clickup-cli` | ClickUp CLI for managing tasks, sprints, comments, statuses, and Docs. | `universal`, `claude-code`, `windsurf`, `pi` |
-
-## Data
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `dbt-validation` | HOW: dbt parse/compile/test/run per repo docs; boundaries on Snowflake | `universal`, `claude-code`, `windsurf`, `pi` |
-| `snowflake-validation` | HOW: read-only Snowflake checks per repo; explicit skip when creds mis | `universal`, `claude-code`, `windsurf`, `pi` |
-
-## Slack
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `dots-slack-assistant` | Interact with Slack workspaces for reading channels/messages, sending  | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-| `slack-cli` | Interact with the official Slack CLI to create, run, deploy, and manag | `universal`, `claude-code`, `windsurf`, `pi` |
-
-## Figma
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `figma` | Entry-point skill for the Figma MCP family: design context, screenshot | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-| `figma-code-connect-components` | Connects Figma design components to code components using the Figma MC | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-| `figma-create-design-system-rules` | Generates project-specific design system rules (AGENTS.md / CLAUDE.md  | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-| `figma-create-new-file` | Creates a new Figma file (page setup, defaults) via the Figma MCP serv | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-| `figma-implement-design` | Translates Figma designs into production-ready application code with 1 | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-
-## Forge
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `gh-address-comments` | Triage and address open GitHub PR review and conversation comments usi | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-| `gh-fix-ci` | Diagnose failing GitHub Actions checks on a PR via gh, summarize failu | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-| `github-cli-workflow` | HOW: gh push/draft PR with body file; untracked PR_DESCRIPTION fallbac | `universal`, `claude-code`, `windsurf`, `pi` |
-| `gitlab-cli-workflow` | HOW: glab draft MR creation; verify flags via glab help; untracked mar | `universal`, `claude-code`, `windsurf`, `pi` |
-
-## Rd
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `jupyter-notebook` | Scaffold and refactor reproducible Jupyter notebooks for experiments a | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-
-## Linear
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `linear` | Manage Linear issues, projects and cycles through the Linear MCP serve | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-
-## Testing
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `playwright-cli` | Drive a real browser from the terminal using the Playwright CLI (snaps | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
+- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — full capability catalog (60 skills, 16 agents, 10 loops)
+- [SKILLS.md](SKILLS.md) — skill system and lifecycle (thin workstation)
+- [ARCHITECTURE.md](ARCHITECTURE.md) — thin workstation architecture

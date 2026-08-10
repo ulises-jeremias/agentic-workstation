@@ -49,7 +49,7 @@ graph LR
 | Skills | 60 (9 domains) | code-review, github-cli-workflow, jira, confluence, dbt-validation |
 | Agent personas | 16 | architect, planner, code-reviewer, security-reviewer, tdd-guide |
 | Loop templates | 10 | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
-| Tool profiles | 6 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
+| Tool profiles | 7 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
 | MCP templates | 6 | github, slack, notion, linear, figma, clickup |
 | Solution packs | 3 | oss-maintenance, engineering-workflow, delivery-discipline |
 | Prompts | — | clickup-cli, engineering-review, pr-fallback |
