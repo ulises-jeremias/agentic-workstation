@@ -77,7 +77,7 @@ Project-level assistant templates live in `home/.chezmoitemplates/agents/` and i
 
 Interactive `chezmoi init` captures user choices for:
 
-- AI agent CLIs (ClickUp, Slack, rtk, uipro, Claude Code, OpenCode, pi, Copilot CLI extension)
+- AI agent CLIs (ClickUp, Slack, rtk, Claude Code, OpenCode, pi, Copilot CLI extension)
 - Editor installation (VSCode, Cursor)
 - VSCode extension installation (including Claude Code extension)
 

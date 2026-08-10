@@ -70,7 +70,7 @@ groups:
     description: "Confluence Assistant skill pack (17 skills)."
   skills_productivity:
     flag: install_group_skills_productivity
-    description: "Productivity CLIs: clickup, slack, rtk, uipro-cli."
+    description: "Productivity CLIs: clickup, slack, rtk."
 
 # VSCode extension sets
 vscode_extension_sets:

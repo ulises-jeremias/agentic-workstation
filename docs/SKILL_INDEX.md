@@ -3,7 +3,7 @@
 > Auto-generated from `skill-catalog.yaml` and `skill.json` manifests.
 > Run `python3 scripts/dots-skills-search.py generate-index` to regenerate.
 >
-> 21 skills indexed.
+> 20 skills indexed.
 
 ## Workflow
 
@@ -74,9 +74,3 @@
 | Skill | Description | Tools |
 |-------|-------------|-------|
 | `playwright-cli` | Drive a real browser from the terminal using the Playwright CLI (snaps | `universal`, `claude-code`, `opencode`, `cursor`, `windsurf`, `pi` |
-
-## Ui
-
-| Skill | Description | Tools |
-|-------|-------------|-------|
-| `ui-ux-pro-max` | UI/UX design intelligence. 67 styles, 96 palettes, 57 font pairings, 2 | `universal`, `claude-code`, `windsurf`, `pi` |

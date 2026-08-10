@@ -15,30 +15,21 @@ Each skill contains:
 
 ---
 
-## Bundled skills
+## Bundled skills (thin workstation — workstation-only)
 
-| Skill | Purpose |
-|-------|---------|
-| `dots-workstation-assistant` | Workspace orchestration and routing |
-| `dots-workstation-dev-companion` | General dev companion delivery layer |
-| Workspace pack overlays | Client/account overlays |
-| `dots-workstation-workflow-generic-project` | Generic project delivery phases |
-| `dev-assistant` | Repository inspection and discovery |
-| `dev-companion` | Delivery workflow pattern |
-| `github-cli-workflow` | GitHub PR creation |
-| `gitlab-cli-workflow` | GitLab MR creation |
-| `dbt-validation` | dbt parse/compile/test |
-| `snowflake-validation` | Read-only Snowflake checks |
-| `clickup-cli` | ClickUp task management |
-| `slack-cli` | Slack CLI for app development |
-| `ui-ux-pro-max` | UI/UX design intelligence |
-| `dots-harness-knowledge-sync` | Session knowledge persistence |
-| `dots-workstation-output-handshake` | Required gate for final deliverables: destination + human review |
-| `dots-workstation-prd`, `dots-workstation-trd`, `dots-workstation-adr` | Product, technical, and architecture decision artifacts |
-| `dots-workstation-planning`, `dots-workstation-development-workflow` | Planning, estimation, workflow, DoR, DoD, and validation defaults |
-| `dots-workstation-work-item`, `dots-workstation-epic`, `dots-workstation-user-story`, `dots-workstation-task`, `dots-workstation-bug`, `dots-workstation-incident` | Work item templates and routing |
-| `dots-workstation-meeting-minutes`, `dots-workstation-decision-log`, `dots-workstation-agreement`, `dots-workstation-spike` | Meeting, decision, agreement, and research artifacts |
-| `dots-workstation-project-assessment`, `dots-workstation-project-assessment-evidence`, `dots-workstation-technical-unit-assessment`, `dots-workstation-management-unit-assessment` | Interactive project assessments, evidence maps, and unit scorecards |
+| Skill | Purpose | Source |
+|-------|---------|--------|
+| `dots-workstation-assistant` | Workspace orchestration and routing | workstation (L1) |
+| `dots-workstation-dev-companion` | General dev companion delivery layer | workstation (L1) |
+| `dots-workstation-workflow-generic-project` | Generic project delivery phases | workstation (L1) |
+| `dots-workstation-workflow-client-bootstrap` | Client bootstrap workflow | workstation (L1) |
+| `dots-workstation-triage` | Workstation health triage | workstation (L1) |
+| `dots-slack-assistant` | Slack workspace ops | workstation (L1) |
+| `dots-harness-knowledge-sync` | Session knowledge persistence | workstation (L1) |
+| Workspace pack overlays | Client/account overlays | workstation (L1) |
+| *All other cross-domain skills* (60: `delivery/prd`, `figma*`, `github-cli-workflow`, `dbt-validation`, etc.) | Delegated to `agent-toolkit` (L1.5) | `uv tool install --force agent-toolkit-cli && agent-toolkit install` |
+
+> **Thin boundary:** cross-domain skills (`clickup-cli`, `github-cli-workflow`, `figma*`, `dbt-validation`, `slack-cli`, `linear`, etc.) and best-practice artifacts (`prd`, `trd`, `adr`, `planning`, `project-assessment`) are now in `agent-toolkit` and cleaned via `.chezmoiremove`. Third-party packs (JIRA 14, Confluence 17) live in `skills-external/` and never in `plugins/`.
 
 ---
 

@@ -5,7 +5,7 @@ This document describes the agentic-workstation skill system — how skills are 
 > [!IMPORTANT]
 > **Skills are now distributed via [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit).**
 > agentic-workstation provisions your machine. agent-toolkit provides the capability library
-> (52 skills, 16 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
+> (60 skills, 16 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
 > the integration details.
 >
 > **Quick install:**
@@ -85,29 +85,8 @@ The bundled **dots-workstation-assistant** skill is the **agentic-workstation As
 ## Directory structure
 
 ```
-~/.local/share/agentic-workstation/skills/           # Bundled skills (managed by chezmoi)
+~/.local/share/agentic-workstation/skills/           # Workstation-specific (thin) — only orchestration
 │   skill-catalog.yaml                   # Routing metadata (WHAT/HOW, triggers, depends_on)
-│   clickup-cli/
-│   │   SKILL.md
-│   │   skill.json
-│   slack-cli/
-│   │   SKILL.md
-│   │   skill.json
-│   │   references/
-│   github-cli-workflow/
-│   gitlab-cli-workflow/
-│   dbt-validation/
-│   snowflake-validation/
-│   dots-workstation-workflow-generic-project/
-│   dots-workstation-workflow-client-bootstrap/
-│   dots-workstation-dev-companion/
-│   dots-slack-assistant/
-│   dots-harness-knowledge-sync/
-│   ui-ux-pro-max/
-│   │   SKILL.md
-│   │   skill.json
-│   │   scripts/
-│   │   data/
 │   dots-workstation-triage/
 │   │   SKILL.md
 │   │   skill.json
@@ -118,6 +97,15 @@ The bundled **dots-workstation-assistant** skill is the **agentic-workstation As
 │   │       REPO_INSPECTION.md
 │   │       ORCHESTRATION.md
 │   │       AGENTS_TEMPLATE.md
+│   dots-workstation-workflow-generic-project/
+│   dots-workstation-dev-companion/
+│   dots-workstation-workflow-client-bootstrap/
+│   dots-slack-assistant/
+│   dots-harness-knowledge-sync/
+│
+│   # Cross-domain skills (clickup-cli, github-cli-workflow, figma*, dbt-validation,
+│   # etc.) are NOT here — they live in agent-toolkit (60 skills) at
+│   # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
 
 ~/.local/share/agentic-workstation/dev-companion/    # Optional queue + worker (see README.md)
 ~/.local/share/agentic-workstation/third-party/      # Small attributed third-party excerpts (e.g. everything-claude-code)
@@ -146,9 +134,9 @@ Skills can come from five sources, using three different installation mechanisms
 
 | Source | Mechanism | Example |
 |--------|-----------|---------|
-| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 52 cross-domain skills |
-| `bundled` | chezmoi source state | `dots-workstation-triage`, `dots-workstation-assistant` |
-| `npm` | `dots-skills install` | `uipro-cli` (ui-ux-pro-max) |
+| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 60 cross-domain skills |
+| `bundled` | chezmoi source state | `dots-workstation-triage`, `dots-workstation-assistant` (workstation-only) |
+| `npm` | `dots-skills install` | third-party npm packs (none bundled by default) |
 | `github` | **chezmoi `.chezmoiexternal`** | `ulises-jeremias/JIRA-Assistant-Skills` |
 | `url` | **chezmoi `.chezmoiexternal`** | `https://example.com/skill.tar.gz` |
 
@@ -244,11 +232,7 @@ skills:
     source: bundled
     enabled: true
 
-  # npm: installed by dots-skills install
-  - name: ui-ux-pro-max
-    source: npm
-    package: uipro-cli
-    enabled: true
+  # npm: third-party skills (installed via dots-skills add npm:<pkg> — none bundled after ui-ux-pro-max removal)
 
   # github/url → see .chezmoiexternal.toml.tmpl
 ```
@@ -420,7 +404,7 @@ dots-skills add npm:<pkg>        Add an npm skill to the registry
 
 > **Note**: `github` and `url` skills are now managed by chezmoi (`.chezmoiexternal`), not by `dots-skills install`. Run `chezmoi apply` instead.
 >
-> **Note**: The bulk of cross-domain skills (52 skills across 9 domains) come from `agent-toolkit`. Use `dots-skills install-toolkit` or `chezmoi apply` to install/update them.
+> **Note**: The bulk of cross-domain skills (60 skills across 9 domains) come from `agent-toolkit`. Use `dots-skills install-toolkit` or `chezmoi apply` to install/update them. Third-party npm/github packs are intentionally **not** in agent-toolkit’s `plugins/` — workstation owns them via `skills-external/` (see `docs/AGENT_TOOLKIT.md` “Third-party boundary”).
 
 ### `dots-skills list`
 
@@ -428,10 +412,10 @@ Shows all discovered skills with their source and symlink status per AI tool:
 
 ```
 NAME                SOURCE   VERSION    claude-code    copilot-cli    cursor
-clickup-cli    bundled  1.0.0      ✓ linked       ✓ linked       ✓ linked
+dots-workstation-assistant  bundled  2.1.3      ✓ linked       ✓ linked       ✓ linked
 jira-admin          external ?          ✓ linked       ✓ linked       ✓ linked
 jira-agile          external ?          ✓ linked       ✓ linked       ✓ linked
-ui-ux-pro-max       npm      1.0.0      ✓ linked       ✓ linked       ✓ linked
+# (clickup-cli, figma*, etc. now via agent-toolkit — not listed here)
 ```
 
 ### `dots-skills sync`

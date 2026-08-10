@@ -17,7 +17,7 @@ graph LR
     end
 
     subgraph "agent-toolkit (L1.5)"
-        AT["52 skills / 9 domains<br/>16 agent personas<br/>10 loop templates<br/>6 tool profiles<br/>6 MCP templates<br/>3 solution packs"]
+        AT["60 skills / 9 domains<br/>16 agent personas<br/>10 loop templates<br/>6 tool profiles<br/>6 MCP templates<br/>3 solution packs"]
     end
 
     subgraph "AI tools"
@@ -46,27 +46,27 @@ graph LR
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Skills | 52 (9 domains) | code-review, github-cli-workflow, jira, confluence, dbt-validation |
+| Skills | 60 (9 domains) | code-review, github-cli-workflow, jira, confluence, dbt-validation |
 | Agent personas | 16 | architect, planner, code-reviewer, security-reviewer, tdd-guide |
 | Loop templates | 10 | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
 | Tool profiles | 6 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
 | MCP templates | 6 | github, slack, notion, linear, figma, clickup |
 | Solution packs | 3 | oss-maintenance, engineering-workflow, delivery-discipline |
-| Prompts | — | clickup-cli, engineering-review, ui-ux-pro-max |
+| Prompts | — | clickup-cli, engineering-review, pr-fallback |
 
 ### Skill domains
 
 | Domain | Skills | Key examples |
 |--------|--------|-------------|
 | `core` | 8 | memory, planning, context injection, session bootstrap |
-| `delivery` | 9 | code-review, github-cli-workflow, gh-fix-ci, pr-fallback, commit |
-| `design` | 6 | ui-ux-pro-max, figma-implement-design, design-system-rules |
-| `forge` | 7 | feature-dev, tdd, refactor-cleaner, simplify, code-connect |
-| `integrations` | 8 | jira, confluence, slack, linear, clickup, notion |
-| `data` | 5 | dbt-validation, snowflake-validation, pipeline-review |
-| `tooling` | 6 | git-worktrees, docker, ci-cd, env-setup, keybindings |
-| `ops` | 3 | incident, security-review, performance-optimizer |
-| `loops` | 10 | oss-pr-monitor, oss-triage, ci-sweeper, changelog-drafter |
+| `delivery` | 21 | prd, trd, adr, planning, epic, task, bug, incident, assessment |
+| `design` | 5 | figma-implement-design, figma-code-connect, design-system-rules |
+| `forge` | 8 | github-cli-workflow, gitlab-cli-workflow, gh-fix-ci, gh-address-comments |
+| `integrations` | 5 | slack-cli, slack-assistant, linear, clickup-cli, mcp |
+| `data` | 2 | dbt-validation, snowflake-validation |
+| `tooling` | 4 | jupyter-notebook, playwright-cli, herdr, inventory |
+| `ops` | 6 | triage, docs-generator, swarm, llm-cost-advisor |
+| `loops` | 1 | loop-runner |
 
 ---
 
@@ -165,7 +165,7 @@ See [SWARM_SETUP.md](SWARM_SETUP.md) for complete provisioning, questionnaire, a
 
 | Source | Install mechanism | Location | Examples |
 |--------|------------------|----------|---------|
-| **agent-toolkit** | `uv tool install --force agent-toolkit-cli && agent-toolkit install` | `~/.local/share/agentic-workstation/skills-external/agent-toolkit/` | 52 cross-domain skills, catalog via SKILL.md |
+| **agent-toolkit** | `uv tool install --force agent-toolkit-cli && agent-toolkit install` | `~/.local/share/agentic-workstation/skills-external/agent-toolkit/` | 60 cross-domain skills, catalog via SKILL.md |
 
 > [!IMPORTANT]
 > **No bundled skills are shipped in this repository.** The `home/dot_local/share/agentic-workstation/skills/` directory is intentionally empty (placeholder README only). All capabilities come from `agent-toolkit`. Workstation-only runner logic lives in `home/dot_local/share/agentic-workstation/dev-companion/runner`.
@@ -193,6 +193,12 @@ dots-devcompanion llm-status    # verify policy — never invokes a model
 ```
 
 See [`docs/DEV_COMPANION_LLM.md`](DEV_COMPANION_LLM.md) for the full policy reference.
+
+---
+
+## Third-party boundary — plugins vs skills-external
+
+> **Rule: third-party never to `plugins/`** — external npm / github / url packs (JIRA 14, Confluence 17, future `uipro-cli`-like) live in `skills-external/*` via `chezmoiexternal` + `dots-skills sync` and are **never** compiled into `agent-toolkit` marketplace `plugins/` (`distributions/products.yaml` is first-party-only). Workstation owns their opt-in lifecycle (`install_skill_*=true` → `chezmoi apply --refresh-externals`). Toolkit remains vendor-neutral public (per `agent-toolkit/AGENTS.md:81`, `docs/TRUST.md`). See `docs/SKILLS.md` “Skill sources”.
 
 ---
 
