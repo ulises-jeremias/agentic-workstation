@@ -707,7 +707,7 @@ if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_SWARM} == true ]]; then
     if [[ ${MODE} == "issue" ]]; then
       # Swarm cmds are optional: warn not fail when missing
       if ! command -v "$cmd" >/dev/null 2>&1; then
-        printf -- "- [ ] \`%s\` — **missing (swarm optional — install tmux/herdr)**\\n" "$cmd"
+        printf -- '- [ ] `%s` — **missing (swarm optional — install tmux/herdr)**\n' "$cmd"
       else
         check_cmd_issue "$cmd"
       fi
@@ -723,7 +723,7 @@ if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_SWARM} == true ]]; then
       # Human mode: show but don't fail workstation if swarm tools missing when swarm disabled? Swarm group enabled => must pass
       if [[ ${DOTS_WORKSTATION_DOCTOR_GROUP_SWARM} == true ]]; then
         # When swarm enabled, herdr is optional (tmux fallback)
-        if [[ "$cmd" == "herdr" ]]; then
+        if [[ $cmd == "herdr" ]]; then
           checks=$((checks + 1))
           if command -v herdr >/dev/null 2>&1; then
             ok "herdr available ($(herdr --version 2>/dev/null | head -n1))"
