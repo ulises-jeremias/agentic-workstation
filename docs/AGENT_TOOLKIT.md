@@ -17,7 +17,7 @@ graph LR
     end
 
     subgraph "agent-toolkit (L1.5)"
-        AT["60 skills / 9 domains<br/>16 agent personas<br/>10 loop templates<br/>6 tool profiles<br/>6 MCP templates<br/>3 solution packs"]
+        AT["77 skills / 9 domains<br/>17 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>6 MCP templates<br/>7 solution packs"]
     end
 
     subgraph "AI tools"
@@ -46,12 +46,12 @@ graph LR
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Skills | 60 (9 domains) | code-review, github-cli-workflow, jira, confluence, dbt-validation |
-| Agent personas | 16 | architect, planner, code-reviewer, security-reviewer, tdd-guide |
+| Skills | 77 (9 domains) | code-review, github-cli-workflow, jira, confluence, dbt-validation |
+| Agent personas | 17 | architect, planner, code-reviewer, security-reviewer, tdd-guide, agentic-security-reviewer |
 | Loop templates | 10 | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
 | Tool profiles | 7 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
-| MCP templates | 6 | github, slack, notion, linear, figma, clickup |
-| Solution packs | 3 | oss-maintenance, engineering-workflow, delivery-discipline |
+| MCP templates | 7 | github, slack, notion, linear, figma, clickup, chrome-devtools |
+| Solution packs | 7 | oss-maintenance, engineering-workflow, delivery-discipline, agentic-security, architecture, code-quality, design-engineering |
 | Prompts | — | clickup-cli, engineering-review, pr-fallback |
 
 ### Skill domains
