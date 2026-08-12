@@ -1,6 +1,8 @@
 #!/bin/sh
-# agentic-workstation Skills Installer
-# Downloads and installs agentic-workstation AI skills and agents into the correct directories.
+# agentic-workstation Skills Installer — DEPRECATED (thin workstation)
+# This script now delegates to `agent-toolkit install` (see docs/AGENT_TOOLKIT.md).
+# Prefer: uv tool install --force agent-toolkit-cli && agent-toolkit install
+# Legacy: Downloads and installs agentic-workstation AI skills and agents into the correct directories.
 # Compatible with: macOS, Linux, WSL2 (Windows)
 #
 # Usage:
@@ -25,6 +27,13 @@
 # github.com/releases/download URL.
 
 set -eu
+
+# Thin workstation: delegate to agent-toolkit if available
+if command -v agent-toolkit >/dev/null 2>&1; then
+  echo "[install-skills.sh] DEPRECATED — delegating to 'agent-toolkit install' (thin workstation)" >&2
+  echo "[install-skills.sh] Run: uv tool install --force agent-toolkit-cli && agent-toolkit install" >&2
+  exec agent-toolkit install "$@"
+fi
 
 GITHUB_REPO="ulises-jeremias/agentic-workstation"
 RELEASE_BASE="https://github.com/${GITHUB_REPO}/releases/latest/download"

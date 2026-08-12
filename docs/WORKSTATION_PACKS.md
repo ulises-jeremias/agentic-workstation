@@ -4,9 +4,13 @@ Thin workstation pack selection — `agentic-workstation` provisions, `agent-too
 
 ## Pack selection UX
 
-Packs are declared in chezmoi data or `~/.config/agentic-workstation/packs.yaml`:
+Packs are **docs-only** curated workflow groupings per `agent-toolkit` ADR-0003 (`packs/` → `loops:` advisory, `distributions/products.yaml` → install).
+Workstation does not install packs via `agent-toolkit install --pack`; it documents which packs to reference.
+
+Declare the packs you use in chezmoi data or `~/.config/agentic-workstation/packs.yaml` as guidance:
 
 ```yaml
+# ~/.config/agentic-workstation/packs.yaml — guidance only (not consumed by `agent-toolkit install`)
 packs:
   - architecture
   - design-engineering
@@ -14,31 +18,32 @@ packs:
   - agentic-security
 ```
 
-`run_once_after_50-install-agent-toolkit.sh.tmpl` runs:
+`run_once_after_50-install-agent-toolkit.sh.tmpl` runs the thin-workstation install:
 
 ```bash
 uv tool install --force agent-toolkit-cli
-agent-toolkit install --pack <pack>  # per-pack install (once implemented in #395/#390)
+agent-toolkit install
 ```
 
-If `--pack` not yet in CLI, workstation falls back to `agent-toolkit install` (all detected tools) and `agent-toolkit inventory --pack <name>` for validation.
+Packs remain advisory (`skills:`/`agents:` not applied by `loop run --pack`; only `loops:` is applied). For product-scoped installation, edit `distributions/products.yaml` in `agent-toolkit` (see `docs/CONCEPTS.md#three-kinds-of-packs`).
 
 ## Doctor wiring
 
-`dots-doctor` delegates to `agent-toolkit doctor` which now validates provenance/pack/MCP (per #387):
+`dots-doctor` delegates to `agent-toolkit doctor` which validates provenance/pack/MCP consistency (per #387):
 
 ```bash
 chezmoi apply --dry-run --verbose
 agent-toolkit doctor --verbose
-agent-toolkit inventory --pack design-engineering
+agent-toolkit inventory
+agent-toolkit doctor --provenance
 ```
+
+Probe inventory per product where needed (e.g. `agent-toolkit build --check`).
 
 ## Thin invariant
 
 No `home/dot_local/share/agentic-workstation/skills/*` — capabilities delegated to `agent-toolkit` via `uv`. Runner logic `dev-companion/runner` retained.
 
-Depends on Toolkit packs #390 (design-engineering, agentic-security, code-quality, architecture).
+Packs available: `oss-maintenance`, `engineering-workflow`, `delivery-discipline`, `agentic-security`, `architecture`, `code-quality`, `design-engineering` (7 total, per Toolkit `c5d35ef`).
 
 Validation: `HOME=$(mktemp -d) chezmoi init --apply ulises-jeremias/agentic-workstation` → `agent-toolkit doctor` green.
-
-Scaffold per #200.
