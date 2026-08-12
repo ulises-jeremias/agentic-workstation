@@ -25,6 +25,8 @@ DISABLE_LINTERS:
   - REPOSITORY_KICS
 
 FILTER_REGEX_EXCLUDE: >-
-  (^|/)\.reference/|(^|/)megalinter-reports/|(^|/)\.cursor/
+  (^|/)\.reference/|(^|/)megalinter-reports/|(^|/)\.cursor/|dev-companion/runner/tests/
 
 MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdownlint.json
+
+REPOSITORY_TRUFFLEHOG_FILTER_REGEX_EXCLUDE: "dev-companion/runner/tests/"
