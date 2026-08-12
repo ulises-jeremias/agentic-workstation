@@ -7,6 +7,7 @@ Run them from inside the runner directory:
 These tests do not require any LLM provider to be installed: they only exercise
 parsing, merging, validation, and filtering against fake provider stubs.
 """
+# trufflehog:ignore -- test fixtures are synthetic, no real credentials
 
 from __future__ import annotations
 
@@ -162,7 +163,7 @@ class PolicyFilterTests(unittest.TestCase):
         names = [p.name for p in ordered]
         self.assertEqual(names, ["opencode", "ollama", "anthropic", "openai"])
 
-    def test_allowlist_overrides_intrinsic_order(self) -> None:
+    def test_allowlist_overrides_intrinsic_order(self) -> None:  # trufflehog:ignore -- false positive on test name, not a Lob key
         policy = LLMPolicy(allowlist=("anthropic", "opencode"))
         ordered = policy.filter(_providers())
         names = [p.name for p in ordered]
