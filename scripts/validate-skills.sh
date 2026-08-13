@@ -67,7 +67,7 @@ if [[ $SKILL_COUNT -eq 0 ]]; then
     fi
   else
     info "No embedded skills found and agent-toolkit not installed"
-    info "Thin workstation: skills are provided at runtime via: uv tool install --force agent-toolkit-cli && agent-toolkit install"
+    info "Thin workstation: skills are provided at runtime via: dots-skills install-toolkit (brew / AUR / GitHub / uv V launcher) && agent-toolkit install"
     info "SKILL.md catalog is provided by the toolkit — not embedded in this repo"
     _c "1;32" "  All 0 embedded skills valid (thin workstation)."
     echo ""

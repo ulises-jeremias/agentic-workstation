@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # dots-loop — wrapper around agent-toolkit loop CLI.
 #
-# agent-toolkit loop is the canonical loop engineering runtime.
-# Install: uvx agent-toolkit-cli  or  pip install agent-toolkit-cli
+# agent-toolkit loop is the canonical loop engineering runtime (V CLI).
+# Install: brew/AUR/GitHub binary, or uv tool install 'agent-toolkit-cli>=1.11.0'
 #
 # Usage:
 #   dots-loop <subcommand> [args...]
@@ -20,8 +20,8 @@ if ! command -v agent-toolkit &>/dev/null; then
   printf '\033[1;31m[dots-loop] error:\033[0m agent-toolkit not found.\n' >&2
   echo "" >&2
   echo "Install it:" >&2
-  echo "  uvx agent-toolkit-cli            # one-shot, no install" >&2
-  echo "  pip install agent-toolkit-cli    # permanent install" >&2
+  echo "  dots-skills install-toolkit                         # brew / AUR / GitHub / uv" >&2
+  echo "  uv tool install --force 'agent-toolkit-cli>=1.11.0' # V launcher wheel" >&2
   exit 1
 fi
 

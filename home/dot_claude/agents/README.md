@@ -5,8 +5,7 @@ Agent personas are distributed by [agent-toolkit](https://github.com/ulises-jere
 Install via:
 
 ```bash
-uv tool install --force agent-toolkit-cli
-agent-toolkit install
+dots-skills install-toolkit
 ```
 
 See `docs/AGENT_TOOLKIT.md`.

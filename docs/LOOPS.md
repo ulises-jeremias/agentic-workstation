@@ -44,7 +44,7 @@ agent-toolkit loop sync
 **Prerequisites**:
 
 - `ai-workspace` installed at `~/.ai-workspace`: `https://github.com/ulises-jeremias/ai-workspace`
-- `agent-toolkit` installed (handled automatically by `chezmoi apply`; manual: `uv tool install agent-toolkit-cli && agent-toolkit install`)
+- `agent-toolkit` installed (handled automatically by `chezmoi apply`; manual: `dots-skills install-toolkit`)
 
 ---
 

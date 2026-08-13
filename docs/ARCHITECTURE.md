@@ -6,13 +6,13 @@
 
 ---
 
-`agentic-workstation` keeps repository governance and workstation state clearly separated. The thin workstation delegates all capability content to `agent-toolkit` via `uv`.
+`agentic-workstation` keeps repository governance and workstation state clearly separated. The thin workstation delegates all capability content to `agent-toolkit` via the canonical V CLI.
 
 ## Design principles
 
 - Keep the source state simple and predictable — no embedded skills/packs/personas/agents/MCPs.
 - Prefer profile-driven behavior over host-specific custom logic.
-- Keep scripts idempotent and safe to re-run — single installer path (`uv tool install --force`).
+- Keep scripts idempotent and safe to re-run — install Agent Toolkit via brew / AUR / GitHub / uv V launcher.
 - Treat docs, wiki, and ADRs as first-class product artifacts.
 
 ---
@@ -31,7 +31,7 @@ graph TD
         B --> E["~/.config/ — tool configs"]
         D --> F["dev-companion/runner — workstation-only logic"]
         D --> G["scopes/ — workstation-only"]
-        D -.->|"delegated via uv tool install --force agent-toolkit-cli"| H["agent-toolkit provides: skills, agents, MCP, prompts, loops"]
+        D -.->|"delegated via brew/AUR/GitHub/uv V launcher"| H["agent-toolkit provides: skills, agents, MCP, prompts, loops"]
     end
 
     subgraph "Session Layer (AI workspace)"
@@ -51,7 +51,7 @@ graph TD
 1. **Data model** (`home/.chezmoidata`)
    Shared configuration for package groups, AI settings, profiles. Skills registry is empty — catalog comes from toolkit.
 2. **Bootstrap scripts** (`home/.chezmoiscripts`)
-   Thin install: `run_once_after_50-install-agent-toolkit.sh.tmpl` runs `uv tool install --force agent-toolkit-cli && agent-toolkit install`. `run_onchange_42-install-swarm-tooling.sh.tmpl` installs swarm prerequisites (tmux + Herdr + `herdr integration install opencode`) when `install_group_swarm=true`. `run_onchange_45` delegates to `agent-toolkit install`.
+   Thin install: `run_once_after_50-install-agent-toolkit.sh.tmpl` walks brew / AUR `agent-toolkit-bin` / GitHub V binary / `uv tool install --force 'agent-toolkit-cli>=1.11.0'`, then `agent-toolkit install`. `run_onchange_42-install-swarm-tooling.sh.tmpl` installs swarm prerequisites (tmux + Herdr + `herdr integration install opencode`) when `install_group_swarm=true`. `run_onchange_45` delegates to `agent-toolkit install`.
 3. **Shared assets — thin** (`home/dot_local/share/agentic-workstation`)
    Only workstation-only runner logic: `dev-companion/runner`, `scopes`, `telemetry`, `pacman-hooks`. No `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `packs/teams`. Swarm isolation uses per-run tmux socket `agent-toolkit-swarm-<run-id>`; no `~/.tmux.conf` overwrite.
 4. **CLI helpers — thin** (`home/dot_local/bin`)
@@ -87,11 +87,11 @@ graph TD
         PO3["Client-specific skills"]
     end
 
-    AW1 -->|"uv tool install --force agent-toolkit-cli<br/>agent-toolkit install"| AT1
-    AW1 -->|"uv tool install --force agent-toolkit-cli<br/>agent-toolkit install"| AT2
-    AW1 -->|"uv tool install --force agent-toolkit-cli<br/>agent-toolkit install"| AT3
-    AW1 -->|"uv tool install --force agent-toolkit-cli<br/>agent-toolkit install"| AT4
-    AW1 -->|"uv tool install --force agent-toolkit-cli<br/>agent-toolkit install"| AT5
+    AW1 -->|"brew / AUR / GitHub / uv launcher<br/>agent-toolkit install"| AT1
+    AW1 -->|"brew / AUR / GitHub / uv launcher<br/>agent-toolkit install"| AT2
+    AW1 -->|"brew / AUR / GitHub / uv launcher<br/>agent-toolkit install"| AT3
+    AW1 -->|"brew / AUR / GitHub / uv launcher<br/>agent-toolkit install"| AT4
+    AW1 -->|"brew / AUR / GitHub / uv launcher<br/>agent-toolkit install"| AT5
     AW3 -->|"dots-skills sync (delegated)"| AT1
     AW3 -->|"dots-loop init (delegated)"| AT3
     AT1 --> PO3
@@ -107,7 +107,7 @@ graph TD
 | **L3** | Project repo | Overlays — project AGENTS.md, engagement packs, client skills |
 
 > [!IMPORTANT]
-> **Thin workstation: all capabilities are delegated.** No `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `packs/teams`, `agents/*`, `rules/*` are embedded. Install via `uv tool install --force agent-toolkit-cli && agent-toolkit install`. `SKILL.md` catalog is provided by the toolkit at runtime.
+> **Thin workstation: all capabilities are delegated.** No `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `packs/teams`, `agents/*`, `rules/*` are embedded. Install via `dots-skills install-toolkit` (brew / AUR / GitHub / uv V launcher) then `agent-toolkit install`. `SKILL.md` catalog is provided by the toolkit at runtime.
 
 ---
 
@@ -115,7 +115,7 @@ graph TD
 
 Cross-domain skills are **solely** distributed by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) — 60 skills, 16 agent personas, 10 loop templates, 6 MCP templates. agentic-workstation's `home/dot_local/share/agentic-workstation/skills/` retains only workstation-specific orchestration skills (assistant, triage, dev-companion, workflow-generic-project, etc.); cross-domain skills are installed at `skills-external/agent-toolkit/`. Third-party packs (JIRA 14, Confluence 17) live in `skills-external/{jira,confluence}-assistant/` and never in `plugins/`.
 
-- **agent-toolkit skills** — installed via `uv tool install --force agent-toolkit-cli && agent-toolkit install`
+- **agent-toolkit skills** — installed via `dots-skills install-toolkit` then `agent-toolkit install`
 - **No bundled workstation skills** — previous bundled dirs have been removed; workstation-only logic remains in `dev-companion/runner`
 - **No embedded loops/MCP/prompts/packs** — all provided by toolkit
 

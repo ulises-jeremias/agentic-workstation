@@ -11,12 +11,12 @@ This document describes the agentic-workstation skill system — how skills are 
 > **Quick install:**
 > ```bash
 > # agent-toolkit is installed automatically by chezmoi apply.
-> # To install or update manually:
-> uv tool install agent-toolkit-cli
-> agent-toolkit install
->
-> # Or via dots-skills (delegates to agent-toolkit):
+> # To install or update manually (brew / AUR / GitHub / uv V launcher):
 > dots-skills install-toolkit
+>
+> # Explicit uv fallback (V launcher wheel, 1.11.0+):
+> uv tool install --force 'agent-toolkit-cli>=1.11.0'
+> agent-toolkit install
 > ```
 
 ## Skill Lifecycle
@@ -24,7 +24,7 @@ This document describes the agentic-workstation skill system — how skills are 
 ```mermaid
 flowchart LR
     subgraph Sources
-        AT[agent-toolkit<br/>pip/AUR install]
+        AT[agent-toolkit<br/>brew/AUR/GitHub/uv]
         B[Bundled<br/>chezmoi source]
         N[npm<br/>dots-skills install]
         G[GitHub/URL<br/>chezmoiexternal]
@@ -236,7 +236,7 @@ skills:
 
   # Cross-domain skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
   # are NOT registered here — they are provided by agent-toolkit (60 skills) via
-  # `uv tool install --force agent-toolkit-cli && agent-toolkit install` at
+  # `dots-skills install-toolkit` at
   # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
 
   # npm: third-party skills (installed via dots-skills add npm:<pkg> — none bundled after ui-ux-pro-max removal)
@@ -403,7 +403,7 @@ chezmoi apply         # downloads pack via chezmoiexternal + installs jira-as + 
 ```
 dots-skills list                 List installed skills and their status per AI tool
 dots-skills sync                 Regenerate symlinks (reads skill.json or defaults to all tools)
-dots-skills install-toolkit      Install or update agent-toolkit (uv tool install --force + agent-toolkit install)
+dots-skills install-toolkit      Install or update agent-toolkit (brew/AUR/GitHub/uv V launcher + agent-toolkit install)
 dots-skills install <name>       Install an npm-sourced skill from the registry
 dots-skills check                Validate required CLI tools and pip packages for each skill
 dots-skills add npm:<pkg>        Add an npm skill to the registry

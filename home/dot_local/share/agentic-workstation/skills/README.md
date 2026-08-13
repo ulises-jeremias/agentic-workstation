@@ -8,7 +8,7 @@ and tool profiles (7) are distributed by [agent-toolkit](https://github.com/ulis
 Install via:
 
 ```bash
-uv tool install --force agent-toolkit-cli
+dots-skills install-toolkit
 agent-toolkit install
 ```
 

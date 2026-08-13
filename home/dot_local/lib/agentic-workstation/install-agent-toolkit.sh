@@ -1,0 +1,411 @@
+#!/usr/bin/env bash
+# Shared Agent Toolkit CLI bootstrap (agentic-workstation#206).
+#
+# Prefers a platform-native V binary, then falls back. Every successful path
+# must leave `agent-toolkit` on PATH with canonical V behavior (native binary
+# or ADR-021 uv launcher that execs the bundled V binary).
+# Never `import agent_toolkit` — workstation MUST NOT treat Python as the product.
+#
+# Channel order (AGENT_TOOLKIT_INSTALL_CHANNEL=auto, default):
+#   1. macOS  → Homebrew tap ulises-jeremias/homebrew-tap formula agent-toolkit
+#   1. Arch   → AUR agent-toolkit-bin (yay/paru)
+#   2. any    → GitHub Release floating binary + SHA256SUMS (ADR-018)
+#   3. any    → uv tool install agent-toolkit-cli>=1.11.0 (V launcher, ADR-021)
+#
+# Env:
+#   AGENT_TOOLKIT_MIN_VERSION     default 1.11.0 (refuse older)
+#   AGENT_TOOLKIT_CLI_VERSION     rollback pin (semver or full uv spec)
+#   AGENT_TOOLKIT_PIN             alias of CLI_VERSION
+#   AGENT_TOOLKIT_RELEASE         GitHub tag (v1.11.0) for binary pin
+#   AGENT_TOOLKIT_INSTALL_CHANNEL auto|brew|aur|github|uv
+#   AGENT_TOOLKIT_CHANNEL         alias of INSTALL_CHANNEL
+#   AGENT_TOOLKIT_GITHUB_REPO     default ulises-jeremias/agent-toolkit
+#
+# Usage (executable):
+#   install-agent-toolkit.sh [--force] [--deploy]
+# Sourced API:
+#   install_agent_toolkit_cli [force]
+#   deploy_agent_toolkit_profiles
+#   install_and_deploy_agent_toolkit [force]
+#   agent_toolkit_meets_min
+#   agent_toolkit_current_version
+
+# Do not `set -euo` when sourced — callers (dots-skills) use their own options.
+if [[ ${BASH_SOURCE[0]:-} == "$0" ]]; then
+  set -euo pipefail
+fi
+
+AGENT_TOOLKIT_MIN_VERSION="${AGENT_TOOLKIT_MIN_VERSION:-1.11.0}"
+AGENT_TOOLKIT_GITHUB_REPO="${AGENT_TOOLKIT_GITHUB_REPO:-ulises-jeremias/agent-toolkit}"
+AGENT_TOOLKIT_BREW_TAP="${AGENT_TOOLKIT_BREW_TAP:-ulises-jeremias/homebrew-tap}"
+AGENT_TOOLKIT_BREW_FORMULA="${AGENT_TOOLKIT_BREW_FORMULA:-agent-toolkit}"
+AGENT_TOOLKIT_AUR_PKG="${AGENT_TOOLKIT_AUR_PKG:-agent-toolkit-bin}"
+AGENT_TOOLKIT_UV_PKG="${AGENT_TOOLKIT_UV_PKG:-agent-toolkit-cli}"
+
+_at_log() { printf '\033[1;34m[agent-toolkit]\033[0m %s\n' "$*"; }
+_at_ok() { printf '\033[1;32m[agent-toolkit]\033[0m %s\n' "$*"; }
+_at_warn() { printf '\033[1;33m[agent-toolkit]\033[0m %s\n' "$*"; }
+
+_at_uname_s() { printf '%s\n' "${AGENT_TOOLKIT_UNAME_S:-$(uname -s)}"; }
+_at_uname_m() { printf '%s\n' "${AGENT_TOOLKIT_UNAME_M:-$(uname -m)}"; }
+
+_at_os_id() {
+  if [[ -n ${AGENT_TOOLKIT_OS_RELEASE_ID:-} ]]; then
+    printf '%s\n' "$AGENT_TOOLKIT_OS_RELEASE_ID"
+    return
+  fi
+  local osrel="${AGENT_TOOLKIT_OS_RELEASE:-/etc/os-release}"
+  if [[ -f $osrel ]]; then
+    # Subshell so sourced ID/ID_LIKE do not leak into the caller.
+    (
+      # shellcheck disable=SC1090,SC1091
+      . "$osrel"
+      if [[ ${ID:-} == arch || ${ID_LIKE:-} == *arch* ]]; then
+        printf 'arch\n'
+        exit 0
+      fi
+      printf '%s\n' "${ID:-linux}"
+    )
+    return
+  fi
+  printf 'unknown\n'
+}
+
+_at_arch_token() {
+  case "$(_at_uname_m)" in
+    x86_64 | amd64) printf 'x86_64\n' ;;
+    arm64 | aarch64) printf 'arm64\n' ;;
+    *)
+      _at_warn "unsupported architecture: $(_at_uname_m)"
+      return 1
+      ;;
+  esac
+}
+
+agent_toolkit_github_asset() {
+  local os arch
+  os="$(_at_uname_s)"
+  arch="$(_at_arch_token)" || return 1
+  case "$os" in
+    Darwin) printf 'agent-toolkit-macos-%s\n' "$arch" ;;
+    Linux) printf 'agent-toolkit-linux-%s\n' "$arch" ;;
+    MINGW* | MSYS* | CYGWIN* | Windows_NT) printf 'agent-toolkit-windows-x86_64.exe\n' ;;
+    *)
+      _at_warn "unsupported OS for GitHub binary: $os"
+      return 1
+      ;;
+  esac
+}
+
+agent_toolkit_release_asset() {
+  agent_toolkit_github_asset
+}
+
+agent_toolkit_uv_package_spec() {
+  local ver="${AGENT_TOOLKIT_CLI_VERSION:-${AGENT_TOOLKIT_PIN:-}}"
+  if [[ -z $ver ]]; then
+    printf '%s>=%s\n' "$AGENT_TOOLKIT_UV_PKG" "$AGENT_TOOLKIT_MIN_VERSION"
+    return 0
+  fi
+  case "$ver" in
+    *=*) printf '%s\n' "$ver" ;;
+    *) printf '%s==%s\n' "$AGENT_TOOLKIT_UV_PKG" "$ver" ;;
+  esac
+}
+
+agent_toolkit_channel_plan() {
+  local ch="${AGENT_TOOLKIT_INSTALL_CHANNEL:-${AGENT_TOOLKIT_CHANNEL:-auto}}"
+  case "$ch" in
+    brew | aur | github | uv)
+      printf '%s\n' "$ch"
+      return 0
+      ;;
+  esac
+  local os id
+  os="$(_at_uname_s)"
+  id="$(_at_os_id)"
+  if [[ $os == Darwin ]]; then
+    printf 'brew\ngithub\nuv\n'
+  elif [[ $id == arch ]]; then
+    printf 'aur\ngithub\nuv\n'
+  else
+    printf 'github\nuv\n'
+  fi
+}
+
+# True if $1 >= $2 (semver-ish, via sort -V).
+_at_version_ge() {
+  local have="$1" need="$2" first
+  [[ -n $have && -n $need ]] || return 1
+  first="$(printf '%s\n%s\n' "$need" "$have" | sort -V | head -n1)"
+  [[ $first == "$need" ]]
+}
+
+_at_parse_version() {
+  local out
+  out="$("$@" 2>/dev/null | head -n1 || true)"
+  printf '%s\n' "$out" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1
+}
+
+_at_ensure_path() {
+  export PATH="${HOME}/.local/bin:${PATH:-}"
+  if command -v brew >/dev/null 2>&1; then
+    local prefix
+    prefix="$(brew --prefix 2>/dev/null || true)"
+    if [[ -n $prefix && -d ${prefix}/bin ]]; then
+      export PATH="${prefix}/bin:${PATH}"
+    fi
+  fi
+  hash -r 2>/dev/null || true
+}
+
+# Prefer a real binary over pyenv/asdf shims when both exist.
+_at_cli_path() {
+  local c prefix
+  if [[ -x ${HOME}/.local/bin/agent-toolkit ]]; then
+    printf '%s\n' "${HOME}/.local/bin/agent-toolkit"
+    return 0
+  fi
+  if command -v brew >/dev/null 2>&1; then
+    prefix="$(brew --prefix 2>/dev/null || true)"
+    c="${prefix}/bin/agent-toolkit"
+    if [[ -n $prefix && -x $c ]]; then
+      printf '%s\n' "$c"
+      return 0
+    fi
+  fi
+  command -v agent-toolkit 2>/dev/null || return 1
+}
+
+agent_toolkit_current_version() {
+  local bin
+  bin="$(_at_cli_path)" || return 1
+  local ver
+  ver="$(_at_parse_version "$bin" --version)"
+  if [[ -z $ver ]]; then
+    ver="$(_at_parse_version "$bin" version)"
+  fi
+  [[ -n $ver ]] || return 1
+  printf '%s\n' "$ver"
+}
+
+agent_toolkit_meets_min() {
+  local ver
+  ver="$(agent_toolkit_current_version)" || return 1
+  _at_version_ge "$ver" "$AGENT_TOOLKIT_MIN_VERSION"
+}
+
+_at_pin_semver() {
+  local ver="${AGENT_TOOLKIT_CLI_VERSION:-${AGENT_TOOLKIT_PIN:-}}"
+  case "$ver" in
+    '') return 0 ;;
+    *=*) ver="${ver##*=}" ;;
+  esac
+  printf '%s\n' "$ver"
+}
+
+_at_pin_or_min_ok() {
+  local pin
+  pin="$(_at_pin_semver)"
+  if [[ -n $pin ]]; then
+    _at_version_ge "$pin" "$AGENT_TOOLKIT_MIN_VERSION" || {
+      _at_warn "pin ${pin} is below minimum ${AGENT_TOOLKIT_MIN_VERSION}"
+      return 1
+    }
+  fi
+  return 0
+}
+
+_at_install_brew() {
+  command -v brew >/dev/null 2>&1 || return 1
+  _at_log "Installing via Homebrew (${AGENT_TOOLKIT_BREW_TAP}/${AGENT_TOOLKIT_BREW_FORMULA})"
+  brew tap "$AGENT_TOOLKIT_BREW_TAP" >/dev/null 2>&1 || true
+  if brew list --formula "$AGENT_TOOLKIT_BREW_FORMULA" >/dev/null 2>&1; then
+    brew upgrade "$AGENT_TOOLKIT_BREW_FORMULA" 2>/dev/null || brew install "$AGENT_TOOLKIT_BREW_FORMULA" || return 1
+  else
+    brew install "${AGENT_TOOLKIT_BREW_TAP}/${AGENT_TOOLKIT_BREW_FORMULA}" || return 1
+  fi
+  _at_ensure_path
+  return 0
+}
+
+_at_install_aur() {
+  local helper=""
+  if command -v yay >/dev/null 2>&1; then
+    helper=yay
+  elif command -v paru >/dev/null 2>&1; then
+    helper=paru
+  else
+    return 1
+  fi
+  if ! sudo -n true >/dev/null 2>&1 && [[ ${EUID:-1} -ne 0 ]]; then
+    _at_warn "AUR helper '${helper}' needs sudo; skipping ${AGENT_TOOLKIT_AUR_PKG}"
+    return 1
+  fi
+  _at_log "Installing via AUR (${helper} -S ${AGENT_TOOLKIT_AUR_PKG})"
+  "$helper" -S --noconfirm --needed "$AGENT_TOOLKIT_AUR_PKG" || return 1
+  _at_ensure_path
+  return 0
+}
+
+_at_sha256_check() {
+  local sums="$1" file="$2"
+  if command -v sha256sum >/dev/null 2>&1; then
+    grep -E "[[:space:]]${file}$" "$sums" | sha256sum -c -
+  elif command -v shasum >/dev/null 2>&1; then
+    grep -E "[[:space:]]${file}$" "$sums" | shasum -a 256 -c -
+  else
+    _at_warn "no sha256sum/shasum — refusing to install an unverified GitHub binary"
+    return 1
+  fi
+}
+
+_at_github_base_url() {
+  local rel="${AGENT_TOOLKIT_RELEASE:-}" pin
+  pin="$(_at_pin_semver)"
+  if [[ -n $rel ]]; then
+    [[ $rel == v* ]] || rel="v${rel}"
+    printf 'https://github.com/%s/releases/download/%s\n' "$AGENT_TOOLKIT_GITHUB_REPO" "$rel"
+  elif [[ -n $pin ]]; then
+    printf 'https://github.com/%s/releases/download/v%s\n' "$AGENT_TOOLKIT_GITHUB_REPO" "$pin"
+  else
+    printf 'https://github.com/%s/releases/latest/download\n' "$AGENT_TOOLKIT_GITHUB_REPO"
+  fi
+}
+
+_at_install_github() {
+  command -v curl >/dev/null 2>&1 || return 1
+  local asset base tmp dest
+  asset="$(agent_toolkit_github_asset)" || return 1
+  base="$(_at_github_base_url)"
+  dest="${HOME}/.local/bin/agent-toolkit"
+  tmp="$(mktemp -d "${TMPDIR:-/tmp}/agent-toolkit.XXXXXX")"
+  _at_log "Installing GitHub Release binary (${asset})"
+  if ! curl -fsSL "${base}/${asset}" -o "${tmp}/${asset}"; then
+    rm -rf "$tmp"
+    return 1
+  fi
+  if ! curl -fsSL "${base}/SHA256SUMS" -o "${tmp}/SHA256SUMS"; then
+    _at_warn "SHA256SUMS download failed"
+    rm -rf "$tmp"
+    return 1
+  fi
+  if ! (
+    cd "$tmp" || exit 1
+    _at_sha256_check SHA256SUMS "$asset"
+  ); then
+    _at_warn "checksum mismatch for ${asset}"
+    rm -rf "$tmp"
+    return 1
+  fi
+  mkdir -p "${HOME}/.local/bin"
+  chmod +x "${tmp}/${asset}"
+  mv -f "${tmp}/${asset}" "$dest"
+  rm -rf "$tmp"
+  _at_ensure_path
+  return 0
+}
+
+_at_install_uv() {
+  command -v uv >/dev/null 2>&1 || return 1
+  local spec
+  spec="$(agent_toolkit_uv_package_spec)"
+  _at_log "Installing via uv tool (${spec}) — ADR-021 V launcher, not Python as product"
+  uv tool install --force "$spec" || return 1
+  _at_ensure_path
+  return 0
+}
+
+_at_run_channel() {
+  case "$1" in
+    brew) _at_install_brew ;;
+    aur) _at_install_aur ;;
+    github) _at_install_github ;;
+    uv) _at_install_uv ;;
+    *) return 1 ;;
+  esac
+}
+
+_at_try_forced_channel() {
+  local ch
+  while IFS= read -r ch; do
+    [[ -n $ch ]] || continue
+    if _at_run_channel "$ch" && agent_toolkit_meets_min; then
+      return 0
+    fi
+    _at_warn "channel ${ch} did not yield ${AGENT_TOOLKIT_MIN_VERSION}+; trying next"
+  done < <(agent_toolkit_channel_plan)
+  return 1
+}
+
+install_agent_toolkit_cli() {
+  local force="${1:-}"
+  _at_pin_or_min_ok || return 1
+  _at_ensure_path
+  if [[ $force != force && $force != --force ]]; then
+    if agent_toolkit_meets_min; then
+      _at_ok "agent-toolkit $(agent_toolkit_current_version) already meets minimum ${AGENT_TOOLKIT_MIN_VERSION}"
+      return 0
+    fi
+  fi
+  if _at_try_forced_channel; then
+    _at_ok "CLI ready: $(agent_toolkit_current_version) ($(_at_cli_path))"
+    return 0
+  fi
+  _at_warn "failed to install agent-toolkit ${AGENT_TOOLKIT_MIN_VERSION}+ via brew/AUR/GitHub/uv"
+  _at_warn "Rollback: export AGENT_TOOLKIT_CLI_VERSION=${AGENT_TOOLKIT_MIN_VERSION} and re-run"
+  return 1
+}
+
+deploy_agent_toolkit_profiles() {
+  _at_ensure_path
+  if ! command -v agent-toolkit >/dev/null 2>&1 && [[ ! -x ${HOME}/.local/bin/agent-toolkit ]]; then
+    _at_warn "agent-toolkit not on PATH — cannot deploy profiles"
+    return 1
+  fi
+  local bin
+  bin="$(_at_cli_path)"
+  _at_log "Deploying profiles via: ${bin} install"
+  "$bin" install
+}
+
+install_and_deploy_agent_toolkit() {
+  install_agent_toolkit_cli "${1:-}" || return 1
+  deploy_agent_toolkit_profiles
+}
+
+_at_main() {
+  local force="" deploy=""
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --force | force) force=force ;;
+      --deploy | deploy) deploy=1 ;;
+      -h | --help)
+        cat <<'EOF'
+install-agent-toolkit.sh — bootstrap canonical Agent Toolkit CLI (V binary)
+
+  --force   reinstall/upgrade even if minimum version is already met
+  --deploy  run `agent-toolkit install` after the CLI is on PATH
+
+Env: AGENT_TOOLKIT_CLI_VERSION, AGENT_TOOLKIT_INSTALL_CHANNEL, AGENT_TOOLKIT_MIN_VERSION
+Rollback: AGENT_TOOLKIT_CLI_VERSION=1.11.0 install-agent-toolkit.sh --force --deploy
+EOF
+        return 0
+        ;;
+      *)
+        _at_warn "unknown argument: $1"
+        return 2
+        ;;
+    esac
+    shift
+  done
+  if [[ -n $deploy ]]; then
+    install_and_deploy_agent_toolkit "$force"
+  else
+    install_agent_toolkit_cli "$force"
+  fi
+}
+
+if [[ ${BASH_SOURCE[0]:-} == "$0" ]]; then
+  _at_main "$@"
+fi

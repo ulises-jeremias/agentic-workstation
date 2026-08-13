@@ -11,7 +11,7 @@
 #   Opt-in via chezmoidata install_skill_* flags.
 #
 # Thin workstation: first-party skills are delegated to agent-toolkit via
-# `uv tool install --force agent-toolkit-cli && agent-toolkit install`.
+# `dots-skills install-toolkit && agent-toolkit install`.
 # Only workstation-specific orchestration skills remain here; cross-domain
 # skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
 # are now provided by agent-toolkit (60 skills) and cleaned via

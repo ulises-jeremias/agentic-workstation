@@ -82,7 +82,7 @@ def supported(compat: dict, tool: str) -> str:
 def generate(skills: list[dict]) -> str:
     # Thin workstation: no embedded skills — generate delegated placeholder (deterministic — no shutil.which branching for CI stability)
     if not skills:
-        toolkit_note = "\n> Thin workstation: skills are delegated to `agent-toolkit`. Install via `uv tool install --force agent-toolkit-cli && agent-toolkit install`."
+        toolkit_note = "\n> Thin workstation: skills are delegated to `agent-toolkit`. Bootstrap prefers Homebrew / AUR `agent-toolkit-bin` / GitHub Release V binaries, then `uv tool install --force 'agent-toolkit-cli>=1.11.0'` (V launcher). Then `agent-toolkit install`."
         return f"""# Tool Compatibility Matrix
 
 > Thin workstation — compatibility is delegated to [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit).

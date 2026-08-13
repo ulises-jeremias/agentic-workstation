@@ -27,7 +27,7 @@
 **agentic-workstation** is an AI-first, chezmoi-managed workstation baseline that equips your machine with skills, agents, MCP servers, CLI helpers, and loop engineering primitives — ready to go in one command.
 
 Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub Copilot**, and any AI coding tool that supports agent skills.
-> **Thin workstation** — this repository ships no embedded `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `agents/*`, or `packs/teams`. All capabilities are delegated to `agent-toolkit` via `uv tool install --force agent-toolkit-cli && agent-toolkit install`. The `SKILL.md` catalog is provided by the toolkit at runtime. Workstation-only runner logic (`dev-companion/runner`) is retained. See [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md) and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+> **Thin workstation** — this repository ships no embedded `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `agents/*`, or `packs/teams`. All capabilities are delegated to `agent-toolkit` via `dots-skills install-toolkit` (Homebrew / AUR `agent-toolkit-bin` / GitHub V binary / `uv tool install --force 'agent-toolkit-cli>=1.11.0'`). The `SKILL.md` catalog is provided by the toolkit at runtime. Workstation-only runner logic (`dev-companion/runner`) is retained. See [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md) and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 
 
@@ -81,16 +81,19 @@ Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CL
 Add 60 AI skill packs to your existing setup — powered by **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)**:
 
 ```bash
-# Option A: one-shot via uvx (no install required)
-uvx agent-toolkit-cli install
+# Option A: one-shot via uvx (V launcher wheel, no install required)
+uvx --from 'agent-toolkit-cli>=1.11.0' agent-toolkit install
 
-# Option B: install permanently (thin workstation canonical)
-uv tool install --force agent-toolkit-cli && agent-toolkit install
+# Option B: Homebrew (macOS / Linuxbrew)
+brew tap ulises-jeremias/homebrew-tap && brew install agent-toolkit && agent-toolkit install
 
-# Option C: Arch Linux via AUR
-yay -S agent-toolkit-cli && agent-toolkit install
+# Option C: Arch Linux via AUR (native V binary)
+yay -S agent-toolkit-bin && agent-toolkit install
 
-# Option D: install-skills.sh (agentic-workstation wrapper)
+# Option D: uv tool (V launcher wheel)
+uv tool install --force 'agent-toolkit-cli>=1.11.0' && agent-toolkit install
+
+# Option E: install-skills.sh (agentic-workstation wrapper)
 curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | bash
 ```
 

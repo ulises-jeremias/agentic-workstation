@@ -2,7 +2,7 @@
 
 > Thin workstation — compatibility is delegated to [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit).
 > No embedded `skill.json` files are shipped in this repository.
-> Thin workstation: skills are delegated to `agent-toolkit`. Install via `uv tool install --force agent-toolkit-cli && agent-toolkit install`.
+> Thin workstation: skills are delegated to `agent-toolkit`. Bootstrap prefers Homebrew / AUR `agent-toolkit-bin` / GitHub Release V binaries, then `uv tool install --force 'agent-toolkit-cli>=1.11.0'` (V launcher). Then `agent-toolkit install`.
 >
 > To regenerate from the toolkit catalog, ensure `agent-toolkit` is installed and run `agent-toolkit skills list`.
 

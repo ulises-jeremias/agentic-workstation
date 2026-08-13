@@ -52,9 +52,10 @@ Skills, agent personas, and loop templates are distributed by [`agent-toolkit`](
 
 ```bash
 # Install agent-toolkit (done automatically by chezmoi apply)
-uvx agent-toolkit-cli                          # one-shot, no install required
-uv tool install agent-toolkit-cli                  # permanent install
-yay -S agent-toolkit-cli                       # Arch Linux via AUR
+uvx --from 'agent-toolkit-cli>=1.11.0' agent-toolkit  # one-shot, no install required
+brew install ulises-jeremias/homebrew-tap/agent-toolkit
+yay -S agent-toolkit-bin                               # Arch Linux via AUR (V binary)
+uv tool install --force 'agent-toolkit-cli>=1.11.0'    # V launcher wheel
 
 # Install/update skills and profiles
 agent-toolkit install [--force]                # deploy to all detected AI tools
