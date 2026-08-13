@@ -78,7 +78,7 @@ Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CL
 
 ### Just want the AI skills?
 
-Add 60 AI skill packs to your existing setup — powered by **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)**:
+Add 77 AI skills to your existing setup — powered by **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)**:
 
 ```bash
 # Option A: one-shot via uvx (V launcher wheel, no install required)

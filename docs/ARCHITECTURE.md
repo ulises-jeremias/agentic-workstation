@@ -73,11 +73,11 @@ graph TD
     end
 
     subgraph "L1.5 — agent-toolkit (sole capability source)"
-        AT1["60 skills / 9 domains"]
-        AT2["16 agent personas"]
+        AT1["77 skills / 14 domains"]
+        AT2["17 agent personas"]
         AT3["10 loop templates"]
-        AT4["6 tool profiles<br/>(Claude Code, Cursor, OpenCode…)"]
-        AT5["6 MCP templates"]
+        AT4["7 tool profiles<br/>(Claude Code, Cursor, OpenCode, Muse…)"]
+        AT5["7 MCP templates"]
         AT6["Prompts + packs"]
     end
 
@@ -113,7 +113,7 @@ graph TD
 
 ## Skills architecture — thin
 
-Cross-domain skills are **solely** distributed by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) — 60 skills, 16 agent personas, 10 loop templates, 6 MCP templates. agentic-workstation's `home/dot_local/share/agentic-workstation/skills/` retains only workstation-specific orchestration skills (assistant, triage, dev-companion, workflow-generic-project, etc.); cross-domain skills are installed at `skills-external/agent-toolkit/`. Third-party packs (JIRA 14, Confluence 17) live in `skills-external/{jira,confluence}-assistant/` and never in `plugins/`.
+Cross-domain skills are **solely** distributed by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) — 77 skills, 17 agent personas, 10 loop templates, 7 MCP templates. agentic-workstation's `home/dot_local/share/agentic-workstation/skills/` retains only workstation-specific orchestration skills (assistant, triage, dev-companion, workflow-generic-project, etc.); cross-domain skills are installed at `skills-external/agent-toolkit/`. Third-party packs (JIRA 14, Confluence 17) live in `skills-external/{jira,confluence}-assistant/` and never in `plugins/`.
 
 - **agent-toolkit skills** — installed via `dots-skills install-toolkit` then `agent-toolkit install`
 - **No bundled workstation skills** — previous bundled dirs have been removed; workstation-only logic remains in `dev-companion/runner`

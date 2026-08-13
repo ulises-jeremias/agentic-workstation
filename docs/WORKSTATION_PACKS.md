@@ -42,7 +42,7 @@ Probe inventory per product where needed (e.g. `agent-toolkit build --check`).
 
 ## Thin invariant
 
-No `home/dot_local/share/agentic-workstation/skills/*` — capabilities delegated to `agent-toolkit` via `uv`. Runner logic `dev-companion/runner` retained.
+No `home/dot_local/share/agentic-workstation/skills/*` — capabilities delegated to `agent-toolkit` via brew / AUR / GitHub / uv. Runner logic `dev-companion/runner` retained.
 
 Packs available: `oss-maintenance`, `engineering-workflow`, `delivery-discipline`, `agentic-security`, `architecture`, `code-quality`, `design-engineering` (7 total, per Toolkit `c5d35ef`).
 

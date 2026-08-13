@@ -2,7 +2,7 @@
 
 This directory is intentionally empty in the thin workstation.
 
-All cross-domain skills (60 skills / 9 domains), agent personas (16), loop templates (10),
+All cross-domain skills (77 skills / 14 domains), agent personas (17), loop templates (10),
 and tool profiles (7) are distributed by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit). Workstation-specific orchestration skills remain in this directory.
 
 Install via:
