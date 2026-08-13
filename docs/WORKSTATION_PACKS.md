@@ -18,10 +18,10 @@ packs:
   - agentic-security
 ```
 
-`run_once_after_50-install-agent-toolkit.sh.tmpl` runs the thin-workstation install:
+`run_once_after_50-install-agent-toolkit.sh.tmpl` walks brew / AUR / GitHub / uv, then:
 
 ```bash
-uv tool install --force agent-toolkit-cli
+# equivalent to dots-skills install-toolkit
 agent-toolkit install
 ```
 

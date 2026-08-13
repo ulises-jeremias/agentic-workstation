@@ -38,6 +38,16 @@ while IFS= read -r file; do
   fi
 done < <(rg --files -g "home/dot_local/bin/executable_dots-*" .)
 
+if [[ -f scripts/test-install-agent-toolkit.sh ]]; then
+  info "running: scripts/test-install-agent-toolkit.sh"
+  if ! bash scripts/test-install-agent-toolkit.sh; then
+    fail "install-agent-toolkit tests failed"
+    status=1
+  else
+    ok "valid: install-agent-toolkit unit tests"
+  fi
+fi
+
 if [[ ${status} -eq 0 ]]; then
   ok "all shell scripts passed syntax validation"
 fi

@@ -54,13 +54,13 @@ case "$PROFILE" in
     require_executable "$HOME/.local/bin/dots-doctor"
     require_dir_nonempty "$HOME/.local/share/agentic-workstation/skills"
     count=$(find "$HOME/.local/share/agentic-workstation/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
-    # Thin workstation: skills delegated to agent-toolkit via uv tool — only README.md present
+    # Thin workstation: skills delegated to agent-toolkit (V CLI) — only README.md present
     if [ -f "$HOME/.local/share/agentic-workstation/skills/README.md" ] && [ "$count" -eq 0 ]; then
       ok "thin workstation detected — skills delegated to agent-toolkit (README.md only)"
       if command -v agent-toolkit >/dev/null 2>&1 || command -v uv >/dev/null 2>&1; then
-        ok "thin delegation: uv/agent-toolkit available"
+        ok "thin delegation: agent-toolkit/uv available"
       else
-        ok "thin delegation: uv not in CI (hermetic skip) — layout OK"
+        ok "thin delegation: CLI not in CI (hermetic skip) — layout OK"
       fi
     elif [ "$count" -lt 3 ]; then
       miss "expected at least 3 skill directories, found $count"

@@ -73,7 +73,7 @@ Run these commands before opening a PR:
 
 ```bash
 bash scripts/validate-repo-structure.sh
-bash scripts/check-shell-syntax.sh
+bash scripts/check-shell-syntax.sh   # includes scripts/test-install-agent-toolkit.sh
 ```
 
 Optional full lint run:

@@ -793,6 +793,26 @@ if [[ ${MODE} != "issue" && ${MODE} != "json" ]]; then
   info "checks completed: ${passed}/${checks} passed"
 fi
 
+# ── agent-toolkit CLI (canonical V binary, #206) ──────────────────────────────
+if [[ ${MODE} != "issue" && ${MODE} != "json" ]]; then
+  _AT_LIB="${DOTS_WORKSTATION_LIB_DIR}/install-agent-toolkit.sh"
+  if [[ -f $_AT_LIB ]]; then
+    # shellcheck source=/dev/null
+    source "$_AT_LIB"
+    checks=$((checks + 1))
+    if agent_toolkit_meets_min; then
+      ok "agent-toolkit $(agent_toolkit_current_version) (V CLI >= ${AGENT_TOOLKIT_MIN_VERSION})"
+      passed=$((passed + 1))
+    elif command -v agent-toolkit &>/dev/null; then
+      warn "agent-toolkit $(agent_toolkit_current_version 2>/dev/null || echo unknown) is below ${AGENT_TOOLKIT_MIN_VERSION} (Python-era). Upgrade: dots-skills install-toolkit"
+      passed=$((passed + 1))
+    else
+      warn "agent-toolkit not on PATH — run: dots-skills install-toolkit"
+      passed=$((passed + 1))
+    fi
+  fi
+fi
+
 # ── agent-toolkit profile checks ──────────────────────────────────────────────
 if command -v agent-toolkit &>/dev/null && [[ ${MODE} != "issue" && ${MODE} != "json" ]]; then
   info "running agent-toolkit doctor for profile-level checks..."

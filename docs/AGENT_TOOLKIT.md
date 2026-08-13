@@ -1,6 +1,6 @@
 # Agent Toolkit Integration
 
-> **Thin workstation** — agentic-workstation provisions the machine, agent-toolkit distributes all capabilities via `uv`.
+> **Thin workstation** — agentic-workstation provisions the machine, agent-toolkit distributes all capabilities via the **canonical V CLI**.
 
 ---
 
@@ -9,6 +9,8 @@
 [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit) is the **sole capability distribution layer** for agentic-workstation. It provides the curated library of skills, agent personas, loop templates, MCP templates, prompts, packs, and tool profiles — one source of truth deployed to every major AI coding assistant.
 
 agentic-workstation's role is **machine provisioning and runner logic only**: chezmoi, shell tools, packages, LLM policy, and the dev-companion queue runner. All skills/packs/personas/agents/MCPs/loops/prompts are delegated.
+
+Workstation treats Agent Toolkit as a **CLI**, never as a Python library. Do not `import agent_toolkit`.
 
 ```mermaid
 graph LR
@@ -29,7 +31,7 @@ graph LR
         MC["Muse<br/>~/.config/muse/skills/"]
     end
 
-    AW -->|"uv tool install --force agent-toolkit-cli<br/>agent-toolkit install"| AT
+    AW -->|"brew / AUR / GitHub / uv launcher<br/>agent-toolkit install"| AT
     AT -->|dots-skills sync (delegated)| CC
     AT -->|dots-skills sync (delegated)| OC
     AT -->|dots-skills sync (delegated)| CU
@@ -72,43 +74,65 @@ graph LR
 
 ## How agentic-workstation integrates agent-toolkit (thin)
 
+### Install channel preference
+
+Bootstrap **prefers a platform-native adapter**, then falls back. Every path ends with the same CLI contract (`agent-toolkit install`, `doctor`, `inventory`). Shared helper: `~/.local/lib/agentic-workstation/install-agent-toolkit.sh`.
+
+| Order | Platform | Channel | Notes |
+|------:|----------|---------|-------|
+| 1 | macOS | Homebrew `ulises-jeremias/homebrew-tap` formula `agent-toolkit` | Native V binary from GitHub Releases |
+| 1 | Arch Linux | AUR `agent-toolkit-bin` | Native V binary. Do **not** install AUR `agent-toolkit` (Python; not the product) |
+| 2 | Linux/macOS | GitHub Release floating binary + `SHA256SUMS` | ADR-018 names, verified sha256 into `~/.local/bin/agent-toolkit` |
+| 3 | Any (chicken/egg) | `uv tool install --force 'agent-toolkit-cli>=1.11.0'` | PyPI wheel that **execs the bundled V binary** (ADR-021), not Python as the product |
+
+Minimum version: **1.11.0** (first GitHub Release with native V binaries and V-launcher wheels).
+
 ### Automatic install via chezmoi — thin workstation
 
-Only **one install path** is supported:
-
-- **`run_once_after_50-install-agent-toolkit.sh.tmpl`** — runs once on first `chezmoi init`. Executes only:
-  ```bash
-  uv tool install --force agent-toolkit-cli
-  agent-toolkit install
-  ```
-  This deploys skills, agents, profiles, loops, and MCP templates for all detected AI tools.
-
-- **`run_onchange_45-install-ai-agents.sh.tmpl`** — retained for chezmoi onchange hashing. In the thin workstation it delegates to the same two commands (`uv tool install --force agent-toolkit-cli` + `agent-toolkit install`) and then runs `dots-skills sync`. Workstation-only runner logic (`dev-companion/runner`, LLM policy) is not delegated.
-
-No AUR / pipx / pip fallbacks are used — `uv` is the sole installer.
+- **`run_once_after_50-install-agent-toolkit.sh.tmpl`** — runs once on first `chezmoi init`. Walks the preference table, then `agent-toolkit install`.
+- **`run_onchange_45-install-ai-agents.sh.tmpl`** — retained for chezmoi onchange hashing. Same CLI install + `agent-toolkit install` + `dots-skills sync`. Workstation-only runner logic (`dev-companion/runner`, LLM policy) is not delegated.
 
 ### Manual install / update
 
 ```bash
-# Thin workstation canonical path
-uv tool install --force agent-toolkit-cli
-agent-toolkit install
-
-# Via dots-skills (delegates to the same two commands)
+# Walks brew → AUR → GitHub → uv, then agent-toolkit install + sync
 dots-skills install-toolkit
 
-# Update to latest
-uv tool install --force agent-toolkit-cli
+# Explicit channels (all end on the V CLI)
+brew tap ulises-jeremias/homebrew-tap && brew install agent-toolkit
+yay -S agent-toolkit-bin
+uv tool install --force 'agent-toolkit-cli>=1.11.0'
+
 agent-toolkit install
-# or: dots-skills install-toolkit
 ```
+
+### Rollback pin
+
+Pin the previous CLI instead of importing Python modules:
+
+```bash
+# uv wheel
+export AGENT_TOOLKIT_CLI_VERSION=1.11.0
+dots-skills install-toolkit
+# equivalent: uv tool install --force 'agent-toolkit-cli==1.11.0'
+
+# GitHub binary
+export AGENT_TOOLKIT_RELEASE=v1.11.0
+dots-skills install-toolkit
+
+# Homebrew / AUR: reinstall the previous formula/PKGBUILD version
+brew reinstall agent-toolkit
+# or: sudo pacman -U /var/cache/pacman/pkg/agent-toolkit-bin-<ver>-*.pkg.tar.zst
+```
+
+Force one channel: `export AGENT_TOOLKIT_INSTALL_CHANNEL=uv` (or `brew`, `aur`, `github`).
 
 ### dots-skills delegates to agent-toolkit
 
 `dots-skills` is a thin wrapper that delegates to `agent-toolkit`:
 
 ```
-dots-skills install-toolkit      uv tool install --force agent-toolkit-cli + agent-toolkit install
+dots-skills install-toolkit      brew/AUR/GitHub/uv CLI install + agent-toolkit install
 dots-skills sync                 delegates to agent-toolkit install (regenerates per-tool symlinks)
 dots-skills list                 delegates to agent-toolkit skills list (falls back to local when toolkit unavailable)
 dots-skills check                delegates to agent-toolkit doctor
@@ -165,7 +189,7 @@ See [SWARM_SETUP.md](SWARM_SETUP.md) for complete provisioning, questionnaire, a
 
 | Source | Install mechanism | Location | Examples |
 |--------|------------------|----------|---------|
-| **agent-toolkit** | `uv tool install --force agent-toolkit-cli && agent-toolkit install` | `~/.local/share/agentic-workstation/skills-external/agent-toolkit/` | 60 cross-domain skills, catalog via SKILL.md |
+| **agent-toolkit** | `dots-skills install-toolkit` then `agent-toolkit install` | `~/.local/share/agentic-workstation/skills-external/agent-toolkit/` | 60 cross-domain skills, catalog via SKILL.md |
 
 > [!IMPORTANT]
 > **No bundled skills are shipped in this repository.** The `home/dot_local/share/agentic-workstation/skills/` directory is intentionally empty (placeholder README only). All capabilities come from `agent-toolkit`. Workstation-only runner logic lives in `home/dot_local/share/agentic-workstation/dev-companion/runner`.
@@ -213,7 +237,38 @@ agent-toolkit also ships as Claude Code and Cursor plugin bundles:
 /plugin install agent-toolkit-forge@agent-toolkit
 ```
 
-On agentic-workstation machines, the `chezmoi apply` path (`uv tool install --force agent-toolkit-cli && agent-toolkit install`) is preferred because it also configures per-tool profiles and loop templates.
+On agentic-workstation machines, the `chezmoi apply` path (`dots-skills install-toolkit`) is preferred because it also configures per-tool profiles and loop templates.
+
+---
+
+## For contributors — bootstrap helper
+
+Shared installer: `home/dot_local/lib/agentic-workstation/install-agent-toolkit.sh` (deployed to `~/.local/lib/agentic-workstation/install-agent-toolkit.sh`).
+
+| Caller | When |
+|--------|------|
+| `home/.chezmoiscripts/run_once_after_50-install-agent-toolkit.sh.tmpl` | First `chezmoi apply` (skipped when `CI=true`) |
+| `home/.chezmoiscripts/run_onchange_45-install-ai-agents.sh.tmpl` | Subsequent applies when AI/productivity groups are enabled |
+| `dots-skills install-toolkit` | Manual install / upgrade (`--force`) |
+| `dots-doctor` | Version gate: warn if CLI missing or `< 1.11.0` |
+
+**Rules**
+
+- Never `import agent_toolkit` from workstation scripts, chezmoi templates, or `dots-*` wrappers.
+- Do not treat `pip install agent-toolkit-cli` or `python -m agent_toolkit` as the product.
+- `uv tool install 'agent-toolkit-cli>=1.11.0'` is allowed only as the chicken/egg fallback (ADR-021 launcher execs V).
+- AUR product package is `agent-toolkit-bin`. AUR `agent-toolkit` (Python) is not the product.
+
+**Local checks** (from repo root):
+
+```bash
+bash scripts/test-install-agent-toolkit.sh
+bash scripts/check-shell-syntax.sh
+bash scripts/validate-repo-structure.sh
+python3 scripts/generate-compatibility.py --check
+```
+
+Channel plan is unit-tested without network. Fresh-machine smoke (optional): install via the highest available channel, then `agent-toolkit --version`, `agent-toolkit doctor`, `agent-toolkit install`.
 
 ---
 

@@ -1,7 +1,7 @@
 #!/bin/sh
 # agentic-workstation Skills Installer — DEPRECATED (thin workstation)
 # This script now delegates to `agent-toolkit install` (see docs/AGENT_TOOLKIT.md).
-# Prefer: uv tool install --force agent-toolkit-cli && agent-toolkit install
+# Prefer: dots-skills install-toolkit  (brew / AUR / GitHub / uv V launcher)
 # Legacy: Downloads and installs agentic-workstation AI skills and agents into the correct directories.
 # Compatible with: macOS, Linux, WSL2 (Windows)
 #
@@ -31,7 +31,7 @@ set -eu
 # Thin workstation: delegate to agent-toolkit if available
 if command -v agent-toolkit >/dev/null 2>&1; then
   echo "[install-skills.sh] DEPRECATED — delegating to 'agent-toolkit install' (thin workstation)" >&2
-  echo "[install-skills.sh] Run: uv tool install --force agent-toolkit-cli && agent-toolkit install" >&2
+  echo "[install-skills.sh] Run: dots-skills install-toolkit  (or uv tool install --force 'agent-toolkit-cli>=1.11.0' && agent-toolkit install)" >&2
   exec agent-toolkit install "$@"
 fi
 

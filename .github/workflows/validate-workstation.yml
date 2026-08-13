@@ -50,6 +50,9 @@ jobs:
       - name: Check shell syntax
         run: bash scripts/check-shell-syntax.sh
 
+      - name: Test agent-toolkit install helper
+        run: bash scripts/test-install-agent-toolkit.sh
+
       - name: Check Markdown tables
         run: bash scripts/check-markdown-tables.sh
 
@@ -128,7 +131,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$HOME/.local/bin"
-          mkdir -p "$HOME/.local/lib/agentic-workstation/easy-options"
+          mkdir -p "$HOME/.local/lib/agentic-workstation"
           # chezmoi prefixes executables with "executable_" in source state
           # We need to strip this prefix when copying for direct script testing
           for f in home/dot_local/bin/executable_dots-*; do
@@ -138,7 +141,7 @@ jobs:
               chmod +x "$HOME/.local/bin/$base"
             fi
           done
-          cp home/dot_local/lib/agentic-workstation/easy-options/* "$HOME/.local/lib/agentic-workstation/easy-options/" 2>/dev/null || true
+          cp -a home/dot_local/lib/agentic-workstation/. "$HOME/.local/lib/agentic-workstation/"
 
       - name: Add to PATH
         shell: bash
@@ -223,7 +226,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$HOME/.local/bin"
-          mkdir -p "$HOME/.local/lib/agentic-workstation/easy-options"
+          mkdir -p "$HOME/.local/lib/agentic-workstation"
           # chezmoi prefixes executables with "executable_" in source state
           # We need to strip this prefix when copying for direct script testing
           for f in home/dot_local/bin/executable_dots-*; do
@@ -233,7 +236,7 @@ jobs:
               chmod +x "$HOME/.local/bin/$base"
             fi
           done
-          cp home/dot_local/lib/agentic-workstation/easy-options/* "$HOME/.local/lib/agentic-workstation/easy-options/" 2>/dev/null || true
+          cp -a home/dot_local/lib/agentic-workstation/. "$HOME/.local/lib/agentic-workstation/"
 
       - name: Add to PATH
         shell: bash

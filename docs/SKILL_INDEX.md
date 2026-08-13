@@ -21,7 +21,7 @@
 | `dots-harness-knowledge-sync` | Session knowledge persistence |
 
 > All other cross-domain skills (60 skills across 9 domains — `delivery`, `forge`, `integrations`, `data`, `tooling`, etc.)
-> are provided by `agent-toolkit` via `uv tool install --force agent-toolkit-cli && agent-toolkit install`
+> are provided by `agent-toolkit` via `dots-skills install-toolkit`
 > and installed at `~/.local/share/agentic-workstation/skills-external/agent-toolkit/`.
 > Third-party packs (JIRA 14, Confluence 17) live in `skills-external/{jira,confluence}-assistant/` and never in `plugins/`.
 

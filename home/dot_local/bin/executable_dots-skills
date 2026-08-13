@@ -11,7 +11,7 @@ set -eo pipefail
 ## Commands:
 ##     list                 List installed skills and their status per AI tool.
 ##     sync                 Regenerate symlinks for all skills (reads skill.json compatibility).
-##     install-toolkit      Install or update agent-toolkit (uv tool install --force + agent-toolkit install).
+##     install-toolkit      Install or update agent-toolkit (brew/AUR/GitHub/uv V launcher + agent-toolkit install).
 ##     install <name>       Install an npm-sourced skill from the registry.
 ##     check                Validate that required tools and pip packages are installed.
 ##     add <source>         Add an npm skill to the registry: npm:<pkg>.
@@ -573,20 +573,23 @@ print('\n'.join(d.get('pip_packages', [])))
 }
 
 cmd_install_toolkit() {
-  info "installing / updating agent-toolkit (thin workstation)..."
+  info "installing / updating agent-toolkit (thin workstation, canonical V CLI)..."
 
-  if ! command -v uv &>/dev/null; then
-    die "uv is required for thin workstation. Install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"
+  local helper="${DOTS_WORKSTATION_LIB_DIR}/install-agent-toolkit.sh"
+  if [[ ! -f $helper ]]; then
+    die "Install helper missing: ${helper}. Run 'chezmoi apply' first."
+  fi
+  # shellcheck source=/dev/null
+  source "$helper"
+  if ! install_agent_toolkit_cli force; then
+    die "Failed to install agent-toolkit CLI (brew / AUR agent-toolkit-bin / GitHub / uv>=1.11.0)"
   fi
 
-  # Thin install: only uv tool install --force, then agent-toolkit install
-  info "installing agent-toolkit-cli via uv tool install --force..."
-  uv tool install --force agent-toolkit-cli
+  export PATH="${HOME}/.local/bin:${PATH}"
 
   # Verify the CLI is now available
   if ! command -v agent-toolkit &>/dev/null; then
     warn "agent-toolkit not found in PATH after install."
-    warn "If you used uv or pipx, ensure their bin dirs are in PATH (e.g. ~/.local/bin)."
     # shellcheck disable=SC2016  # literal instruction for user to type
     warn 'Try: export PATH="$HOME/.local/bin:$PATH" then re-run.'
     return 1

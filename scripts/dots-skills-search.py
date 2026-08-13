@@ -65,7 +65,7 @@ def load_skill_json(name: str) -> dict:
 
 def load_all_skills() -> list[dict]:
     """Load skill.json + catalog entry merged for every skill."""
-    # Thin workstation: skills are delegated to agent-toolkit via uv tool — no embedded catalog
+    # Thin workstation: skills are delegated to agent-toolkit (canonical V CLI) — no embedded catalog
     if not SKILLS_DIR.exists() or not any(SKILLS_DIR.iterdir()):
         return []
     catalog = {e["name"]: e for e in load_catalog()}

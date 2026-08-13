@@ -11,6 +11,7 @@
 | `dots-doctor` | Health check — validates tools, directories, compliance, **swarm (tmux/herdr/agent-toolkit swarm doctor)**, plus **system snapshot**; use `--issue` / `--json` |
 | `dots-skills list` | Show installed skills and their per-tool symlink status |
 | `dots-skills sync` | Regenerate symlinks for all skills across AI tools |
+| `dots-skills install-toolkit` | Install/upgrade canonical Agent Toolkit CLI (brew / AUR `agent-toolkit-bin` / GitHub / uv V launcher ≥1.11.0) then `agent-toolkit install` |
 | `dots-skills install <name>` | Install a skill from the registry |
 | `dots-devcompanion enqueue <id>` | Queue a background job for the LLM runner |
 | `dots-devcompanion run-once` | Process the next queued job |
@@ -64,9 +65,10 @@ dots-doctor          # verify
 ### Manage skills
 
 ```bash
-dots-skills list           # show all skills
-dots-skills sync           # regenerate symlinks
-dots-skills install jira   # install optional skill
+dots-skills install-toolkit   # brew / AUR / GitHub / uv V launcher, then agent-toolkit install
+dots-skills list              # show all skills
+dots-skills sync              # regenerate symlinks
+dots-skills install jira      # install optional third-party skill
 ```
 
 ### Run a dev companion job

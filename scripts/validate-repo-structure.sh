@@ -90,6 +90,8 @@ required_paths=(
   "home/dot_local/bin/executable_dots-devcompanion"
   "home/dot_local/bin/executable_dots-update-check"
   "home/dot_local/lib/agentic-workstation/easy-options/easyoptions.sh"
+  "home/dot_local/lib/agentic-workstation/install-agent-toolkit.sh"
+  "home/.chezmoiscripts/run_once_after_50-install-agent-toolkit.sh.tmpl"
 
   # CI workflows and scripts
   ".github/workflows/release-ai-assets.yml"

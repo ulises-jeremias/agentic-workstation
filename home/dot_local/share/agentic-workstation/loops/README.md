@@ -5,7 +5,7 @@ Loop templates are distributed by [agent-toolkit](https://github.com/ulises-jere
 Install via:
 
 ```bash
-uv tool install --force agent-toolkit-cli
+dots-skills install-toolkit
 agent-toolkit install
 agent-toolkit loop list
 ```
