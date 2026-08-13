@@ -19,7 +19,7 @@ graph LR
     end
 
     subgraph "agent-toolkit (L1.5)"
-        AT["77 skills / 9 domains<br/>17 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>6 MCP templates<br/>7 solution packs"]
+        AT["77 skills<br/>17 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>7 MCP templates<br/>7 solution packs"]
     end
 
     subgraph "AI tools"
@@ -48,7 +48,7 @@ graph LR
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Skills | 77 (9 domains) | code-review, github-cli-workflow, jira, confluence, dbt-validation |
+| Skills | 77 | github-cli-workflow, planning, dbt-validation, slack-cli |
 | Agent personas | 17 | architect, planner, code-reviewer, security-reviewer, tdd-guide, agentic-security-reviewer |
 | Loop templates | 10 | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
 | Tool profiles | 7 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
@@ -60,15 +60,22 @@ graph LR
 
 | Domain | Skills | Key examples |
 |--------|--------|-------------|
-| `core` | 8 | memory, planning, context injection, session bootstrap |
+| `core` | 8 | assistant, workspace, project, onboarding |
 | `delivery` | 21 | prd, trd, adr, planning, epic, task, bug, incident, assessment |
-| `design` | 5 | figma-implement-design, figma-code-connect, design-system-rules |
-| `forge` | 8 | github-cli-workflow, gitlab-cli-workflow, gh-fix-ci, gh-address-comments |
+| `design` | 10 | figma-implement-design, figma-code-connect, frontend-design |
+| `forge` | 8 | github-cli-workflow, gitlab-cli-workflow, gh-fix-ci, worktree |
 | `integrations` | 5 | slack-cli, slack-assistant, linear, clickup-cli, mcp |
 | `data` | 2 | dbt-validation, snowflake-validation |
-| `tooling` | 4 | jupyter-notebook, playwright-cli, herdr, inventory |
+| `tooling` | 6 | jupyter-notebook, playwright-cli, herdr, inventory |
 | `ops` | 6 | triage, docs-generator, swarm, llm-cost-advisor |
 | `loops` | 1 | loop-runner |
+| `agentic-security` | 4 | threat-modeling, mcp-audit |
+| `cloud` | 2 | cloud-design-patterns |
+| `architecture` | 1 | c4-model |
+| `accessibility` | 1 | review |
+| `quality` | 2 | megalinter, codeql |
+
+JIRA/Confluence skills are third-party packs on the workstation (`skills-external/`), not first-party toolkit skills.
 
 ---
 

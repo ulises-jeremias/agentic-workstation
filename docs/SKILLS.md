@@ -5,7 +5,7 @@ This document describes the agentic-workstation skill system — how skills are 
 > [!IMPORTANT]
 > **Skills are now distributed via [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit).**
 > agentic-workstation provisions your machine. agent-toolkit provides the capability library
-> (60 skills, 16 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
+> (77 skills, 17 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
 > the integration details.
 >
 > **Quick install:**
@@ -104,7 +104,7 @@ The bundled **dots-workstation-assistant** skill is the **agentic-workstation As
 │   dots-harness-knowledge-sync/
 │
 │   # Cross-domain skills (clickup-cli, github-cli-workflow, figma*, dbt-validation,
-│   # etc.) are NOT here — they live in agent-toolkit (60 skills) at
+│   # etc.) are NOT here — they live in agent-toolkit (77 skills) at
 │   # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
 
 ~/.local/share/agentic-workstation/dev-companion/    # Optional queue + worker (see README.md)
@@ -235,7 +235,7 @@ skills:
     # prefer dots-workstation-workflow-generic-project.
 
   # Cross-domain skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
-  # are NOT registered here — they are provided by agent-toolkit (60 skills) via
+  # are NOT registered here — they are provided by agent-toolkit (77 skills) via
   # `dots-skills install-toolkit` at
   # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
 
@@ -411,7 +411,7 @@ dots-skills add npm:<pkg>        Add an npm skill to the registry
 
 > **Note**: `github` and `url` skills are now managed by chezmoi (`.chezmoiexternal`), not by `dots-skills install`. Run `chezmoi apply` instead.
 >
-> **Note**: The bulk of cross-domain skills (60 skills across 9 domains) come from `agent-toolkit`. Use `dots-skills install-toolkit` or `chezmoi apply` to install/update them. Third-party npm/github packs are intentionally **not** in agent-toolkit’s `plugins/` — workstation owns them via `skills-external/` (see `docs/AGENT_TOOLKIT.md` “Third-party boundary”).
+> **Note**: The bulk of cross-domain skills (77 skills across 14 domains) come from `agent-toolkit`. Use `dots-skills install-toolkit` or `chezmoi apply` to install/update them. Third-party npm/github packs are intentionally **not** in agent-toolkit’s `plugins/` — workstation owns them via `skills-external/` (see `docs/AGENT_TOOLKIT.md` “Third-party boundary”).
 
 ### `dots-skills list`
 
