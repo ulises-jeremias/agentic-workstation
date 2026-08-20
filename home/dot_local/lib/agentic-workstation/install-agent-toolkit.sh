@@ -367,11 +367,11 @@ _at_data_dir() {
 }
 
 # Valid data root requires profiles/ plus skills/ or loops/ (sync.v:is_valid_data_root).
+# NOTE: must match paths.v:is_valid_toolkit_root (any of skills/loops/profiles suffices).
 _at_is_valid_data_root() {
   local p="$1"
   [[ -n $p && -d $p ]] || return 1
-  [[ -d "${p}/profiles" ]] || return 1
-  [[ -d "${p}/skills" || -d "${p}/loops" ]] || return 1
+  [[ -d "${p}/skills" || -d "${p}/loops" || -d "${p}/profiles" ]] || return 1
   return 0
 }
 
@@ -417,7 +417,7 @@ _at_ensure_toolkit_data() {
   local tmp
   tmp="$(mktemp -d "${TMPDIR:-/tmp}/agent-toolkit-data.XXXXXX")"
   _at_log "Bootstrapping toolkit data ${tag} → ${dest} (AUR thin install, no embedded baseline)"
-  if ! curl -fsSL "$url" -o "${tmp}/source.tar.gz"; then
+  if ! curl --proto =https -fsSL "$url" -o "${tmp}/source.tar.gz"; then
     _at_warn "toolkit data download failed: ${url}"
     rm -rf "$tmp"
     return 1
@@ -441,7 +441,8 @@ _at_ensure_toolkit_data() {
     rm -rf "$tmp"
     return 1
   fi
-  local staging="${dest}.staging.$$"
+  local staging
+  staging="$(mktemp -d "${TMPDIR:-/tmp}/agent-toolkit-data.XXXXXX")"
   rm -rf "$staging"
   mkdir -p "$staging"
   local ok=1
@@ -518,9 +519,12 @@ deploy_agent_toolkit_profiles() {
   local rc=0
   # Run from neutral CWD to avoid CWD fallback picking ~/.ai-workspace (which
   # has a spurious profiles/ dir). Keep env sanitized for this invoke only.
-  if ! (cd /tmp && "$bin" install); then
+  local neutral_cwd
+  neutral_cwd="$(mktemp -d "${TMPDIR:-/tmp}/agent-toolkit-neutral.XXXXXX")"
+  if ! (cd "$neutral_cwd" && "$bin" install); then
     rc=$?
   fi
+  rm -rf "$neutral_cwd"
   # Restore caller's env.
   if [[ $_at_save_ai == __unset__ ]]; then
     unset AI_WORKSPACE 2>/dev/null || true
