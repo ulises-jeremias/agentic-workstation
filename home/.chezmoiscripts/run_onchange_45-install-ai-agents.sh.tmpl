@@ -26,9 +26,15 @@ fi
 log "Thin workstation: installing canonical Agent Toolkit CLI + profiles"
 
 _AT_LIB="${HOME}/.local/lib/agentic-workstation/install-agent-toolkit.sh"
+_AT_FALLBACK="{{ .chezmoi.sourceDir }}/home/dot_local/lib/agentic-workstation/install-agent-toolkit.sh"
 if [ ! -f "$_AT_LIB" ]; then
-	warn "missing ${_AT_LIB} — re-run chezmoi apply"
-	exit 0
+	if [ -f "$_AT_FALLBACK" ]; then
+		warn "using fallback lib ${_AT_FALLBACK}"
+		_AT_LIB="$_AT_FALLBACK"
+	else
+		warn "missing ${_AT_LIB} — re-run chezmoi apply"
+		exit 0
+	fi
 fi
 
 # shellcheck source=/dev/null
