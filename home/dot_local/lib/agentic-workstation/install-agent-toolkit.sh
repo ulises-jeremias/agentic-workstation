@@ -357,6 +357,125 @@ install_agent_toolkit_cli() {
   return 1
 }
 
+# Resolve XDG data dir for toolkit capability data (ADR-015 tier 2).
+_at_data_dir() {
+  local base="${XDG_DATA_HOME:-}"
+  if [[ -z $base ]]; then
+    base="${HOME}/.local/share"
+  fi
+  printf '%s\n' "${base}/agent-toolkit/data"
+}
+
+# Valid data root requires profiles/ plus skills/ or loops/ (sync.v:is_valid_data_root).
+# NOTE: must match paths.v:is_valid_toolkit_root (any of skills/loops/profiles suffices).
+_at_is_valid_data_root() {
+  local p="$1"
+  [[ -n $p && -d $p ]] || return 1
+  [[ -d "${p}/skills" || -d "${p}/loops" || -d "${p}/profiles" ]] || return 1
+  return 0
+}
+
+# Ensure XDG data exists for AUR/bin installs that ship only the binary (no embedded
+# baseline). The V binary's `agent-toolkit install` is offline-only (paths.v ADR-015,
+# #557 owns downloads), so a fresh AUR install with empty XDG data would always
+# fail with "toolkit root not found". Bootstrap via curl + tarball promote (mirrors
+# sync.v:DataSync.download_data / promote_staging) when feasible.
+_at_ensure_toolkit_data() {
+  local bin="${1:-}"
+  # Already valid — nothing to do (xdg_data tier will win over AI_WORKSPACE/CWD).
+  local dest
+  dest="$(_at_data_dir)"
+  if _at_is_valid_data_root "$dest"; then
+    return 0
+  fi
+  # Honor offline flag — never hit network.
+  local offline="${AGENT_TOOLKIT_OFFLINE:-}"
+  offline="$(printf '%s' "$offline" | tr '[:upper:]' '[:lower:]')"
+  if [[ $offline == 1 || $offline == true || $offline == yes ]]; then
+    _at_warn "offline mode — skipping toolkit data bootstrap (${dest} missing)"
+    return 1
+  fi
+  command -v curl >/dev/null 2>&1 || return 1
+  command -v tar >/dev/null 2>&1 || return 1
+  local ver=""
+  if [[ -n $bin && -x $bin ]]; then
+    ver="$(_at_parse_version "$bin" --version)"
+  fi
+  if [[ -z $ver ]]; then
+    ver="${AGENT_TOOLKIT_MIN_VERSION}"
+  fi
+  # Strip leading v if any (caller may pass vX.Y.Z).
+  ver="${ver#v}"
+  local tag="v${ver}"
+  # Allow pin via AGENT_TOOLKIT_RELEASE.
+  if [[ -n ${AGENT_TOOLKIT_RELEASE:-} ]]; then
+    tag="${AGENT_TOOLKIT_RELEASE}"
+    [[ $tag == v* ]] || tag="v${tag}"
+    ver="${tag#v}"
+  fi
+  local url="https://github.com/${AGENT_TOOLKIT_GITHUB_REPO}/archive/refs/tags/${tag}.tar.gz"
+  local tmp
+  tmp="$(mktemp -d "${TMPDIR:-/tmp}/agent-toolkit-data.XXXXXX")"
+  _at_log "Bootstrapping toolkit data ${tag} → ${dest} (AUR thin install, no embedded baseline)"
+  if ! curl --proto =https -fsSL "$url" -o "${tmp}/source.tar.gz"; then
+    _at_warn "toolkit data download failed: ${url}"
+    rm -rf "$tmp"
+    return 1
+  fi
+  local extract_dir="${tmp}/extract"
+  mkdir -p "$extract_dir"
+  if ! tar -xzf "${tmp}/source.tar.gz" -C "$extract_dir"; then
+    _at_warn "toolkit data extract failed"
+    rm -rf "$tmp"
+    return 1
+  fi
+  local src
+  src="$(find "$extract_dir" -mindepth 1 -maxdepth 1 -type d | head -n1)"
+  if [[ -z $src || ! -d $src ]]; then
+    _at_warn "toolkit data: no top-level dir in tarball"
+    rm -rf "$tmp"
+    return 1
+  fi
+  if ! _at_is_valid_data_root "$src"; then
+    _at_warn "release tarball does not contain capability data (profiles + skills/loops missing)"
+    rm -rf "$tmp"
+    return 1
+  fi
+  local staging
+  staging="$(mktemp -d "${TMPDIR:-/tmp}/agent-toolkit-data.XXXXXX")"
+  rm -rf "$staging"
+  mkdir -p "$staging"
+  local ok=1
+  for name in skills loops profiles mcp catalogs agents capabilities distributions; do
+    if [[ -d "${src}/${name}" ]]; then
+      if ! cp -a "${src}/${name}" "${staging}/"; then
+        _at_warn "copy ${name} failed"
+        ok=0
+        break
+      fi
+    fi
+  done
+  if [[ $ok -ne 1 ]] || ! _at_is_valid_data_root "$staging"; then
+    rm -rf "$staging" "$tmp"
+    return 1
+  fi
+  printf '%s\n' "$ver" >"${staging}/.version"
+  if [[ -e $dest ]]; then
+    rm -rf "$dest" || {
+      rm -rf "$staging" "$tmp"
+      return 1
+    }
+  fi
+  mkdir -p "$(dirname "$dest")"
+  if ! mv "$staging" "$dest"; then
+    rm -rf "$staging" "$tmp"
+    return 1
+  fi
+  rm -rf "$tmp"
+  _at_ok "toolkit data bootstrapped: ${dest} (${tag})"
+  return 0
+}
+
 deploy_agent_toolkit_profiles() {
   _at_ensure_path
   if ! command -v agent-toolkit >/dev/null 2>&1 && [[ ! -x ${HOME}/.local/bin/agent-toolkit ]]; then
@@ -365,8 +484,66 @@ deploy_agent_toolkit_profiles() {
   fi
   local bin
   bin="$(_at_cli_path)"
+  # Sanitize harness workspace env that would hijack toolkit root resolution.
+  # ADR-015: AGENT_TOOLKIT_ROOT / AI_WORKSPACE override must be a valid data
+  # root. Fresh thin workstations have ~/.ai-workspace/profiles (single file
+  # oss-contrib.yaml) which falsely qualifies as is_valid_toolkit_root (only
+  # checks dir existence). Unset it for the install invoke so XDG/embedded
+  # tiers win. Preserve user's env after.
+  local _at_save_ai="${AI_WORKSPACE:-__unset__}"
+  local _at_save_root="${AGENT_TOOLKIT_ROOT:-__unset__}"
+  local _at_sanitized=0
+  if [[ -n ${AI_WORKSPACE:-} ]]; then
+    if [[ -f ${AI_WORKSPACE}/AGENTS.md || -d ${AI_WORKSPACE}/knowledge ]]; then
+      if ! _at_is_valid_data_root "$AI_WORKSPACE"; then
+        _at_warn "sanitizing AI_WORKSPACE for toolkit install (harness workspace, not data root): ${AI_WORKSPACE}"
+        unset AI_WORKSPACE
+        _at_sanitized=1
+      elif [[ ! -d ${AI_WORKSPACE}/profiles/claude-code && ! -d ${AI_WORKSPACE}/profiles/cursor ]]; then
+        # Workspace with only profiles/oss-contrib.yaml but no real tool profiles.
+        _at_warn "sanitizing AI_WORKSPACE (contains profiles/ but no tool data): ${AI_WORKSPACE}"
+        unset AI_WORKSPACE
+        _at_sanitized=1
+      fi
+    fi
+  fi
+  if [[ -n ${AGENT_TOOLKIT_ROOT:-} ]]; then
+    if [[ -f ${AGENT_TOOLKIT_ROOT}/AGENTS.md || -d ${AGENT_TOOLKIT_ROOT}/knowledge ]]; then
+      if ! _at_is_valid_data_root "$AGENT_TOOLKIT_ROOT"; then
+        _at_warn "sanitizing AGENT_TOOLKIT_ROOT for toolkit install (harness workspace): ${AGENT_TOOLKIT_ROOT}"
+        unset AGENT_TOOLKIT_ROOT
+        _at_sanitized=1
+      fi
+    fi
+  fi
+  # Bootstrap XDG data for AUR/GitHub binary installs without embedded baseline.
+  _at_ensure_toolkit_data "$bin" || _at_warn "toolkit data bootstrap skipped/failed — install may report 'toolkit root not found'"
   _at_log "Deploying profiles via: ${bin} install"
-  "$bin" install
+  local rc=0
+  # Run from neutral CWD to avoid CWD fallback picking ~/.ai-workspace (which
+  # has a spurious profiles/ dir). Keep env sanitized for this invoke only.
+  local neutral_cwd
+  neutral_cwd="$(mktemp -d "${TMPDIR:-/tmp}/agent-toolkit-neutral.XXXXXX")"
+  if ! (cd "$neutral_cwd" && "$bin" install); then
+    rc=$?
+  fi
+  rm -rf "$neutral_cwd"
+  # Restore caller's env.
+  if [[ $_at_save_ai == __unset__ ]]; then
+    unset AI_WORKSPACE 2>/dev/null || true
+  else
+    export AI_WORKSPACE="$_at_save_ai"
+  fi
+  if [[ $_at_save_root == __unset__ ]]; then
+    unset AGENT_TOOLKIT_ROOT 2>/dev/null || true
+  else
+    export AGENT_TOOLKIT_ROOT="$_at_save_root"
+  fi
+  # If we sanitized, also warn how to get the old behavior back if needed.
+  if [[ $_at_sanitized -eq 1 ]]; then
+    _at_log "env restored after sanitized install"
+  fi
+  return $rc
 }
 
 install_and_deploy_agent_toolkit() {

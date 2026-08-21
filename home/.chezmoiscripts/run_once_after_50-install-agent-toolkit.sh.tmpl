@@ -14,10 +14,18 @@ if [ "${CI:-}" = "true" ] || [ -n "${HERMETIC_PORT:-}" ] || [ -n "${GITHUB_ACTIO
 	exit 0
 fi
 
+# Resolve lib — prefer deployed copy, fallback to chezmoi source for first-run
+# ordering (run_once_after may execute before dot_local/lib is materialized).
 _AT_LIB="${HOME}/.local/lib/agentic-workstation/install-agent-toolkit.sh"
+_AT_FALLBACK="{{ .chezmoi.sourceDir }}/home/dot_local/lib/agentic-workstation/install-agent-toolkit.sh"
 if [ ! -f "$_AT_LIB" ]; then
-	warn "missing ${_AT_LIB} — re-run chezmoi apply after pulling latest source"
-	exit 1
+	if [ -f "$_AT_FALLBACK" ]; then
+		warn "using fallback lib ${_AT_FALLBACK} (deployed copy not yet materialized)"
+		_AT_LIB="$_AT_FALLBACK"
+	else
+		warn "missing ${_AT_LIB} — re-run chezmoi apply after pulling latest source"
+		exit 1
+	fi
 fi
 
 # shellcheck source=/dev/null
