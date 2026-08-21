@@ -51,7 +51,7 @@ expect_eq "$(agent_toolkit_release_asset)" "agent-toolkit-macos-x86_64" "darwin 
 
 # --- uv spec / pin ---
 unset AGENT_TOOLKIT_CLI_VERSION || true
-expect_eq "$(agent_toolkit_uv_package_spec)" "agent-toolkit-cli>=1.11.0" "default uv spec >=1.11.0"
+expect_eq "$(agent_toolkit_uv_package_spec)" "agent-toolkit-cli>=1.17.0" "default uv spec >=1.17.0"
 
 AGENT_TOOLKIT_CLI_VERSION=1.11.0
 expect_eq "$(agent_toolkit_uv_package_spec)" "agent-toolkit-cli==1.11.0" "rollback pin AGENT_TOOLKIT_CLI_VERSION"
