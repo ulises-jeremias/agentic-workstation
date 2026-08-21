@@ -8,7 +8,7 @@
 #
 # Channel order (AGENT_TOOLKIT_INSTALL_CHANNEL=auto, default):
 #   1. macOS  → Homebrew tap ulises-jeremias/homebrew-tap formula agent-toolkit
-#   1. Arch   → AUR agent-toolkit-bin (yay/paru)
+#   1. Arch   → AUR agent-toolkit-bin (yay/paru) — self-contained since 1.17.0 (ADR-026 full-embed)
 #   2. any    → GitHub Release floating binary + SHA256SUMS (ADR-018)
 #   3. any    → uv tool install agent-toolkit-cli>=1.11.0 (V launcher, ADR-021)
 #
@@ -35,7 +35,7 @@ if [[ ${BASH_SOURCE[0]:-} == "$0" ]]; then
   set -euo pipefail
 fi
 
-AGENT_TOOLKIT_MIN_VERSION="${AGENT_TOOLKIT_MIN_VERSION:-1.11.0}"
+AGENT_TOOLKIT_MIN_VERSION="${AGENT_TOOLKIT_MIN_VERSION:-1.17.0}"
 AGENT_TOOLKIT_GITHUB_REPO="${AGENT_TOOLKIT_GITHUB_REPO:-ulises-jeremias/agent-toolkit}"
 AGENT_TOOLKIT_BREW_TAP="${AGENT_TOOLKIT_BREW_TAP:-ulises-jeremias/homebrew-tap}"
 AGENT_TOOLKIT_BREW_FORMULA="${AGENT_TOOLKIT_BREW_FORMULA:-agent-toolkit}"
@@ -376,12 +376,19 @@ _at_is_valid_data_root() {
 }
 
 # Ensure XDG data exists for AUR/bin installs that ship only the binary (no embedded
-# baseline). The V binary's `agent-toolkit install` is offline-only (paths.v ADR-015,
-# #557 owns downloads), so a fresh AUR install with empty XDG data would always
-# fail with "toolkit root not found". Bootstrap via curl + tarball promote (mirrors
-# sync.v:DataSync.download_data / promote_staging) when feasible.
+# baseline). Since v1.17.0 the V binary is full-embed (ADR-026) and carries all
+# capability data — XDG bootstrap is no longer required for standalone. Kept as
+# compat for pre-1.17.0 thin installs; no-op when the binary is 1.17.0+.
 _at_ensure_toolkit_data() {
   local bin="${1:-}"
+  # Full-embed (1.17.0+): binary already has everything, skip XDG bootstrap.
+  if [[ -n $bin && -x $bin ]]; then
+    local bv
+    bv="$(_at_parse_version "$bin" --version)"
+    if [[ -n $bv ]] && _at_version_ge "$bv" "1.17.0"; then
+      return 0
+    fi
+  fi
   # Already valid — nothing to do (xdg_data tier will win over AI_WORKSPACE/CWD).
   local dest
   dest="$(_at_data_dir)"
