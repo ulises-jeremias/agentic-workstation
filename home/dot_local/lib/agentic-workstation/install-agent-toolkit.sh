@@ -461,7 +461,10 @@ _at_ensure_toolkit_data() {
   fi
   printf '%s\n' "$ver" >"${staging}/.version"
   if [[ -e $dest ]]; then
-    rm -rf "$dest" || { rm -rf "$staging" "$tmp"; return 1; }
+    rm -rf "$dest" || {
+      rm -rf "$staging" "$tmp"
+      return 1
+    }
   fi
   mkdir -p "$(dirname "$dest")"
   if ! mv "$staging" "$dest"; then
