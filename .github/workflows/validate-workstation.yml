@@ -53,6 +53,9 @@ jobs:
       - name: Test agent-toolkit install helper
         run: bash scripts/test-install-agent-toolkit.sh
 
+      - name: Test AI agents install helper
+        run: bash scripts/test-install-ai-agents-lib.sh
+
       - name: Check Markdown tables
         run: bash scripts/check-markdown-tables.sh
 
