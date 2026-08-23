@@ -83,6 +83,35 @@ Interactive `chezmoi init` captures user choices for:
 
 Those choices are persisted and used by `home/.chezmoiscripts/` installer scripts on future applies without re-prompting. At the end of each apply, `dots-skills sync` regenerates all skill symlinks.
 
+## Agent catalog
+
+Terminal coding agents are declared in **`home/.chezmoidata/ai.yaml`** under `ai.agent_catalog` — the canonical machine-readable source for first-class agent installs.
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `description` | string | Human-readable summary |
+| `enabled` | bool | Opt-in switch (questionnaire selection / profile preset / private data override) |
+| `channel` | enum | Install strategy: `native`, `script`, `npm`, `gh-extension`, `auto` |
+| `pin` | string | `""` = latest; exact version otherwise. Overridable at install time via `<NAME>_PIN` / `<NAME>_VERSION` environment variables, consistent with the existing pin pattern in `install-agent-toolkit.sh` |
+| `check` | string | Post-install gate: command that must succeed for the install to count as OK |
+| `requires_node` | bool | `npm`-channel entries require the node group to be installed first |
+
+### Channels
+
+| Channel | Strategy | Used by |
+| --- | --- | --- |
+| `native` | Vendor installer without sudo | Claude Code |
+| `script` | Official `curl … \| bash` installer | OpenCode, Muse Code |
+| `npm` | Global npm package (needs node group) | pi, Gemini CLI, Codex |
+| `gh-extension` | `gh extension install` | Copilot CLI |
+| `auto` | Best-available chain (brew → mise → script) | Herdr |
+
+### Catalog entries
+
+`claude_code`, `opencode`, `muse_code`, `copilot_cli`, `pi`, `gemini_cli`, `codex`, `herdr`.
+
+The legacy boolean flags under `agents` (e.g. `claude_code: false`) are **deprecated** and kept only until the questionnaire migrates to the catalog; new tooling must read `agent_catalog` exclusively. Installs are idempotent (`has_cmd` early-outs), CI/hermetic-guarded, and report a per-agent status line — the same conventions as the swarm and editors installers.
+
 ## Local AI Audit
 
 `dots-workstation-audit` inventories local AI tool installation, safe auth hints, config file presence, and privacy-related metadata for Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, Windsurf, and Gemini. It is intentionally redacted: it never prints token values, raw auth files, prompt history, chat logs, or memory contents. Local subscription evidence is best-effort only; vendor admin consoles or APIs remain authoritative for plan ownership.

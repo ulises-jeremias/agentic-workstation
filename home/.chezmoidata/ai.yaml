@@ -14,8 +14,84 @@ agents:
   slack_cli: true      # Official Slack CLI for app development workflows
   rtk: true            # CLI output compression proxy (avg 89% token reduction)
   uipro_cli: true      # UI/UX Pro Max installer (used to sync upstream skill assets)
-  claude_code: false   # Anthropic Claude Code terminal agent (opt-in)
-  opencode: false      # OpenCode terminal agent (opt-in)
-  pi: false            # pi coding agent by Mario Zechner (opt-in)
-  copilot_cli: false   # GitHub Copilot CLI extension (opt-in, requires gh auth)
-  muse_code: false     # Meta Muse Code terminal agent (opt-in, https://dev.meta.ai)
+  claude_code: false   # DEPRECATED (legacy boolean) → use agent_catalog.claude_code
+  opencode: false      # DEPRECATED (legacy boolean) → use agent_catalog.opencode
+  pi: false            # DEPRECATED (legacy boolean) → use agent_catalog.pi
+  copilot_cli: false   # DEPRECATED (legacy boolean) → use agent_catalog.copilot_cli
+  muse_code: false     # DEPRECATED (legacy boolean) → use agent_catalog.muse_code
+
+# ── Agent catalog ────────────────────────────────────────────────────────────
+# Canonical schema for first-class terminal coding agent installs. The
+# installer script iterates this map; the legacy booleans under `agents` are
+# retained only until the questionnaire migrates to the catalog.
+#
+# Schema per entry:
+#   description   - human-readable summary
+#   enabled       - opt-in switch (questionnaire / profile / private data)
+#   channel       - native | script | npm | gh-extension | auto
+#                   native: vendor installer without sudo
+#                   script: official curl|bash installer
+#                   npm: global npm package (requires_node: true)
+#                   gh-extension: GitHub CLI extension
+#                   auto: chain best-available channels (brew → mise → script)
+#   pin           - "" = latest; exact version otherwise. Overridable at
+#                   install time via <NAME>_PIN or <NAME>_VERSION env vars.
+#   check         - command that must succeed after install (post-install gate)
+#   requires_node - npm-channel entries need the node group installed first
+agent_catalog:
+  claude_code:
+    description: Anthropic Claude Code terminal agent
+    enabled: false
+    channel: native
+    pin: ""
+    check: "claude --version"
+    requires_node: false
+  opencode:
+    description: OpenCode terminal agent
+    enabled: true # default selection when the ai group is enabled
+    channel: script
+    pin: ""
+    check: "opencode --version"
+    requires_node: false
+  muse_code:
+    description: Meta Muse Code terminal agent
+    enabled: false
+    channel: script
+    pin: ""
+    check: "muse --version"
+    requires_node: false
+  copilot_cli:
+    description: GitHub Copilot CLI extension (requires gh auth)
+    enabled: false
+    channel: gh-extension
+    pin: ""
+    check: "gh copilot --version"
+    requires_node: false
+  pi:
+    description: pi coding agent by Mario Zechner
+    enabled: false
+    channel: npm
+    pin: ""
+    check: "pi --version"
+    requires_node: true
+  gemini_cli:
+    description: Google Gemini CLI
+    enabled: false
+    channel: npm
+    pin: ""
+    check: "gemini --version"
+    requires_node: true
+  codex:
+    description: OpenAI Codex CLI
+    enabled: false
+    channel: npm
+    pin: ""
+    check: "codex --version"
+    requires_node: true
+  herdr:
+    description: Herdr workspace manager for agent swarms
+    enabled: false
+    channel: auto
+    pin: ""
+    check: "herdr --version"
+    requires_node: false
