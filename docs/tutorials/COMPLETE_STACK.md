@@ -6,15 +6,17 @@
 
 ---
 
-## The 3-Layer Architecture
+## The 3-Layer Architecture — L1 / L1.5 / L3 (thin host)
 
 | Layer | Repository | What it provides |
 |-------|-----------|-----------------|
-| L1 — Infrastructure | **agentic-workstation** | Skills, agents, MCP templates, CLI helpers, dotfiles |
-| L2 — Runtime | **agentic-harness** | Memory, personas, packs, loops, job queues |
-| L3 — Application | Your project repo | AGENTS.md with project-specific routing |
+| **L1 — Workstation** (thin, this repo) | **agentic-workstation** | Machine provisioning (chezmoi, shell, packages, LLM policy, tmux/Herdr) + Toolkit installation + host runner (`dots-devcompanion`); delegates capabilities |
+| **L1.5 — Toolkit** | **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)** | **77 skills** (`agent-toolkit inventory`), 17 agents, 10 loops, 7 MCP templates, packs — sole capability source |
+| **L3 — Harness / Project** | **agentic-harness** + your project repo | Memory, personas, packs, loops execution, job queues + project `AGENTS.md` routing |
 
-You can use L1 alone (skills without memory). You can use L2 alone (memory without skills). Together, they form a complete AI-native development workflow.
+> **Workstation installs tools, Toolkit owns orchestration.** Workstation provisions `tmux`/`Herdr` + Toolkit; Toolkit owns swarm recipes (`agent-toolkit swarm …`) and loop templates. Runner stays in Workstation (host LLM policy).
+
+You can use L1 + L1.5 alone (provisioned machine with delegated skills, no harness memory). You can use L3 alone (harness memory without provisioned skills, limited). Together (L1→L1.5→L3), they form a complete AI-native development workflow.
 
 ---
 
@@ -41,35 +43,37 @@ dots-doctor
 ```
 
 ```text
-Skills: 52 bundled
-Agents: 13 configured
-MCP templates: 6
-CLI tools: dots-doctor, dots-skills, dots-devcompanion, dots-mcp, dots-loop
+Skills: 77 via agent-toolkit (agent-toolkit inventory)
+Agents: 17 via agent-toolkit
+MCP templates: 7 via agent-toolkit
+CLI tools: dots-doctor, dots-skills, dots-devcompanion, dots-mcp, dots-loop (delegate to agent-toolkit)
 ```
 
-### Clone the harness (L2)
+### Clone the harness (L3)
 
 ```bash
 git clone https://github.com/ulises-jeremias/agentic-harness ~/.ai-workspace
 cd ~/.ai-workspace
 bash scripts/workspace-init.sh
+# or Toolkit-owned scaffolding:
+agent-toolkit workspace init
 ```
 
 Verify:
 
 ```bash
-./bin/workspace-context
+agent-toolkit workspace context
 ```
 
 ```text
 === Workspace Context Snapshot ===
 Harness dir: /home/you/.ai-workspace
-Workstation skills: detected (52 skills)
+Workstation skills: detected (77 skills via agent-toolkit inventory)
 Knowledge entries: 0
 Active packs: none
 ```
 
-Both layers are connected — the harness discovers the workstation's skills automatically.
+Both layers are connected — the harness discovers the workstation's provisioned Toolkit capabilities automatically (L1 provisions → L1.5 delegates → L3 consumes).
 
 ---
 
@@ -122,11 +126,12 @@ Create `AGENTS.md` in the project root:
 - argparse for CLI
 ```
 
-### Link the project to the harness
+### Link the project to the harness (Toolkit-owned)
 
 ```bash
 cd ~/.ai-workspace
-./bin/project-indexer link ~/projects/hello-stack hello-stack
+agent-toolkit project link ~/projects/hello-stack hello-stack
+# legacy harness: ./bin/project-indexer link ~/projects/hello-stack hello-stack
 ```
 
 ### Create a pack
@@ -153,14 +158,14 @@ conventions:
 
 ```bash
 cd ~/.ai-workspace
-./bin/workspace-context load --pack packs/hello-stack.yaml
+agent-toolkit workspace context --pack packs/hello-stack.yaml
 claude  # or opencode / cursor
 ```
 
 ```text
 [AI reads AGENTS.md]
 Workspace context loaded: hello-stack
-Skills available: 52 (jira-assistant, github-cli-workflow, planner, implementer, code-reviewer, ...)
+Skills available: 77 (jira-assistant, github-cli-workflow, planner, implementer, code-reviewer, ...) via agent-toolkit inventory
 Knowledge: 0 entries (new workspace)
 ```
 
@@ -224,11 +229,12 @@ The **github-cli-workflow** skill creates a well-formatted PR with:
 
 Now that manual workflow works, automate recurring tasks.
 
-### Create a daily triage loop
+### Create a daily triage loop (Toolkit owns loop templates)
 
 ```bash
 cd ~/.ai-workspace
-./bin/loop init daily-triage --template daily-triage --tier 1
+agent-toolkit loop init daily-triage --template daily-triage --tier 1
+# or: dots-loop init daily-triage --template daily-triage --tier 1
 ```
 
 Edit `loops/daily-triage/LOOP.md` to point at hello-stack:
@@ -241,7 +247,8 @@ request: |
 Run it:
 
 ```bash
-./bin/loop run daily-triage
+agent-toolkit loop run daily-triage
+# or: dots-loop run daily-triage
 ```
 
 ```text
@@ -253,7 +260,8 @@ Report saved: loops/daily-triage/report.md
 ### Schedule it
 
 ```bash
-./bin/loop schedule daily-triage
+agent-toolkit loop schedule daily-triage
+# or: dots-loop schedule daily-triage
 ```
 
 ```text
@@ -264,19 +272,21 @@ Next run: tomorrow 09:00
 
 ## Part 5: Cross-Session Memory (15 min)
 
-### Session 1: Save learnings
+### Session 1: Save learnings (harness memory, via `assistant-memory`)
 
 ```bash
-./bin/assistant-memory add --type learning "hello-stack uses argparse with ArgumentDefaultsHelpFormatter"
-./bin/assistant-memory add --type process "hello-stack workflow: planner → implementer → code-reviewer → github-cli-workflow"
-./bin/assistant-memory add --type todo "Add CI workflow for hello-stack tests"
+assistant-memory add --type learning "hello-stack uses argparse with ArgumentDefaultsHelpFormatter"
+assistant-memory add --type process "hello-stack workflow: planner → implementer → code-reviewer → github-cli-workflow"
+assistant-memory add --type todo "Add CI workflow for hello-stack tests"
+# when inside harness dir, legacy: ./bin/assistant-memory add ...
 ```
 
 ### Session 2: AI remembers
 
 ```bash
 cd ~/.ai-workspace
-./bin/assistant-memory inject
+assistant-memory inject
+# or: ./bin/assistant-memory inject (legacy harness path)
 claude
 ```
 
@@ -296,28 +306,30 @@ The AI remembers everything from yesterday. No repetition needed.
 ## What You Built
 
 ```text
-agentic-workstation (L1)          agentic-harness (L2)          hello-stack (L3)
+agentic-workstation (L1 thin)     agent-toolkit (L1.5)         agentic-harness (L3) + hello-stack (L3)
 ┌─────────────────────┐          ┌─────────────────────┐       ┌──────────────────┐
-│ 52 skills            │          │ knowledge/           │       │ AGENTS.md        │
-│ 13 sub-agents        │──────────│ packs/hello-stack    │───────│ hello.py         │
-│ 6 MCP templates      │  skills  │ personas/            │  ctx  │ tests/           │
-│ dots-* CLI           │  agents  │ loops/daily-triage   │       │ .github/         │
-└─────────────────────┘          │ bin/assistant-memory  │       └──────────────────┘
-                                  │ bin/workspace-context │
-                                  │ bin/devcompanion      │
-                                  └─────────────────────┘
+│ provisions: chezmoi │          │ 77 skills            │       │ knowledge/        │
+│ shell, packages,    │─installs─│ 17 agents            │─deleg─│ packs/hello-stack │
+│ LLM policy, tmux +  │  Toolkit │ 10 loops             │  via  │ personas/         │
+│ Herdr, Toolkit      │──────────│ 7 MCP templates      │ dots-*│ loops/daily-triage│
+│ dots-* (thin)       │          │ packs + prompts      │       │ AGENTS.md        │
+└─────────────────────┘          └─────────────────────┘       │ hello.py          │
+                                                                │ tests/            │
+                                                                │ .github/          │
+                                                                └──────────────────┘
+         Workstation installs tools, Toolkit owns orchestration → L3 consumes
 ```
 
-### Layer interaction
+### Layer interaction — L1 provisions, L1.5 distributes, L3 consumes
 
-| Action | L1 provides | L2 provides | L3 consumes |
-|--------|------------|------------|------------|
-| Plan feature | planner subagent | Pack conventions | AGENTS.md routing |
-| Implement | implementer subagent | Knowledge patterns | Source code |
-| Review | code-reviewer subagent | Persona guardrails | PR diff |
-| Create PR | github-cli-workflow | Pack config (repo URL) | Branch + commits |
-| Daily triage | jira-assistant skill | Loop scheduler | Issues |
-| Next session | (skills persist) | Memory injection | Current task |
+| Action | L1 (Workstation) provisions | L1.5 (Toolkit) distributes | L3 (Harness/Project) consumes |
+|--------|----------------------------|---------------------------|-------------------------------|
+| Plan feature | LLM policy + Toolkit install | planner subagent | Pack conventions + AGENTS.md routing |
+| Implement | shell + packages | implementer subagent | Source code |
+| Review | host checks | code-reviewer subagent | PR diff + persona guardrails |
+| Create PR | git + gh CLI | github-cli-workflow | Branch + commits + pack config |
+| Daily triage | tmux/Herdr provisioning | jira-assistant skill + loop templates | Issues + loop scheduler |
+| Next session | maintains LLM policy | skills persist via inventory | Memory injection + knowledge/ |
 
 ---
 

@@ -22,7 +22,7 @@
 
 Loop templates come from [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) —
 the capability distribution layer for agentic-workstation. `dots-loop` delegates to `agent-toolkit loop`
-and [ai-workspace](https://github.com/ulises-jeremias/ai-workspace)'s `bin/loop`:
+(Toolkit owns loop templates; legacy `ai-workspace` `bin/loop` is superseded by `agent-toolkit loop` / `dots-loop`):
 
 ```bash
 # Check status of all loops

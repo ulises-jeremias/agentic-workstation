@@ -13,7 +13,7 @@ agents:
   clickup_cli: true    # ClickUp CLI — replaces ClickUp MCP (token-efficient)
   slack_cli: true      # Official Slack CLI for app development workflows
   rtk: true            # CLI output compression proxy (avg 89% token reduction)
-  uipro_cli: true      # UI/UX Pro Max installer (used to sync upstream skill assets)
+  # uipro_cli removed in #197 — productivity group now covers clickup, slack, rtk only (historical uipro-cli / ui-ux-pro-max pack deprecated)
   claude_code: false   # DEPRECATED (legacy boolean) → use agent_catalog.claude_code
   opencode: false      # DEPRECATED (legacy boolean) → use agent_catalog.opencode
   pi: false            # DEPRECATED (legacy boolean) → use agent_catalog.pi

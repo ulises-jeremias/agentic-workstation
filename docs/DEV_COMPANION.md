@@ -1,8 +1,12 @@
 # agentic-workstation Dev Companion (general + workspace overlays)
 
-This document is a **human** overview. Authoritative agent instructions live under **`~/.local/share/agentic-workstation/skills/`** after `chezmoi apply` (see **`dots-workstation-dev-companion`**, **`skill-catalog.yaml`**, **`dots-workstation-assistant/references/ORCHESTRATION.md`**). Client/account overlays can live in [`ai-workspace`](https://github.com/ulises-jeremias/ai-workspace), typically under `~/.ai-workspace/packs/` and `~/.ai-workspace/knowledge/`.
+> **Thin-host boundary:** `dots-devcompanion` runner + LLM policy stays in **Workstation** (host-specific); generic queue behavior is owned by **Toolkit** via `agent-toolkit devcompanion`. See [Boundary: Workstation runner vs Toolkit queue](#boundary-workstation-runner-vs-toolkit-queue).
 
-## Layers
+This document is a **human** overview. Authoritative agent instructions live under **`~/.local/share/agentic-workstation/skills/`** after `chezmoi apply` (see **`dots-workstation-dev-companion`**, **`skill-catalog.yaml`**, **`dots-workstation-assistant/references/ORCHESTRATION.md`**). Client/account overlays can live in workspace packs under `~/.ai-workspace/packs/` (or `~/.config/agentic-workstation/env.d/` for LLM policy) and `~/.ai-workspace/knowledge/`.
+
+## Layers — skill composition (not architecture L1/L1.5/L3)
+
+> These L1/L2/L3 labels describe **dev-companion skill composition** only, not the workstation architecture layers (**L1 Workstation thin, L1.5 Toolkit, L3 Harness/Project** — see [ARCHITECTURE.md](ARCHITECTURE.md)). Do not conflate.
 
 ```mermaid
 graph TD
@@ -20,11 +24,11 @@ graph TD
     WS --> HOW
 ```
 
-| Layer | Bundled skill | Purpose |
+| Skill Layer | Bundled skill | Purpose |
 | --- | --- | --- |
-| L1 | **dots-workstation-assistant** | Orchestrator + repo inspection order (every repo) |
-| L2 | **dots-workstation-dev-companion** | General dev companion framing for client work |
-| L3 | **Workspace pack overlay** | Client/account context loaded from `~/.ai-workspace/packs/` |
+| L1 (skill) | **dots-workstation-assistant** | Orchestrator + repo inspection order (every repo) |
+| L2 (skill) | **dots-workstation-dev-companion** | General dev companion framing for client work |
+| L3 (skill) | **Workspace pack overlay** | Client/account context loaded from `~/.ai-workspace/packs/` |
 
 Workflow skills (**dots-workstation-workflow-generic-project**) remain the **phase/gate** driver; **HOW** (CLI) stays in tool skills.
 
@@ -60,6 +64,16 @@ Keep rules **short**; put long policy in `AGENTS.md` and skills.
 ## Registry defaults (baseline)
 
 `dots-workstation-dev-companion` and **`dots-workstation-workflow-generic-project`** ship **`enabled: true`** in `home/.chezmoidata/skills-registry.yaml` so `dots-skills sync` links them after `chezmoi apply`. To **opt out** on a machine, override chezmoi data and set `enabled: false` for the skill names you do not want symlinked.
+
+## Boundary: Workstation runner vs Toolkit queue
+
+| Concern | Owner | Location | Why |
+|---------|-------|----------|-----|
+| **Runner + policy enforcement** | **Workstation (L1)** | `~/.local/share/agentic-workstation/dev-companion/runner/` (`dots-devcompanion`, `policy.py`, `providers/`) + `~/.config/agentic-workstation/env.d/` + `devcompanion-llm.json` | LLM policy is host-specific (secrets, per-engagement `DOTS_AI_*_LLM_ALLOWLIST/STRICT`, audit log `llm-audit.log`). Must be checkable via `dots-devcompanion llm-status` without invoking a model and fail closed (`policy_violation` exit 2). Moving it to stateless Toolkit would couple vendor-neutral distribution to billing/privacy constraints. |
+| **Generic queue behavior** | **Toolkit (L1.5)** | `agent-toolkit devcompanion queue/enqueue/run` + job JSON schema (`job.schema.json`) + queue dirs `pending/processing/done/failed` | Queue file conventions and plumbing are portable; Toolkit can evolve them without host policy knowledge. |
+| **Swarm host deps vs orchestration** | **Workstation installs / Toolkit orchestrates** | L1: `tmux` + `Herdr` + `herdr integration install opencode` via `run_onchange_42…`; L1.5: `agent-toolkit swarm …` recipes, isolated sockets | Parallel boundary — same principle. |
+
+> **Workstation installs tools, Toolkit owns orchestration** applies to both swarms and devcompanion. Wire workspace to runner via `HARNESS_RUNNER_DIR=$HOME/.local/share/agentic-workstation/dev-companion/runner` so harness loops delegate to the host-enforced runner. See [DEV_COMPANION_LLM.md](DEV_COMPANION_LLM.md) and [DEV_COMPANION_IDE_ROADMAP.md](DEV_COMPANION_IDE_ROADMAP.md) (Mode A/B/C).
 
 ## Optional local runner (queue)
 

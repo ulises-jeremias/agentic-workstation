@@ -142,7 +142,7 @@
 {{-     $installSwarm      = eq "yes" (promptChoice "  Install Agent Toolkit Swarms (tmux + Herdr)?"                                     $yesNo $dSwarm) -}}
 {{-     $installJira       = eq "yes" (promptChoice "  Install JIRA Assistant skill pack (14 skills)?"                                  $yesNo $dJira) -}}
 {{-     $installConfluence = eq "yes" (promptChoice "  Install Confluence Assistant skill pack (17 skills)?"                            $yesNo $dConfluence) -}}
-{{-     $installProd       = eq "yes" (promptChoice "  Install productivity CLIs (clickup, slack, rtk, uipro-cli)?"                     $yesNo $dProd) -}}
+{{-     $installProd       = eq "yes" (promptChoice "  Install productivity CLIs (clickup, slack, rtk)?"                                   $yesNo $dProd) -}}
 {{-   end -}}
 
 {{/* ── Step 4: AI agents (only asked when ai group is enabled) ──────────── */}}
@@ -264,11 +264,10 @@
   install_agent_copilot_cli            = {{ $installAgentCopilot }}
   install_agent_muse_code              = {{ $installAgentMuse }}
 
-  # ── Productivity CLIs (one group toggle drives all four) ─────────────────
+  # ── Productivity CLIs (one group toggle drives all three — uipro-cli removed in #197) ──
   install_agent_clickup_cli            = {{ $installProd }}
   install_agent_slack_cli              = {{ $installProd }}
   install_agent_rtk                    = {{ $installProd }}
-  install_agent_uipro_cli              = {{ $installProd }}
 
   # ── External skill packs ─────────────────────────────────────────────────
   install_skill_jira_assistant         = {{ $installJira }}
