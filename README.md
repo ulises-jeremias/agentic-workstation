@@ -6,7 +6,7 @@
 <br>
 
 [![Layer](https://img.shields.io/badge/L1-Workstation%20Baseline-22d3ee?style=for-the-badge&labelColor=020617)](#personal-dx-stack)
-[![Skills](https://img.shields.io/badge/60-AI%20Skill%20Packs-a78bfa?style=for-the-badge&labelColor=020617)](#what-you-get)
+[![Skills](https://img.shields.io/badge/77-AI%20Skill%20Packs-a78bfa?style=for-the-badge&labelColor=020617)](#what-you-get)
 [![MCP](https://img.shields.io/badge/MCP-Ready-84cc16?style=for-the-badge&labelColor=020617)](#what-you-get)
 [![CI](https://img.shields.io/github/actions/workflow/status/ulises-jeremias/agentic-workstation/devcontainer-chezmoi-validate.yml?style=for-the-badge&label=CI&labelColor=020617&color=22d3ee)](https://github.com/ulises-jeremias/agentic-workstation/actions/workflows/devcontainer-chezmoi-validate.yml)
 [![Discord](https://img.shields.io/discord/1527933660764831825?style=for-the-badge&label=Discord&logo=discord&logoColor=white&labelColor=020617)](https://discord.gg/bR5VyATgka)
@@ -15,7 +15,8 @@
 
 <p>
   <strong>agentic-workstation</strong> is the baseline layer of my personal Developer Experience stack:<br>
-  reproducible dotfiles, AI skills, MCP servers, agent workflows, and CLI guardrails optimized for deep flow.
+  reproducible dotfiles, machine provisioning, and CLI guardrails optimized for deep flow.<br>
+  <em>Thin-host: Workstation provisions the machine (chezmoi, shell, packages, LLM policy, tmux/Herdr, Toolkit installation) and delegates all capabilities to <a href="https://github.com/ulises-jeremias/agent-toolkit">agent-toolkit</a>. Verify skill count with <code>agent-toolkit inventory</code>.</em>
 </p>
 
 [Install](#quick-start) · [Architecture](#architecture) · [Wiki](https://github.com/ulises-jeremias/agentic-workstation/wiki) · [Integrations](#integrations) · [Personal DX Stack](#personal-dx-stack) · [Docs](docs/) · [Contributing](CONTRIBUTING.md)
@@ -24,10 +25,10 @@
 
 ---
 
-**agentic-workstation** is an AI-first, chezmoi-managed workstation baseline that equips your machine with skills, agents, MCP servers, CLI helpers, and loop engineering primitives — ready to go in one command.
+**agentic-workstation** is an AI-first, chezmoi-managed workstation baseline — a **thin host** that provisions your machine (chezmoi, shell, packages, LLM policy, tmux/Herdr, and Toolkit installation) and delegates all capabilities to [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit). Workstation installs tools, Toolkit owns orchestration — ready to go in one command.
 
 Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CLI**, **GitHub Copilot**, and any AI coding tool that supports agent skills.
-> **Thin workstation** — this repository ships no embedded `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `agents/*`, or `packs/teams`. All capabilities are delegated to `agent-toolkit` via `dots-skills install-toolkit` (Homebrew / AUR `agent-toolkit-bin` / GitHub V binary / `uv tool install --force 'agent-toolkit-cli>=1.11.0'`). The `SKILL.md` catalog is provided by the toolkit at runtime. Workstation-only runner logic (`dev-companion/runner`) is retained. See [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md) and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+> **Thin workstation** — this repository ships no embedded `skills/*`, `loops/*`, `mcp/*`, `prompts/*`, `agents/*`, or `packs/teams`. All capabilities are delegated to `agent-toolkit` via `dots-skills install-toolkit` (Homebrew / AUR `agent-toolkit-bin` / GitHub V binary / `uv tool install --force 'agent-toolkit-cli>=1.11.0'`). The `SKILL.md` catalog is provided by the toolkit at runtime (verify with `agent-toolkit inventory` — 77 skills, 17 agents, 10 loops). Workstation-only runner logic (`dev-companion/runner`, LLM policy) is retained — see boundary in [`docs/DEV_COMPANION_LLM.md`](docs/DEV_COMPANION_LLM.md) and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). See [`docs/AGENT_TOOLKIT.md`](docs/AGENT_TOOLKIT.md).
 
 
 
@@ -40,7 +41,7 @@ Works with **Claude Code**, **Muse Code**, **opencode**, **Cursor**, **Gemini CL
     <td width="33%" align="center">
       <br>
       <b>🧩 Skills System</b><br>
-      <sub>77 reusable skills via <a href="https://github.com/ulises-jeremias/agent-toolkit">agent-toolkit</a> — ClickUp, Figma, GitHub, GitLab, Slack, dbt, Snowflake, Playwright, and more<br/><em>Jira (14) & Confluence (17) are opt-in third-party packs via <code>skills-external/</code> — <code>install_skill_jira_assistant=true</code> / <code>install_skill_confluence_assistant=true</code></em></sub>
+      <sub>77 reusable skills via <a href="https://github.com/ulises-jeremias/agent-toolkit">agent-toolkit</a> — ClickUp, Figma, GitHub, GitLab, Slack, dbt, Snowflake, Playwright, and more (<code>agent-toolkit inventory</code>)<br/><em>Jira (14) & Confluence (17) are opt-in third-party packs via <code>skills-external/</code> — <code>install_skill_jira_assistant=true</code> / <code>install_skill_confluence_assistant=true</code></em></sub>
     </td>
     <td width="33%" align="center">
       <br>
@@ -187,15 +188,15 @@ Seamless skill packs for the tools you use every day:
 
 | Layer | Repo | Responsibility |
 |-------|------|----------------|
-| **L1** | **agentic-workstation** (thin, this repo) | Machine provisioning + runner — chezmoi, packages, shell, LLM policy, `dev-companion/runner` (thin, no embedded skills) |
-| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | **Sole** capability distribution — skills, agents, profiles, loops, MCP, prompts, packs |
-| **L3** | Project repos | Overlays — project `AGENTS.md`, engagement packs, client skills |
+| **L1** | **agentic-workstation** (thin, this repo) | Machine provisioning + host runner — chezmoi, packages, shell, LLM policy, tmux/Herdr, Toolkit installation, `dev-companion/runner` (thin, no embedded skills) |
+| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | **Sole** capability distribution — 77 skills, 17 agents, 10 loops, profiles, MCP, prompts, packs (verify with `agent-toolkit inventory`) |
+| **L3** | Project repos / agentic-harness | Overlays — project `AGENTS.md`, engagement packs, client skills, knowledge, personas |
 
 Details and Mermaid diagrams: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ### Agent Toolkit Swarms — tmux + Herdr
 
-> **Workstation installs tools, Toolkit owns orchestration.** agentic-workstation provisions the machine-level swarm dependencies (tmux + Herdr + OpenCode integration); all swarm orchestration lives in [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit).
+> **Workstation installs tools, Toolkit owns orchestration.** agentic-workstation provisions the host dependencies (chezmoi + packages + shell + LLM policy + tmux + Herdr + OpenCode integration + Toolkit installation); all swarm orchestration, recipes, and isolated tmux sessions (`agent-toolkit-swarm-<run-id>`) are owned by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit). Workstation provisions, Toolkit orchestrates.
 
 - **tmux** — terminal multiplexer installed via your system package manager (`apt`/`brew`/`pacman`/`dnf`). Verified: `tmux -V`. Workstation uses an isolated socket `agent-toolkit-swarm-<run-id>` and never overwrites `~/.tmux.conf`.
 - **Herdr** — terminal-native app for orchestrating agents. Installed idempotently via `brew` → `mise` → `curl -fsSL https://herdr.dev/install.sh | sh` fallback. Check: `herdr --version`. Skipped in CI unless `SWARM_FORCE_INSTALL=1`.

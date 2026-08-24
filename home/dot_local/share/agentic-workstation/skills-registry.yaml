@@ -14,7 +14,7 @@
 # `dots-skills install-toolkit && agent-toolkit install`.
 # Only workstation-specific orchestration skills remain here; cross-domain
 # skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
-# are now provided by agent-toolkit (60 skills) and cleaned via
+# are now provided by agent-toolkit (77 skills via `agent-toolkit inventory`) and cleaned via
 # .chezmoiremove on each target.
 #
 # Field reference:
@@ -40,7 +40,7 @@ skills:
     source: bundled
     enabled: true
     version: 1.0.0
-    # depends_on: github-cli-workflow and output-handshake now via agent-toolkit (60 skills) — delegated, not bundled
+    # depends_on: github-cli-workflow and output-handshake now via agent-toolkit (77 skills via `agent-toolkit inventory`) — delegated, not bundled
 
   - name: dots-workstation-dev-companion
     source: bundled
