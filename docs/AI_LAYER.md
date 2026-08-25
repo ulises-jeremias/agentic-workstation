@@ -117,6 +117,22 @@ Terminal coding agents are declared in **`home/.chezmoidata/ai.yaml`** under `ai
 
 The legacy boolean flags under `agents` (e.g. `claude_code: false`) are **deprecated** and kept only until the questionnaire migrates to the catalog; new tooling must read `agent_catalog` exclusively. Installs are idempotent (`has_cmd` early-outs), CI/hermetic-guarded, and report a per-agent status line — the same conventions as the swarm and editors installers.
 
+### Installer library
+
+`home/dot_local/lib/agentic-workstation/install-ai-agents-lib.sh` implements one idempotent installer per catalog entry plus a thin dispatcher:
+
+```bash
+# shellcheck source=/dev/null
+. "${HOME}/.local/lib/agentic-workstation/install-ai-agents-lib.sh"
+
+install_catalog_agent claude_code   # one agent
+install_ai_agents opencode pi       # several agents, summary rc
+agent_pin claude_code               # CLAUDE_CODE_PIN ?? CLAUDE_CODE_VERSION ?? ""
+verify_agent_install opencode       # post-install gate (ai.yaml `check`)
+```
+
+Unit tests live in `scripts/test-install-ai-agents-lib.sh` (pure helpers only — no network in CI).
+
 ## Local AI Audit
 
 `dots-workstation-audit` inventories local AI tool installation, safe auth hints, config file presence, and privacy-related metadata for Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, Windsurf, and Gemini. It is intentionally redacted: it never prints token values, raw auth files, prompt history, chat logs, or memory contents. Local subscription evidence is best-effort only; vendor admin consoles or APIs remain authoritative for plan ownership.
