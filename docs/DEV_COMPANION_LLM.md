@@ -2,17 +2,18 @@
 
 > How the dev-companion runner picks an LLM, and how to constrain it to honor
 > client privacy/billing requirements.
+> **Boundary:** runner + policy (`dots-devcompanion`, `policy.py`, `~/.config/agentic-workstation/env.d/`, `DOTS_WORKSTATION_DEVCOMPANION_LLM_*`) stays in **Workstation (L1, host-specific)**; generic queue behavior lives in **Toolkit (L1.5, `agent-toolkit devcompanion`)**. Workstation installs tools, Toolkit owns orchestration.
 
 ---
 
 ## TL;DR
 
-- The runner now ships a **policy layer** ([`policy.py`](../home/dot_local/share/agentic-workstation/dev-companion/runner/policy.py)). You can keep the historical zero-config behaviour or **lock the runner to a single backend** (e.g. only Anthropic via the client's API key) and **fail closed** if that backend is unreachable.
-- Inspect the active policy with `dots-devcompanion llm-status` (no model call).
+- The runner now ships a **policy layer** ([`policy.py`](../home/dot_local/share/agentic-workstation/dev-companion/runner/policy.py)) that stays in **Workstation** (host-specific). You can keep the historical zero-config behaviour or **lock the runner to a single backend** (e.g. only Anthropic via the client's API key) and **fail closed** if that backend is unreachable. `agent-toolkit` has no LLM provider awareness — generic queue lives in Toolkit, policy enforcement lives in Workstation.
+- Inspect the active policy with `dots-devcompanion llm-status` (no model call; Workstation-only).
 - The policy is composed from three layers; later layers can only **restrict**, never widen:
 
 ```
-env vars  →  ~/.config/agentic-workstation/devcompanion-llm.json  →  per-job "llm" block
+env vars (DOTS_WORKSTATION_DEVCOMPANION_LLM_*)  →  ~/.config/agentic-workstation/devcompanion-llm.json  →  per-job "llm" block
 ```
 
 > [!IMPORTANT]

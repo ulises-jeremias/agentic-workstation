@@ -108,7 +108,7 @@ worker:
 **Packs** bundle project-specific context (repos, IDs, conventions) so multiple agents share the same understanding:
 
 ```bash
-./bin/workspace-context load packs/my-client.yaml
+agent-toolkit workspace context --pack packs/my-client.yaml
 ```
 
 In a multi-agent setup, the lead agent loads the pack and propagates relevant context to workers via the shared task store.

@@ -134,7 +134,7 @@ Skills can come from five sources, using three different installation mechanisms
 
 | Source | Mechanism | Example |
 |--------|-----------|---------|
-| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 60 cross-domain skills |
+| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 77 cross-domain skills (`agent-toolkit inventory`) |
 | `bundled` | chezmoi source state | `dots-workstation-triage`, `dots-workstation-assistant` (workstation-only) |
 | `npm` | `dots-skills install` | third-party npm packs (none bundled by default) |
 | `github` | **chezmoi `.chezmoiexternal`** | `ulises-jeremias/JIRA-Assistant-Skills` |
@@ -235,11 +235,11 @@ skills:
     # prefer dots-workstation-workflow-generic-project.
 
   # Cross-domain skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
-  # are NOT registered here — they are provided by agent-toolkit (77 skills) via
+  # are NOT registered here — they are provided by agent-toolkit (77 skills via `agent-toolkit inventory`) via
   # `dots-skills install-toolkit` at
   # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
 
-  # npm: third-party skills (installed via dots-skills add npm:<pkg> — none bundled after ui-ux-pro-max removal)
+  # npm: third-party skills (installed via dots-skills add npm:<pkg> — none bundled after ui-ux-pro-max removal in #197)
 
   # github/url → see .chezmoiexternal.toml.tmpl
 ```
@@ -526,7 +526,7 @@ For **client engagement** or **project-specific** AI workflows, use the naming a
 
 ### External skill (from npm)
 
-1. Find the npm package that exposes a `SKILL.md` (e.g. `uipro-cli`)
+1. Find the npm package that exposes a `SKILL.md` (e.g. `example-npm-skill`) — historical `uipro-cli` / `ui-ux-pro-max` pack was removed in [#197](https://github.com/ulises-jeremias/agentic-workstation/pull/197); do not use `uipro_cli` flag
 2. Add an entry to `skills-registry.yaml`:
    ```yaml
    - name: my-skill
