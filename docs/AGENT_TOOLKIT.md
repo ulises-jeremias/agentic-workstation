@@ -19,7 +19,7 @@ graph LR
     end
 
     subgraph "agent-toolkit (L1.5)"
-        AT["77 skills<br/>17 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>7 MCP templates<br/>7 solution packs"]
+        AT["116+ skills<br/>17 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>7 MCP templates<br/>7 solution packs"]
     end
 
     subgraph "AI tools"
@@ -75,7 +75,7 @@ graph LR
 | `accessibility` | 1 | review |
 | `quality` | 2 | megalinter, codeql |
 
-JIRA/Confluence skills are third-party packs on the workstation (`skills-external/`), not first-party toolkit skills.
+Jira and Confluence skills are bundled upstream capabilities on the workstation (`skills-external/`), not first-party toolkit skills.
 
 ---
 
@@ -233,7 +233,7 @@ See [`docs/DEV_COMPANION_LLM.md`](DEV_COMPANION_LLM.md) for the full policy refe
 
 ## Third-party boundary — plugins vs skills-external
 
-> **Rule: third-party never to `plugins/`** — external npm / github / url packs (JIRA 14, Confluence 17, future third-party packs) live in `skills-external/*` via `chezmoiexternal` + `dots-skills sync` and are **never** compiled into `agent-toolkit` marketplace `plugins/` (`distributions/products.yaml` is first-party-only). Workstation owns their opt-in lifecycle (`install_skill_*=true` → `chezmoi apply --refresh-externals`). Toolkit remains vendor-neutral public (per `agent-toolkit/AGENTS.md:81`, `docs/TRUST.md`). See `docs/SKILLS.md` “Skill sources”. *Historical `uipro-cli` / `ui-ux-pro-max` pack removed in [#197](https://github.com/ulises-jeremias/agentic-workstation/pull/197); do not add `uipro_cli` flags — productivity group now covers `clickup`, `slack`, `rtk` only.*
+> **Rule: third-party never to `plugins/`** — external npm / github / url packs (Jira and Confluence, future third-party packs) live in `skills-external/*` via `chezmoiexternal` + `dots-skills sync` and are **never** compiled into `agent-toolkit` marketplace `plugins/` (`distributions/products.yaml` is first-party-only). Workstation owns their opt-in lifecycle (`install_skill_*=true` → `chezmoi apply --refresh-externals`). Toolkit remains vendor-neutral public (per `agent-toolkit/AGENTS.md:81`, `docs/TRUST.md`). See `docs/SKILLS.md` “Skill sources”. *Historical `uipro-cli` / `ui-ux-pro-max` pack removed in [#197](https://github.com/ulises-jeremias/agentic-workstation/pull/197); do not add `uipro_cli` flags — productivity group now covers `clickup`, `slack`, `rtk` only.*
 
 ---
 

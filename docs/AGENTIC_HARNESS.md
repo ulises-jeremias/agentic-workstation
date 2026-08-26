@@ -45,7 +45,7 @@ flowchart LR
 | Ralph Concept | agentic-workstation Implementation | Layer |
 |---------------|------------------------|-------|
 | **Backing specifications** | `AGENTS.md` templates in `home/.chezmoitemplates/agents/` | L1 |
-| **Context engineering** | `agent-toolkit` skills (77 skills via `agent-toolkit inventory`) — symlinked via `dots-skills sync` | L1.5 → L3 |
+| **Context engineering** | `agent-toolkit` skills (116+ skills via `agent-toolkit inventory`) — symlinked via `dots-skills sync` | L1.5 → L3 |
 | **Persistent memory** | `agentic-harness` / `ai-workspace` `knowledge/` — session discoveries | L3 |
 | **Fix the loop** | `dots-harness-knowledge-sync` skill — auto-syncs | L1 → L3 |
 
@@ -68,7 +68,7 @@ graph TD
     end
 
     subgraph "L1.5 — agent-toolkit (sole capability source)"
-        K1["77 skills / 14 domains (agent-toolkit inventory)"]
+        K1["116+ skills / 14 domains (agent-toolkit inventory)"]
         K2["17 agent personas"]
         K3["10 loop templates"]
         K4["7 tool profiles / MCP templates / packs"]
@@ -116,7 +116,7 @@ The **machine provisioning + host runner** layer:
 
 The **capability distribution** layer:
 
-- **77 skills / 14 domains** (`agent-toolkit inventory`), 17 agent personas, 10 loop templates, 7 tool profiles, 7 MCP templates, packs, prompts
+- **116+ skills / 14 domains** (`agent-toolkit inventory`), 17 agent personas, 10 loop templates, 7 tool profiles, 7 MCP templates, packs, prompts
 - Owns **swarm orchestration**: recipes, isolated tmux sockets (`agent-toolkit-swarm-<run-id>`), `agent-toolkit swarm doctor` / `agent-toolkit swarm start --recipe pair --ui herdr|tmux --runner opencode`
 - Owns **generic queue behavior** (job JSON schema, queue directories) — host-specific LLM dispatch stays in Workstation's `dots-devcompanion` runner
 - Deployed via `dots-skills install-toolkit` (brew / AUR `agent-toolkit-bin` / GitHub / `uv tool install --force 'agent-toolkit-cli>=1.11.0'`) then `agent-toolkit install`

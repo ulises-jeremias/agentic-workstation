@@ -35,8 +35,6 @@
 {{- $installDocker    := index . "install_group_docker"                | default false -}}
 {{- $installAi        := index . "install_group_ai"                    | default false -}}
 {{- $installSwarm     := index . "install_group_swarm"                 | default false -}}
-{{- $installJira      := index . "install_skill_jira_assistant"        | default false -}}
-{{- $installConfluence:= index . "install_skill_confluence_assistant"  | default false -}}
 {{- $installProd      := index . "install_group_skills_productivity"   | default false -}}
 
 {{- $installAgentClaude   := index . "install_agent_claude_code"  | default false -}}
@@ -132,8 +130,6 @@
 {{-     $dDocker     := ternary "yes" "no" (index . "install_group_docker"               | default false) -}}
 {{-     $dAi         := ternary "yes" "no" (index . "install_group_ai"                   | default false) -}}
 {{-     $dSwarm      := ternary "yes" "no" (index . "install_group_swarm"                | default false) -}}
-{{-     $dJira       := ternary "yes" "no" (index . "install_skill_jira_assistant"       | default false) -}}
-{{-     $dConfluence := ternary "yes" "no" (index . "install_skill_confluence_assistant" | default false) -}}
 {{-     $dProd       := ternary "yes" "no" (index . "install_group_skills_productivity"  | default false) -}}
 {{-     $installNode       = eq "yes" (promptChoice (printf "%s\n  Install Node.js tooling (fnm + Node LTS + pnpm)?"           $grpBanner) $yesNo $dNode) -}}
 {{-     $installPython     = eq "yes" (promptChoice "  Install Python tooling (python + uv + pipx)?"                                   $yesNo $dPython) -}}
@@ -270,8 +266,6 @@
   install_agent_rtk                    = {{ $installProd }}
 
   # ── External skill packs ─────────────────────────────────────────────────
-  install_skill_jira_assistant         = {{ $installJira }}
-  install_skill_confluence_assistant   = {{ $installConfluence }}
   install_skill_dots_ai_slack_assistant    = {{ $installProd }}
 
   # ── Editors ──────────────────────────────────────────────────────────────

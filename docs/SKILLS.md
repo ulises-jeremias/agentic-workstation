@@ -5,7 +5,7 @@ This document describes the agentic-workstation skill system — how skills are 
 > [!IMPORTANT]
 > **Skills are now distributed via [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit).**
 > agentic-workstation provisions your machine. agent-toolkit provides the capability library
-> (77 skills, 17 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
+> (116+ skills, 17 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
 > the integration details.
 >
 > **Quick install:**
@@ -104,7 +104,7 @@ The bundled **dots-workstation-assistant** skill is the **agentic-workstation As
 │   dots-harness-knowledge-sync/
 │
 │   # Cross-domain skills (clickup-cli, github-cli-workflow, figma*, dbt-validation,
-│   # etc.) are NOT here — they live in agent-toolkit (77 skills) at
+│   # etc.) are NOT here — they live in agent-toolkit (116+ skills) at
 │   # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
 
 ~/.local/share/agentic-workstation/dev-companion/    # Optional queue + worker (see README.md)
@@ -235,7 +235,7 @@ skills:
     # prefer dots-workstation-workflow-generic-project.
 
   # Cross-domain skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
-  # are NOT registered here — they are provided by agent-toolkit (77 skills via `agent-toolkit inventory`) via
+  # are NOT registered here — they are provided by agent-toolkit (116+ skills via `agent-toolkit inventory`) via
   # `dots-skills install-toolkit` at
   # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
 
@@ -289,7 +289,7 @@ figma family:
 
 A future PR will publish these as a separate opt-in skill pack, installable
 via `chezmoiexternal` + an `install_skill_figma_use_pack` flag (analogous to
-`install_skill_jira_assistant`). Until then, install them manually if you
+`agent-toolkit install`). Jira and Confluence are included in the Toolkit catalog;
 need them — the bundled `figma-implement-design`, `figma-code-connect-components`
 and `figma-create-new-file` cover the most common design-to-code workflows.
 
@@ -320,7 +320,6 @@ Chezmoi handles download, extraction, caching, and refresh — no custom bash ne
 ```toml
 # ~/.config/chezmoi/chezmoi.toml
 [data]
-install_skill_jira_assistant = true
 ```
 
 Or answered during `chezmoi init` interactive prompts.
@@ -334,7 +333,6 @@ A **skill pack** is a GitHub repo with multiple skills under a subdirectory. Eac
 ```toml
 # Key = target path relative to ~/.local/share/agentic-workstation/
 # stripComponents=2 strips "RepoName-main/" and "skills/" from the archive paths
-["skills-external/jira-assistant"]
     type            = "archive"
     url             = "https://github.com/ulises-jeremias/JIRA-Assistant-Skills/archive/refs/heads/main.tar.gz"
     stripComponents = 2          # "Repo-main/skills/jira-admin/SKILL.md" → "jira-admin/SKILL.md"
@@ -390,7 +388,7 @@ $EDITOR ~/.config/agentic-workstation/env.d/jira.env
 # export JIRA_SITE_URL="https://company.atlassian.net"
 
 # Enable in chezmoi config:
-chezmoi edit-config   # add: install_skill_jira_assistant = true  under [data]
+agent-toolkit inventory # inspect the live Jira and Confluence capabilities
 chezmoi apply         # downloads pack via chezmoiexternal + installs jira-as + syncs symlinks
 ```
 
@@ -411,7 +409,7 @@ dots-skills add npm:<pkg>        Add an npm skill to the registry
 
 > **Note**: `github` and `url` skills are now managed by chezmoi (`.chezmoiexternal`), not by `dots-skills install`. Run `chezmoi apply` instead.
 >
-> **Note**: The bulk of cross-domain skills (77 skills across 14 domains) come from `agent-toolkit`. Use `dots-skills install-toolkit` or `chezmoi apply` to install/update them. Third-party npm/github packs are intentionally **not** in agent-toolkit’s `plugins/` — workstation owns them via `skills-external/` (see `docs/AGENT_TOOLKIT.md` “Third-party boundary”).
+> **Note**: The bulk of cross-domain skills (116+ skills across 14 domains) come from `agent-toolkit`. Use `dots-skills install-toolkit` or `chezmoi apply` to install/update them. Third-party npm/github packs are intentionally **not** in agent-toolkit’s `plugins/` — workstation owns them via `skills-external/` (see `docs/AGENT_TOOLKIT.md` “Third-party boundary”).
 
 ### `dots-skills list`
 

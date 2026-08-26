@@ -29,7 +29,7 @@ Each skill contains:
 | Workspace pack overlays | Client/account overlays | workstation (L1) |
 | *All other cross-domain skills* (77 via `agent-toolkit inventory`: `delivery/prd`, `figma*`, `github-cli-workflow`, `dbt-validation`, etc.) | Delegated to `agent-toolkit` (L1.5) | `dots-skills install-toolkit` |
 
-> **Thin boundary:** cross-domain skills (`clickup-cli`, `github-cli-workflow`, `figma*`, `dbt-validation`, `slack-cli`, `linear`, etc.) and best-practice artifacts (`prd`, `trd`, `adr`, `planning`, `project-assessment`) are now in `agent-toolkit` and cleaned via `.chezmoiremove`. Third-party packs (JIRA 14, Confluence 17) live in `skills-external/` and never in `plugins/`.
+> **Thin boundary:** cross-domain skills (`clickup-cli`, `github-cli-workflow`, `figma*`, `dbt-validation`, `slack-cli`, `linear`, etc.) and best-practice artifacts (`prd`, `trd`, `adr`, `planning`, `project-assessment`) are now in `agent-toolkit` and cleaned via `.chezmoiremove`. Third-party packs (Jira and Confluence) live in `skills-external/` and never in `plugins/`.
 
 ---
 
@@ -101,8 +101,8 @@ Assistant: I can inspect the repository, but observability scoring also needs da
 
 | Skill | Install flag |
 |-------|-------------|
-| JIRA Assistant (14 skills) | `install_skill_jira_assistant = true` |
-| Confluence Assistant (17 skills) | `install_skill_confluence_assistant = true` |
+| Jira capabilities | `agent-toolkit install` |
+| Confluence capabilities | `agent-toolkit install` |
 
 ## Related integrations
 

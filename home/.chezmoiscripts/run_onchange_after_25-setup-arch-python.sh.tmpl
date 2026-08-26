@@ -3,9 +3,7 @@
 # hash: {{ include (joinPath .chezmoi.sourceDir "dot_local/share/agentic-workstation/pacman-hooks/pipx-reinstall.hook") | sha256sum }}
 {{- $gPy := index . "install_group_python" | default false -}}
 {{- $gAi := index . "install_group_ai"     | default false -}}
-{{- $gSkJ := index . "install_skill_jira_assistant"       | default false -}}
-{{- $gSkC := index . "install_skill_confluence_assistant" | default false -}}
-{{- if or $gPy $gAi $gSkJ $gSkC -}}
+{{- if or $gPy $gAi -}}
 set -eo pipefail
 
 if [[ -t 1 && -z ${NO_COLOR:-} ]]; then

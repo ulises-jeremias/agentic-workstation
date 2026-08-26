@@ -1,6 +1,6 @@
 dots-workstation-*
 dots-harness-*
-# ── Delegated to agent-toolkit (77 skills via `agent-toolkit inventory`) — clean legacy workstation copies ──
+# ── Delegated to agent-toolkit — clean legacy workstation copies ──
 # These were previously bundled in workstation and are now provided via
 # `uv tool install --force agent-toolkit-cli && agent-toolkit install`
 # at ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
@@ -24,7 +24,7 @@ ui-ux-pro-max
 # Legacy non-canonical workflow aliases (deprecated, enabled:false in registry — canonical is dots-workstation-workflow-*)
 workflow-generic-project
 workflow-client-bootstrap
-# Stale single skill now delegated to toolkit (77 skills)
+# Stale single skill now delegated to toolkit
 gh-contribution-planner
 # Workstation delivery skills now in toolkit delivery/* (prd, trd, adr, etc.)
 # Covered by dots-workstation-* pattern above; listed here for explicitness

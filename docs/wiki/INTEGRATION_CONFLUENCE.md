@@ -21,7 +21,7 @@ Then enable the Confluence assistant pack in your local chezmoi config:
 
 ```toml
 [data]
-install_skill_confluence_assistant = true
+agent-toolkit install
 ```
 
 ## What you need

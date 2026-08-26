@@ -4,14 +4,14 @@ Shared AI resources are installed under `~/.local/share/agentic-workstation/`.
 
 > [!NOTE]
 > This document describes the **deployed** AI layer on the target machine (thin host). For the **source state** (before `chezmoi apply`), look under `home/dot_local/share/agentic-workstation/` in the repository.
-> **Thin-host:** Workstation provisions the machine (chezmoi, shell, packages, LLM policy, tmux/Herdr, Toolkit installation) and delegates all capabilities (77 skills via `agent-toolkit inventory`, 17 agents, 10 loops, MCP) to `agent-toolkit`. **Workstation installs tools, Toolkit owns orchestration.**
+> **Thin-host:** Workstation provisions the machine (chezmoi, shell, packages, LLM policy, tmux/Herdr, Toolkit installation) and delegates all capabilities (116+ skills via `agent-toolkit inventory`, 17 agents, 10 loops, MCP) to `agent-toolkit`. **Workstation installs tools, Toolkit owns orchestration.**
 
 ## Directory structure — thin workstation
 
 | Path | Purpose | Owner |
 | --- | --- | --- |
 | `prompts/` | Reusable internal prompts (placeholder README — delegated to Toolkit) | L1.5 |
-| `skills/` | Workstation-specific orchestration only (assistant, triage, dev-companion, workflow-generic-project); includes **`skill-catalog.yaml`** — thin placeholder, 77 skills via Toolkit | L1 / L1.5 |
+| `skills/` | Workstation-specific orchestration only (assistant, triage, dev-companion, workflow-generic-project); includes **`skill-catalog.yaml`** — thin placeholder, 116+ skills via Toolkit | L1 / L1.5 |
 | `skills-external/` | External skills installed via `agent-toolkit` + `dots-skills` + `chezmoiexternal` (`agent-toolkit/`, `jira-assistant/`, `confluence-assistant/`) | L1.5 + Workstation external packs |
 | `dev-companion/runner` | Host-specific runner + LLM policy (`dots-devcompanion`, `policy.py`, audit log) — **not delegated** | L1 (host-specific) |
 | `loops/` | Loop templates placeholder — delegated to Toolkit (`agent-toolkit loop`) | L1.5 |

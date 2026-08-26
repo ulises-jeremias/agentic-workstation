@@ -20,13 +20,13 @@
 | `dots-slack-assistant` | Slack workspace ops |
 | `dots-harness-knowledge-sync` | Session knowledge persistence |
 
-> All other cross-domain skills (77 skills across 14 domains — `delivery`, `forge`, `integrations`, `data`, `tooling`, etc.)
+> All other cross-domain skills (116+ skills across 14 domains — `delivery`, `forge`, `integrations`, `data`, `tooling`, etc.)
 > are provided by `agent-toolkit` via `dots-skills install-toolkit`
 > and installed at `~/.local/share/agentic-workstation/skills-external/agent-toolkit/`.
-> Third-party packs (JIRA 14, Confluence 17) live in `skills-external/{jira,confluence}-assistant/` and never in `plugins/`.
+> Third-party packs (Jira and Confluence) live in `skills-external/{jira,confluence}-assistant/` and never in `plugins/`.
 
 ## See Also
 
-- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — full capability catalog (77 skills, 17 agents, 10 loops)
+- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — full capability catalog (116+ skills, 17 agents, 10 loops)
 - [SKILLS.md](SKILLS.md) — skill system and lifecycle (thin workstation)
 - [ARCHITECTURE.md](ARCHITECTURE.md) — thin workstation architecture

@@ -21,7 +21,7 @@ Then enable the Jira assistant pack in your local chezmoi config:
 
 ```toml
 [data]
-install_skill_jira_assistant = true
+agent-toolkit install
 ```
 
 ## What you need
