@@ -57,6 +57,8 @@
 {{- $installExtSpellcheck  := index . "install_vscode_ext_spellcheck"   | default false -}}
 {{- $installExtMarkdown    := index . "install_vscode_ext_markdown"     | default false -}}
 {{- $installExtClaudeCode  := index . "install_vscode_ext_claude_code"  | default false -}}
+{{- $installLmstudio     := index . "install_group_lmstudio"           | default false -}}
+{{- $lmstudioModelsRaw   := index . "lmstudio_models_selection"        | default "recommended" -}}
 
 {{/* ── Raw multi-choice selections persisted to [data] for re-prompt defaults */}}
 {{- $agentsRaw  := index . "ai_agents_selection"          | default "opencode" -}}
@@ -172,6 +174,28 @@
 {{-     end -}}
 {{-   end -}}
 
+{{/* ── Step 4b: LM Studio (local LLM via LM Studio, RTX 3060 optimized) ─── */}}
+{{-   $dLmstudio := ternary "yes" "no" (index . "install_group_lmstudio" | default false) -}}
+{{-   $installLmstudio = eq "yes" (promptChoice "\n  ─────────────────────────── LM STUDIO ───────────────────────────\n  Local LLM via LM Studio (RTX 3060 12GB tuned: 10.5GB VRAM safe,\n  Hyprland+Quickshell reserved 1.5GB). Configures local OpenAI-\n  compatible server + downloads models for coding/reasoning.\n\n  Install LM Studio + download models?" $yesNo $dLmstudio) -}}
+{{-   if $installLmstudio -}}
+{{-     $lmstudioBanner := "\n  ───────────────────── LM STUDIO MODELS ─────────────────────\n  Choose model set (VRAM-aware for 12GB):\n    recommended  Qwen2.5-Coder-7B (4.8GB, 52t/s) + DeepSeek-R1-7B reasoning (8.9GB)\n    minimal      Qwen2.5-Coder-7B only (fastest, leaves 7GB free)\n    full         + Qwen3.5-9B reasoning (8.5GB, 262k ctx) + Qwen2.5-Coder-3B flash (2GB)\n    none         install LM Studio only, no models" -}}
+{{-     $lmstudioModelsRaw = promptString (printf "%s\n  Models" $lmstudioBanner) $lmstudioModelsRaw -}}
+{{-     $lmList := splitList "," (lower (trim $lmstudioModelsRaw)) -}}
+{{-     $lmNorm := list -}}
+{{-     range $lmList -}}
+{{-       $lmNorm = append $lmNorm (trim .) -}}
+{{-     end -}}
+{{-     if has "none" $lmNorm -}}
+{{-       $lmstudioModelsRaw = "none" -}}
+{{-     else if has "full" $lmNorm -}}
+{{-       $lmstudioModelsRaw = "full" -}}
+{{-     else if has "minimal" $lmNorm -}}
+{{-       $lmstudioModelsRaw = "minimal" -}}
+{{-     else -}}
+{{-       $lmstudioModelsRaw = "recommended" -}}
+{{-     end -}}
+{{-   end -}}
+
 {{/* ── Step 5: editors ──────────────────────────────────────────────────── */}}
 {{-   $editorsBanner := "\n  ───────────────────────────── EDITORS ─────────────────────────────\n  Comma-separated list. Shortcuts: none\n  Options: vscode, cursor" -}}
 {{-   $editorsRaw = promptString (printf "%s\n  Editors" $editorsBanner) $editorsRaw -}}
@@ -274,6 +298,10 @@
   install_skill_jira_assistant         = {{ $installJira }}
   install_skill_confluence_assistant   = {{ $installConfluence }}
   install_skill_dots_ai_slack_assistant    = {{ $installProd }}
+
+  # ── LM Studio (local LLM, RTX 3060 12GB tuned) ────────────────────────
+  install_group_lmstudio               = {{ $installLmstudio }}
+  lmstudio_models_selection            = {{ $lmstudioModelsRaw | quote }}
 
   # ── Editors ──────────────────────────────────────────────────────────────
   install_editor_vscode                = {{ $installEditorVscode }}

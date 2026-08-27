@@ -68,6 +68,9 @@ groups:
   skills_confluence:
     flag: install_skill_confluence_assistant
     description: "Confluence Assistant skill pack (17 skills)."
+  lmstudio:
+    flag: install_group_lmstudio
+    description: "LM Studio local LLM (RTX 3060 12GB tuned, 10.5GB VRAM safe for Hyprland+Quickshell)."
   skills_productivity:
     flag: install_group_skills_productivity
     description: "Productivity CLIs: clickup, slack, rtk."
