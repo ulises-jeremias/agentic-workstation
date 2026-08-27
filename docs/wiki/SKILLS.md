@@ -27,9 +27,9 @@ Each skill contains:
 | `dots-slack-assistant` | Slack workspace ops | workstation (L1) |
 | `dots-harness-knowledge-sync` | Session knowledge persistence | workstation (L1) |
 | Workspace pack overlays | Client/account overlays | workstation (L1) |
-| *All other cross-domain skills* (77 via `agent-toolkit inventory`: `delivery/prd`, `figma*`, `github-cli-workflow`, `dbt-validation`, etc.) | Delegated to `agent-toolkit` (L1.5) | `dots-skills install-toolkit` |
+| *All other cross-domain skills* (116+ via `agent-toolkit inventory`: `delivery/prd`, `figma*`, `github-cli-workflow`, `dbt-validation`, Jira, Confluence, etc.) | Delegated to `agent-toolkit` (L1.5) | `dots-skills install-toolkit` |
 
-> **Thin boundary:** cross-domain skills (`clickup-cli`, `github-cli-workflow`, `figma*`, `dbt-validation`, `slack-cli`, `linear`, etc.) and best-practice artifacts (`prd`, `trd`, `adr`, `planning`, `project-assessment`) are now in `agent-toolkit` and cleaned via `.chezmoiremove`. Third-party packs (JIRA 14, Confluence 17) live in `skills-external/` and never in `plugins/`.
+> **Thin boundary:** cross-domain skills (`clickup-cli`, `github-cli-workflow`, `figma*`, `dbt-validation`, `slack-cli`, `linear`, Jira, Confluence, etc.) and best-practice artifacts (`prd`, `trd`, `adr`, `planning`, `project-assessment`) are distributed by `agent-toolkit`.
 
 ---
 
@@ -97,12 +97,12 @@ Assistant: I can inspect the repository, but observability scoring also needs da
 
 ---
 
-## External skills (opt-in)
+## Toolkit capabilities
 
-| Skill | Install flag |
+| Skill | Install command |
 |-------|-------------|
-| JIRA Assistant (14 skills) | `install_skill_jira_assistant = true` |
-| Confluence Assistant (17 skills) | `install_skill_confluence_assistant = true` |
+| Jira capabilities | `agent-toolkit install` |
+| Confluence capabilities | `agent-toolkit install` |
 
 ## Related integrations
 
@@ -115,7 +115,7 @@ Assistant: I can inspect the repository, but observability scoring also needs da
 
 ## Skill lifecycle (thin workstation)
 
-1. Workstation-specific skills are defined in `home/dot_local/share/agentic-workstation/skills/`; cross-domain skills (77 via `agent-toolkit inventory`) are provided by `agent-toolkit` at `skills-external/agent-toolkit/` via `dots-skills install-toolkit`
+1. Workstation-specific skills are defined in `home/dot_local/share/agentic-workstation/skills/`; cross-domain skills (116+ via `agent-toolkit inventory`) are deployed by `agent-toolkit install`.
 2. `chezmoi apply` deploys workstation skills to `~/.local/share/agentic-workstation/skills/` and triggers `agent-toolkit install` for the cross-domain catalog
 3. `dots-skills sync` (or delegated `agent-toolkit install`) reads each `skill.json`/`SKILL.md` and creates symlinks to supported AI tools
 4. AI tools load `SKILL.md` at startup

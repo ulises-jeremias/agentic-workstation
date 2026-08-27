@@ -5,7 +5,7 @@ This document describes the agentic-workstation skill system — how skills are 
 > [!IMPORTANT]
 > **Skills are now distributed via [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit).**
 > agentic-workstation provisions your machine. agent-toolkit provides the capability library
-> (77 skills, 17 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
+> (116+ skills, 17 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
 > the integration details.
 >
 > **Quick install:**
@@ -25,23 +25,20 @@ This document describes the agentic-workstation skill system — how skills are 
 flowchart LR
     subgraph Sources
         AT[agent-toolkit<br/>brew/AUR/GitHub/uv]
-        B[Bundled<br/>chezmoi source]
-        N[npm<br/>dots-skills install]
-        G[GitHub/URL<br/>chezmoiexternal]
+        B[Workstation-local<br/>chezmoi source]
     end
 
     subgraph Install["Installation"]
         CA[chezmoi apply]
         ATI[agent-toolkit install]
-        NS[dots-skills install]
     end
 
     subgraph Store["Skill Store"]
         S1["~/.local/share/agentic-workstation/skills/<br/>(workstation-only)"]
-        S2["~/.local/share/agentic-workstation/skills-external/<br/>agent-toolkit/ + jira/confluence + npm"]
+        S2["~/.local/share/agent-toolkit/<br/>cross-domain catalog"]
     end
 
-    subgraph Sync["dots-skills sync"]
+    subgraph Sync["Toolkit deployment"]
         SJ["Read SKILL.md<br/>compatibility"]
     end
 
@@ -56,8 +53,6 @@ flowchart LR
 
     AT --> ATI --> S2
     B --> CA --> S1
-    N --> NS --> S2
-    G --> CA --> S2
     S1 --> SJ
     S2 --> SJ
     SJ --> T1
@@ -78,7 +73,7 @@ A **skill** is a markdown document (plus optional supporting assets) that teache
 Each skill lives in its own directory and always contains:
 
 - `SKILL.md` — the main content read by AI tools (frontmatter + instructions)
-- `skill.json` — machine-readable manifest (source, version, compatibility, requirements). External skills sourced via chezmoiexternal may omit it; they are treated as universally compatible.
+- `skill.json` — machine-readable manifest for workstation-local skills (source, version, compatibility, requirements). Agent Toolkit capabilities declare compatibility in `SKILL.md` frontmatter.
 
 The bundled **dots-workstation-assistant** skill is the **agentic-workstation Assistant** and **orchestrator**: it defines a **repository inspection order** (README → docs → `AGENTS.md` → CONTRIBUTING → PR templates → task runners → devcontainer → CI → configs → code), **conflict heuristics**, and **anti-duplication** rules. It ships `references/REPO_INSPECTION.md`, `references/ORCHESTRATION.md` (routing and delegation), and `references/AGENTS_TEMPLATE.md`; a chezmoi **project** starter lives at `home/.chezmoitemplates/agents/AGENTS.project.md.tmpl`. **`skill-catalog.yaml`** next to bundled skills lists **WHAT vs HOW**, **triggers**, and **`depends_on`** for routing. It remains useful **outside** this repository by anchoring on the **applied machine** (`~/.local/share/agentic-workstation/`, `dots-*`) when relevant. Future org playbooks should be **read from shipped paths**, not hardcoded in the skill body.
 
@@ -103,19 +98,16 @@ The bundled **dots-workstation-assistant** skill is the **agentic-workstation As
 │   dots-slack-assistant/
 │   dots-harness-knowledge-sync/
 │
-│   # Cross-domain skills (clickup-cli, github-cli-workflow, figma*, dbt-validation,
-│   # etc.) are NOT here — they live in agent-toolkit (77 skills) at
-│   # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
+│   # Cross-domain skills (Jira, Confluence, clickup-cli, github-cli-workflow,
+│   # figma*, dbt-validation, etc.) are installed by agent-toolkit at:
+│
+~/.local/share/agent-toolkit/skills/              # Agent Toolkit catalog
+    integrations/jira-assistant/
+    integrations/confluence-assistant/
+    ...
 
 ~/.local/share/agentic-workstation/dev-companion/    # Optional queue + worker (see README.md)
 ~/.local/share/agentic-workstation/third-party/      # Small attributed third-party excerpts (e.g. everything-claude-code)
-
-~/.local/share/agentic-workstation/skills-external/  # External skills (managed by chezmoiexternal + dots-skills)
-    jira-admin/                          # ← extracted from JIRA-Assistant-Skills pack
-    jira-agile/
-    jira-issue/
-    ...
-    <npm-skill-name>/                    # ← symlinked from npm global
 ```
 
 AI tools access skills through symlinks in their respective config directories:
@@ -130,26 +122,18 @@ AI tools access skills through symlinks in their respective config directories:
 
 ## Skill sources
 
-Skills can come from five sources, using three different installation mechanisms:
+Skills come from the Toolkit catalog or the small workstation-local set:
 
 | Source | Mechanism | Example |
 |--------|-----------|---------|
-| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 77 cross-domain skills (`agent-toolkit inventory`) |
+| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 116+ cross-domain skills (`agent-toolkit inventory`) |
 | `bundled` | chezmoi source state | `dots-workstation-triage`, `dots-workstation-assistant` (workstation-only) |
-| `npm` | `dots-skills install` | third-party npm packs (none bundled by default) |
-| `github` | **chezmoi `.chezmoiexternal`** | `ulises-jeremias/JIRA-Assistant-Skills` |
-| `url` | **chezmoi `.chezmoiexternal`** | `https://example.com/skill.tar.gz` |
 
 **`agent-toolkit` is the primary source for cross-domain skills.** It is installed automatically during `chezmoi init` via `run_once_after_50-install-agent-toolkit.sh.tmpl` (and kept current by `run_onchange_45-install-ai-agents.sh.tmpl` on subsequent `chezmoi apply` runs). `dots-skills install-toolkit` provides the manual equivalent.
 
-**`github` and `url` sources are managed natively by chezmoi** via `.chezmoiexternal.toml.tmpl`. This means:
-- No custom download code — chezmoi handles HTTP, extraction, caching
-- Auto-refresh with `chezmoi apply --refresh-externals`
-- Declarative opt-in via `chezmoidata` flags (`install_skill_*`)
-
 ## The `skill.json` manifest
 
-Every skill must have a `skill.json` alongside its `SKILL.md`. This is the machine-readable manifest used by `dots-skills` for installation, syncing, and compatibility checks.
+Workstation-local skills use `skill.json` alongside `SKILL.md`. This is the machine-readable manifest used by `dots-skills` for local installation, syncing, and compatibility checks. Agent Toolkit capabilities instead use their `SKILL.md` frontmatter.
 
 ### Schema
 
@@ -209,8 +193,7 @@ Known tool keys:
 | `pi` | pi coding agent |
 | `windsurf` | Windsurf editor |
 
-> **Principle**: a skill must explicitly declare support for each tool. The system never assumes "works everywhere".
-> Skills without `skill.json` (e.g. from chezmoiexternal) are treated as universally compatible.
+> **Principle**: a skill must explicitly declare support for each tool. Agent Toolkit capabilities express it in `SKILL.md`; workstation-local skills without a compatibility matrix are treated as universally compatible.
 
 > [!TIP]
 > Use `dots-skills list` to see all installed skills with their per-tool symlink status at a glance.
@@ -218,8 +201,6 @@ Known tool keys:
 ## The Skills Registry (`skills-registry.yaml`)
 
 `home/.chezmoidata/skills-registry.yaml` documents skills known to this baseline (same content as **`home/dot_local/share/agentic-workstation/skills-registry.yaml`**, which chezmoi deploys to `~/.local/share/agentic-workstation/skills-registry.yaml` for `dots-skills`). It is used by `dots-skills` for **bundled and npm** sources.
-
-**`github` and `url` skills are no longer in this registry** — they are declared in `.chezmoiexternal.toml.tmpl` and installed natively by chezmoi.
 
 ```yaml
 skills:
@@ -234,14 +215,9 @@ skills:
     # NOTE: workflow-generic-project is a DEPRECATED alias (enabled: false in registry);
     # prefer dots-workstation-workflow-generic-project.
 
-  # Cross-domain skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
-  # are NOT registered here — they are provided by agent-toolkit (77 skills via `agent-toolkit inventory`) via
-  # `dots-skills install-toolkit` at
-  # ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
-
-  # npm: third-party skills (installed via dots-skills add npm:<pkg> — none bundled after ui-ux-pro-max removal in #197)
-
-  # github/url → see .chezmoiexternal.toml.tmpl
+  # Cross-domain skills (Jira, Confluence, clickup-cli, github-cli-workflow,
+  # dbt-validation, figma*, etc.) are provided by agent-toolkit. They are not
+  # registered here; install them with dots-skills install-toolkit.
 ```
 
 ## Imported skills (Apache-2.0 from openai/skills)
@@ -289,9 +265,12 @@ figma family:
 
 A future PR will publish these as a separate opt-in skill pack, installable
 via `chezmoiexternal` + an `install_skill_figma_use_pack` flag (analogous to
-`install_skill_jira_assistant`). Until then, install them manually if you
-need them — the bundled `figma-implement-design`, `figma-code-connect-components`
-and `figma-create-new-file` cover the most common design-to-code workflows.
+`agent-toolkit install`). Use it only when a workflow needs `use_figma`; the
+bundled `figma-implement-design`, `figma-code-connect-components`, and
+`figma-create-new-file` cover the most common design-to-code workflows.
+
+Jira and Confluence are already included in the Agent Toolkit catalog and do
+not require an external archive or an opt-in skill-pack flag.
 
 ### MCP templates
 
@@ -306,95 +285,23 @@ Two new MCP templates ship with this batch (deployed to
 
 See [`docs/MCP_TEMPLATES.md`](MCP_TEMPLATES.md) for the registration matrix.
 
-## External Skills via chezmoi (`.chezmoiexternal`)
+## Jira and Confluence via Agent Toolkit
 
-`github` and `url` skills are managed by chezmoi's native external mechanism. This lives at:
-
-```
-home/private_dot_local/share/agentic-workstation/.chezmoiexternal.toml.tmpl
-```
-
-Chezmoi handles download, extraction, caching, and refresh — no custom bash needed.
-
-**Opt-in**: controlled by `install_skill_*` flags in chezmoidata/toml config:
-```toml
-# ~/.config/chezmoi/chezmoi.toml
-[data]
-install_skill_jira_assistant = true
-```
-
-Or answered during `chezmoi init` interactive prompts.
-
-**To refresh**: `chezmoi apply --refresh-externals`
-
-### Skill Packs via chezmoiexternal
-
-A **skill pack** is a GitHub repo with multiple skills under a subdirectory. Each pack gets its own unique key (target subdirectory) inside `skills-external/`, so multiple packs don't conflict:
-
-```toml
-# Key = target path relative to ~/.local/share/agentic-workstation/
-# stripComponents=2 strips "RepoName-main/" and "skills/" from the archive paths
-["skills-external/jira-assistant"]
-    type            = "archive"
-    url             = "https://github.com/ulises-jeremias/JIRA-Assistant-Skills/archive/refs/heads/main.tar.gz"
-    stripComponents = 2          # "Repo-main/skills/jira-admin/SKILL.md" → "jira-admin/SKILL.md"
-    include         = ["*/skills/**"]  # all files under skills/ subtree
-    refreshPeriod   = "168h"
-```
-
-Result on disk:
-```
-skills-external/
-  jira-assistant/         ← pack directory (unique key)
-    jira-admin/           ← individual skill
-      SKILL.md
-    jira-agile/
-      SKILL.md
-    ...
-```
-
-`dots-skills sync` discovers 2 levels deep in `skills-external/` — it detects that `jira-assistant/` has no `SKILL.md` (it's a pack), so it scans one level deeper to find the individual skills.
-
-`agentic-workstation/JIRA-Assistant-Skills` is a skill pack with 14 specialized JIRA skills:
-
-| Skill | Purpose |
-|-------|---------|
-| `jira-assistant` | Meta-router: routes requests to the right JIRA skill |
-| `jira-issue` | Issue CRUD: create, read, update, delete |
-| `jira-search` | JQL queries and filters |
-| `jira-lifecycle` | Workflow transitions, assignments, versions |
-| `jira-agile` | Sprints, epics, story points |
-| `jira-collaborate` | Comments, attachments, watchers |
-| `jira-relationships` | Issue linking and dependency chains |
-| `jira-time` | Time logging and worklogs |
-| `jira-jsm` | Service desk, SLAs, queues |
-| `jira-bulk` | Bulk operations on 10 to 50+ issues |
-| `jira-dev` | Git and PR integration with JIRA |
-| `jira-fields` | Custom field discovery |
-| `jira-ops` | Cache, diagnostics, project discovery |
-| `jira-admin` | Project settings, permissions, automation |
-
-**To install** (requires JIRA credentials):
-
-> [!CAUTION]
-> Store JIRA credentials in `~/.config/agentic-workstation/env.d/jira.env` — never in `.env` files inside repositories or chezmoi source state.
+The Jira and Confluence skills are vendored upstream capabilities in
+`agent-toolkit`. Install the Toolkit once; it deploys those skills with the
+rest of the catalog and does not download separate skill archives.
 
 ```bash
-# Recommended: store credentials in the opt-in global env.d mechanism:
-mkdir -p ~/.config/agentic-workstation/env.d
-$EDITOR ~/.config/agentic-workstation/env.d/jira.env
-
-# Example ~/.config/agentic-workstation/env.d/jira.env:
-# export JIRA_API_TOKEN="your-token-here"  # checkov:skip=CKV_SECRET_6:example placeholder
-# export JIRA_EMAIL="you@company.com"
-# export JIRA_SITE_URL="https://company.atlassian.net"
-
-# Enable in chezmoi config:
-chezmoi edit-config   # add: install_skill_jira_assistant = true  under [data]
-chezmoi apply         # downloads pack via chezmoiexternal + installs jira-as + syncs symlinks
+dots-skills install-toolkit
+agent-toolkit install
+agent-toolkit inventory
 ```
 
-**Multi-tool compatibility**: The JIRA skills use `SKILL.md` with YAML frontmatter — readable by all AI tools. The `allowed-tools` field in the frontmatter is Claude Code-specific and is safely ignored by other tools. Since there is no `skill.json`, `dots-skills sync` treats them as universally compatible and links them for all configured AI tools.
+The AI profile provisions the host CLIs used by the skills. To install them
+manually, run `uv tool install jira-as` and `uv tool install confluence-as`.
+Store Atlassian credentials in `~/.config/agentic-workstation/env.d/`, never in
+project `.env` files or chezmoi source state. See the Jira and Confluence wiki
+pages for the required environment variables.
 
 ## Managing skills with `dots-skills`
 
@@ -409,9 +316,7 @@ dots-skills check                Validate required CLI tools and pip packages fo
 dots-skills add npm:<pkg>        Add an npm skill to the registry
 ```
 
-> **Note**: `github` and `url` skills are now managed by chezmoi (`.chezmoiexternal`), not by `dots-skills install`. Run `chezmoi apply` instead.
->
-> **Note**: The bulk of cross-domain skills (77 skills across 14 domains) come from `agent-toolkit`. Use `dots-skills install-toolkit` or `chezmoi apply` to install/update them. Third-party npm/github packs are intentionally **not** in agent-toolkit’s `plugins/` — workstation owns them via `skills-external/` (see `docs/AGENT_TOOLKIT.md` “Third-party boundary”).
+> **Note**: The cross-domain catalog, including Jira and Confluence, comes from `agent-toolkit`. Use `dots-skills install-toolkit` or `agent-toolkit install` to install or update it. Optional standalone npm/GitHub additions are outside the Toolkit marketplace products and must declare their own installation path.
 
 ### `dots-skills list`
 
@@ -420,19 +325,16 @@ Shows all discovered skills with their source and symlink status per AI tool:
 ```
 NAME                SOURCE   VERSION    claude-code    copilot-cli    cursor
 dots-workstation-assistant  bundled  2.1.3      ✓ linked       ✓ linked       ✓ linked
-jira-admin          external ?          ✓ linked       ✓ linked       ✓ linked
-jira-agile          external ?          ✓ linked       ✓ linked       ✓ linked
-# (clickup-cli, figma*, etc. now via agent-toolkit — not listed here)
+# Cross-domain capabilities are listed by: agent-toolkit skills list
 ```
 
 ### `dots-skills sync`
 
-Reads every skill directory (both `skills/` and `skills-external/`), checks the `skill.json` compatibility matrix (or assumes universal if absent), and creates/removes symlinks. Idempotent and safe to re-run.
+Delegates to `agent-toolkit install` when the Toolkit CLI is available. Otherwise, it synchronizes workstation-local skills using their `skill.json` compatibility matrix (or universal support when absent). It is idempotent and safe to re-run.
 
 If a skill is listed in `skills-registry.yaml` with **`enabled: false`**, it is **skipped** (no symlinks created), and any existing symlinks pointing at that skill are **removed**. Skills not listed in the registry are treated as enabled. **Workflow** and **dev companion** skills default to **`enabled: true`** in the baseline registry; use **`enabled: false`** to opt out (see [CLIENT_AI_PLAYBOOKS.md](CLIENT_AI_PLAYBOOKS.md)).
 
 Called automatically by `run_onchange_45-install-ai-agents.sh.tmpl` on every `chezmoi apply`.
-- **url**: downloads and extracts to `~/.local/share/agentic-workstation/skills-external/<name>/`
 
 After installation, runs `dots-skills sync` automatically.
 

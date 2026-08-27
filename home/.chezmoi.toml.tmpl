@@ -35,8 +35,6 @@
 {{- $installDocker    := index . "install_group_docker"                | default false -}}
 {{- $installAi        := index . "install_group_ai"                    | default false -}}
 {{- $installSwarm     := index . "install_group_swarm"                 | default false -}}
-{{- $installJira      := index . "install_skill_jira_assistant"        | default false -}}
-{{- $installConfluence:= index . "install_skill_confluence_assistant"  | default false -}}
 {{- $installProd      := index . "install_group_skills_productivity"   | default false -}}
 
 {{- $installAgentClaude   := index . "install_agent_claude_code"  | default false -}}
@@ -74,12 +72,12 @@
      leaves every group disabled unless individual install_* keys are
      overridden through --override-data / --override-data-file).            */}}
 {{- $profileGroupsMap := dict
-        "technical"      (list "node" "python" "docker" "ai" "jira" "confluence" "productivity" "swarm")
+        "technical"      (list "node" "python" "docker" "ai"                   "productivity" "swarm")
         "non-technical"  (list                              "ai"                   "productivity" "swarm")
         "ai"             (list                              "ai"                   "productivity" "swarm")
         "node"           (list "node"                                              "productivity")
         "python"         (list        "python"                                     "productivity")
-        "data"           (list        "python"             "ai" "jira" "confluence" "productivity" "swarm")
+        "data"           (list        "python"             "ai"                   "productivity" "swarm")
         "infra"          (list "node" "python" "docker"                            "productivity")
         "minimal"        (list)
         "custom"         (list)
@@ -93,8 +91,6 @@
 {{-   $installDocker     = has "docker"       $preset -}}
 {{-   $installAi         = has "ai"           $preset -}}
 {{-   $installSwarm      = has "swarm"        $preset -}}
-{{-   $installJira       = has "jira"         $preset -}}
-{{-   $installConfluence = has "confluence"   $preset -}}
 {{-   $installProd       = has "productivity" $preset -}}
 {{-   if $installAi -}}
 {{-     $installAgentOpencode = true -}}
@@ -109,7 +105,7 @@
 
 {{/* ── Step 1: profile ──────────────────────────────────────────────────── */}}
 {{-   $profileChoices := list "technical" "non-technical" "ai" "node" "python" "data" "infra" "minimal" "custom" -}}
-{{-   $profilePrompt := printf "%s\n\n  PROFILE — which persona matches your role?\n    technical     node + python + docker + ai + jira + confluence + productivity\n    non-technical productivity + ai\n    ai            ai + productivity\n    node          node + productivity\n    python        python + productivity\n    data          python + ai + jira + confluence + productivity\n    infra         docker + node + python + productivity\n    minimal       core baseline only\n    custom        answer every group question yourself\n\n  Choose one" $banner -}}
+{{-   $profilePrompt := printf "%s\n\n  PROFILE — which persona matches your role?\n    technical     node + python + docker + ai + productivity\n    non-technical productivity + ai\n    ai            ai + productivity\n    node          node + productivity\n    python        python + productivity\n    data          python + ai + productivity\n    infra         docker + node + python + productivity\n    minimal       core baseline only\n    custom        answer every group question yourself\n\n  Choose one" $banner -}}
 {{-   $profileDefault := index . "profile" | default "technical" -}}
 {{-   $profile = promptChoice $profilePrompt $profileChoices $profileDefault -}}
 
@@ -120,8 +116,6 @@
 {{-   $installDocker     = has "docker"       $selected -}}
 {{-   $installAi         = has "ai"           $selected -}}
 {{-   $installSwarm      = has "swarm"        $selected -}}
-{{-   $installJira       = has "jira"         $selected -}}
-{{-   $installConfluence = has "confluence"   $selected -}}
 {{-   $installProd       = has "productivity" $selected -}}
 
 {{/* ── Step 3: custom → ask each group individually ─────────────────────── */}}
@@ -132,16 +126,12 @@
 {{-     $dDocker     := ternary "yes" "no" (index . "install_group_docker"               | default false) -}}
 {{-     $dAi         := ternary "yes" "no" (index . "install_group_ai"                   | default false) -}}
 {{-     $dSwarm      := ternary "yes" "no" (index . "install_group_swarm"                | default false) -}}
-{{-     $dJira       := ternary "yes" "no" (index . "install_skill_jira_assistant"       | default false) -}}
-{{-     $dConfluence := ternary "yes" "no" (index . "install_skill_confluence_assistant" | default false) -}}
 {{-     $dProd       := ternary "yes" "no" (index . "install_group_skills_productivity"  | default false) -}}
 {{-     $installNode       = eq "yes" (promptChoice (printf "%s\n  Install Node.js tooling (fnm + Node LTS + pnpm)?"           $grpBanner) $yesNo $dNode) -}}
 {{-     $installPython     = eq "yes" (promptChoice "  Install Python tooling (python + uv + pipx)?"                                   $yesNo $dPython) -}}
 {{-     $installDocker     = eq "yes" (promptChoice "  Install Docker CLI?"                                                             $yesNo $dDocker) -}}
 {{-     $installAi         = eq "yes" (promptChoice "  Install AI coding agents group? (Claude Code, OpenCode, pi, Copilot CLI, Muse)" $yesNo $dAi) -}}
 {{-     $installSwarm      = eq "yes" (promptChoice "  Install Agent Toolkit Swarms (tmux + Herdr)?"                                     $yesNo $dSwarm) -}}
-{{-     $installJira       = eq "yes" (promptChoice "  Install JIRA Assistant skill pack (14 skills)?"                                  $yesNo $dJira) -}}
-{{-     $installConfluence = eq "yes" (promptChoice "  Install Confluence Assistant skill pack (17 skills)?"                            $yesNo $dConfluence) -}}
 {{-     $installProd       = eq "yes" (promptChoice "  Install productivity CLIs (clickup, slack, rtk)?"                                   $yesNo $dProd) -}}
 {{-   end -}}
 
@@ -270,8 +260,6 @@
   install_agent_rtk                    = {{ $installProd }}
 
   # ── External skill packs ─────────────────────────────────────────────────
-  install_skill_jira_assistant         = {{ $installJira }}
-  install_skill_confluence_assistant   = {{ $installConfluence }}
   install_skill_dots_ai_slack_assistant    = {{ $installProd }}
 
   # ── Editors ──────────────────────────────────────────────────────────────

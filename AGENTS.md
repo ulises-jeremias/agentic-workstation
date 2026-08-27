@@ -43,7 +43,7 @@ This repo is **L1 (machine provisioning)** in a three-tier personal DX stack:
 | Layer | Repo | Role |
 |-------|------|------|
 | **L1** | **agentic-workstation** (this repo) | Machine provisioning — chezmoi, shell, packages, LLM policy |
-| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | Capability distribution — 84 skills, loops, profiles, MCP |
+| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | Capability distribution — 116+ skills, loops, profiles, MCP |
 | **L3** | [agentic-harness](https://github.com/ulises-jeremias/agentic-harness) | AI workspace scaffold for multi-repo orchestration |
 
 ## Skills and agents
@@ -62,7 +62,7 @@ agent-toolkit install [--force]                # deploy to all detected AI tools
 dots-skills install-toolkit                    # same — also runs dots-skills sync
 
 # Discover capabilities
-agent-toolkit inventory                        # list all 84 skills
+agent-toolkit inventory                        # list all 116+ skills
 agent-toolkit doctor                           # verify installation health
 dots-skills list                               # list skills with per-tool status
 

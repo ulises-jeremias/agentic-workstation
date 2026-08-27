@@ -76,7 +76,7 @@ graph TD
     end
 
     subgraph "L1.5 — agent-toolkit (sole capability source)"
-        AT1["77 skills / 14 domains (inventory)"]
+        AT1["116+ skills / 14 domains (inventory)"]
         AT2["17 agent personas"]
         AT3["10 loop templates"]
         AT4["7 tool profiles<br/>(Claude Code, Cursor, OpenCode, Muse…)"]
@@ -111,7 +111,7 @@ graph TD
 | Layer | Repo | Responsibility |
 |-------|------|----------------|
 | **L1** | `agentic-workstation` (thin) | Machine provisioning + host runner — chezmoi, packages, shell, LLM policy, tmux/Herdr, Toolkit installation, `dev-companion/runner` (host-specific; see [DevCompanion boundary](DEV_COMPANION.md#boundary-workstation-runner-vs-toolkit-queue)) |
-| **L1.5** | `agent-toolkit` (sole source) | Capability distribution — 77 skills, 17 agents, 10 loops, profiles, MCP, prompts, packs; swarm recipes/orchestration (`agent-toolkit swarm …`); generic queue behavior (verify with `agent-toolkit inventory`) |
+| **L1.5** | `agent-toolkit` (sole source) | Capability distribution — 116+ skills, 17 agents, 10 loops, profiles, MCP, prompts, packs; swarm recipes/orchestration (`agent-toolkit swarm …`); generic queue behavior (verify with `agent-toolkit inventory`) |
 | **L3** | Project repo / agentic-harness | Overlays — project AGENTS.md, engagement packs, client skills, knowledge, personas |
 
 > **Boundary: Workstation installs tools, Toolkit owns orchestration.** For swarms, Workstation provisions `tmux` + `Herdr` + `herdr integration install opencode`; Toolkit owns recipes, isolated sockets (`agent-toolkit-swarm-<run-id>`), and `agent-toolkit swarm …` lifecycle. For DevCompanion, Workstation owns `dots-devcompanion` runner + LLM policy enforcement (host secrets in `~/.config/agentic-workstation/env.d/`, `DOTS_*_LLM_*`), Toolkit owns generic queue file conventions — see [DEV_COMPANION_LLM.md](DEV_COMPANION_LLM.md) and [DEV_COMPANION_IDE_ROADMAP.md](DEV_COMPANION_IDE_ROADMAP.md). Runner stays in Workstation because LLM policy is host-specific and must fail closed per engagement.
@@ -123,7 +123,7 @@ graph TD
 
 ## Skills architecture — thin
 
-Cross-domain skills are **solely** distributed by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) — 77 skills (verify with `agent-toolkit inventory`), 17 agent personas, 10 loop templates, 7 MCP templates. agentic-workstation's `home/dot_local/share/agentic-workstation/skills/` retains only workstation-specific orchestration skills (assistant, triage, dev-companion, workflow-generic-project, etc.); cross-domain skills are installed at `skills-external/agent-toolkit/`. Third-party packs (JIRA 14, Confluence 17) live in `skills-external/{jira,confluence}-assistant/` and never in `plugins/`.
+Cross-domain skills are **solely** distributed by [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) — 116+ skills (verify with `agent-toolkit inventory`), agent personas, loop templates, and MCP templates. Workstation retains only host-specific orchestration logic. `agent-toolkit install` deploys the catalog, including Jira and Confluence, from `~/.local/share/agent-toolkit/` to supported tool directories; Workstation does not maintain duplicate skill archives.
 
 - **agent-toolkit skills** — installed via `dots-skills install-toolkit` then `agent-toolkit install` (count via `agent-toolkit inventory`)
 - **No bundled workstation skills** — previous bundled dirs have been removed; workstation-only logic remains in `dev-companion/runner` + LLM policy (host-specific)

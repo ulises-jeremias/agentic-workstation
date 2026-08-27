@@ -26,8 +26,8 @@
 | Aspect | starship | agentic-workstation |
 |--------|----------|-------------------|
 | Purpose | Shell prompt customization | Complete AI workstation baseline |
-| Scope | Prompt only | Dotfiles, skills, agents, MCP, loops (77 skills via Toolkit) |
-| AI features | None | Full AI layer with 77 skills via Toolkit |
+| Scope | Prompt only | Dotfiles, skills, agents, MCP, loops (116+ skills via Toolkit) |
+| AI features | None | Full AI layer with 116+ skills via Toolkit |
 
 **Agentic-workstation includes** shell configuration. You can use starship as your prompt and still get the AI layer from agentic-workstation.
 

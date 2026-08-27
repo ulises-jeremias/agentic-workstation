@@ -11,7 +11,7 @@
 | Layer | Repository | What it provides |
 |-------|-----------|-----------------|
 | **L1 — Workstation** (thin, this repo) | **agentic-workstation** | Machine provisioning (chezmoi, shell, packages, LLM policy, tmux/Herdr) + Toolkit installation + host runner (`dots-devcompanion`); delegates capabilities |
-| **L1.5 — Toolkit** | **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)** | **77 skills** (`agent-toolkit inventory`), 17 agents, 10 loops, 7 MCP templates, packs — sole capability source |
+| **L1.5 — Toolkit** | **[agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit)** | **116+ skills** (`agent-toolkit inventory`), 17 agents, 10 loops, 7 MCP templates, packs — sole capability source |
 | **L3 — Harness / Project** | **agentic-harness** + your project repo | Memory, personas, packs, loops execution, job queues + project `AGENTS.md` routing |
 
 > **Workstation installs tools, Toolkit owns orchestration.** Workstation provisions `tmux`/`Herdr` + Toolkit; Toolkit owns swarm recipes (`agent-toolkit swarm …`) and loop templates. Runner stays in Workstation (host LLM policy).
@@ -43,9 +43,9 @@ dots-doctor
 ```
 
 ```text
-Skills: 77 via agent-toolkit (agent-toolkit inventory)
-Agents: 17 via agent-toolkit
-MCP templates: 7 via agent-toolkit
+Skills: 116+ via agent-toolkit (agent-toolkit inventory)
+Agents: see agent-toolkit inventory
+MCP templates: see agent-toolkit inventory
 CLI tools: dots-doctor, dots-skills, dots-devcompanion, dots-mcp, dots-loop (delegate to agent-toolkit)
 ```
 
@@ -68,7 +68,7 @@ agent-toolkit workspace context
 ```text
 === Workspace Context Snapshot ===
 Harness dir: /home/you/.ai-workspace
-Workstation skills: detected (77 skills via agent-toolkit inventory)
+Workstation skills: detected (116+ skills via agent-toolkit inventory)
 Knowledge entries: 0
 Active packs: none
 ```
@@ -165,7 +165,7 @@ claude  # or opencode / cursor
 ```text
 [AI reads AGENTS.md]
 Workspace context loaded: hello-stack
-Skills available: 77 (jira-assistant, github-cli-workflow, planner, implementer, code-reviewer, ...) via agent-toolkit inventory
+Skills available: 116+ (jira-assistant, github-cli-workflow, planner, implementer, code-reviewer, ...) via agent-toolkit inventory
 Knowledge: 0 entries (new workspace)
 ```
 
@@ -308,7 +308,7 @@ The AI remembers everything from yesterday. No repetition needed.
 ```text
 agentic-workstation (L1 thin)     agent-toolkit (L1.5)         agentic-harness (L3) + hello-stack (L3)
 ┌─────────────────────┐          ┌─────────────────────┐       ┌──────────────────┐
-│ provisions: chezmoi │          │ 77 skills            │       │ knowledge/        │
+│ provisions: chezmoi │          │ 116+ skills            │       │ knowledge/        │
 │ shell, packages,    │─installs─│ 17 agents            │─deleg─│ packs/hello-stack │
 │ LLM policy, tmux +  │  Toolkit │ 10 loops             │  via  │ personas/         │
 │ Herdr, Toolkit      │──────────│ 7 MCP templates      │ dots-*│ loops/daily-triage│
