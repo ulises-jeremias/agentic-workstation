@@ -131,12 +131,14 @@ PY
 cmd_install() {
   local sel="${1:-recommended}"
   log "Installing models: $sel"
-  for m in $(case "$sel" in
-    minimal) echo "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF" ;;
-    recommended) echo "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" ;;
-    full) echo "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF bartowski/Qwen2.5-Coder-3B-Instruct-GGUF" ;;
-    *) echo "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" ;;
-  esac); do
+  local models=""
+  case "$sel" in
+    minimal) models="bartowski/Qwen2.5-Coder-7B-Instruct-GGUF" ;;
+    recommended) models="bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" ;;
+    full) models="bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF bartowski/Qwen2.5-Coder-3B-Instruct-GGUF" ;;
+    *) models="bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" ;;
+  esac
+  for m in $models; do
     log "lms get $m --gguf -y"
     "$LMS" get "$m" --gguf -y 2>&1 | tail -20 || warn "failed: $m"
   done
