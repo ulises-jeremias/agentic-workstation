@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 # chezmoi:template:left-delimiter="{{" right-delimiter="}}"
 #
-# Python baseline — installed when the python group is enabled OR when
-# AI/skill features that need a Python runtime are enabled (jira-as,
-# confluence-as and many AI tool CLIs). Guarded at template render time.
+# Python baseline — installed when the python or AI group is enabled.
 {{- $gPy := index . "install_group_python" | default false -}}
 {{- $gAi := index . "install_group_ai"     | default false -}}
-{{- $gSkJ := index . "install_skill_jira_assistant"       | default false -}}
-{{- $gSkC := index . "install_skill_confluence_assistant" | default false -}}
-{{- if or $gPy $gAi $gSkJ $gSkC -}}
+{{- if or $gPy $gAi -}}
 set -eo pipefail
 
 if [[ -t 1 && -z ${NO_COLOR:-} ]]; then

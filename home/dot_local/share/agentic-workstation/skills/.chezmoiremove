@@ -1,9 +1,9 @@
 dots-workstation-*
 dots-harness-*
-# ── Delegated to agent-toolkit (60 skills) — clean legacy workstation copies ──
+# ── Delegated to agent-toolkit — clean legacy workstation copies ──
 # These were previously bundled in workstation and are now provided via
 # `uv tool install --force agent-toolkit-cli && agent-toolkit install`
-# at ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
+# from ~/.local/share/agent-toolkit/ and supported tool-specific directories.
 clickup-cli
 slack-cli
 github-cli-workflow
@@ -21,6 +21,11 @@ figma-create-new-file
 playwright-cli
 jupyter-notebook
 ui-ux-pro-max
+# Legacy non-canonical workflow aliases (deprecated, enabled:false in registry — canonical is dots-workstation-workflow-*)
+workflow-generic-project
+workflow-client-bootstrap
+# Stale single skill now delegated to toolkit
+gh-contribution-planner
 # Workstation delivery skills now in toolkit delivery/* (prd, trd, adr, etc.)
 # Covered by dots-workstation-* pattern above; listed here for explicitness
 # on fresh installs where the pattern may not match old flat layouts:

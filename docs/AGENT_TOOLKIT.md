@@ -1,6 +1,6 @@
 # Agent Toolkit Integration
 
-> **Thin workstation** — agentic-workstation provisions the machine, agent-toolkit distributes all capabilities via the **canonical V CLI**.
+> **Thin workstation** — agentic-workstation provisions the machine (chezmoi, shell, packages, LLM policy, tmux/Herdr, Toolkit installation) and delegates all capabilities via the **canonical V CLI**. **Workstation installs tools, Toolkit owns orchestration.**
 
 ---
 
@@ -8,7 +8,7 @@
 
 [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit) is the **sole capability distribution layer** for agentic-workstation. It provides the curated library of skills, agent personas, loop templates, MCP templates, prompts, packs, and tool profiles — one source of truth deployed to every major AI coding assistant.
 
-agentic-workstation's role is **machine provisioning and runner logic only**: chezmoi, shell tools, packages, LLM policy, and the dev-companion queue runner. All skills/packs/personas/agents/MCPs/loops/prompts are delegated.
+agentic-workstation's role is **machine provisioning and host-specific runner only**: chezmoi, shell tools, packages, LLM policy (host secrets + `DOTS_AI_DEVCOMPANION_LLM_*`), tmux/Herdr provisioning, Toolkit installation, and the `dev-companion/runner` (`dots-devcompanion` + policy enforcement). All skills/packs/personas/agents/MCPs/loops/prompts and generic queue behavior are delegated to `agent-toolkit`. **Why runner stays:** LLM policy must be enforceable per-host/per-engagement and fail closed (see [DEV_COMPANION_LLM.md](DEV_COMPANION_LLM.md) and [DEV_COMPANION_IDE_ROADMAP.md](DEV_COMPANION_IDE_ROADMAP.md)); Toolkit remains vendor-neutral and stateless.
 
 Workstation treats Agent Toolkit as a **CLI**, never as a Python library. Do not `import agent_toolkit`.
 
@@ -19,7 +19,7 @@ graph LR
     end
 
     subgraph "agent-toolkit (L1.5)"
-        AT["77 skills<br/>17 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>7 MCP templates<br/>7 solution packs"]
+        AT["116+ skills<br/>17 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>7 MCP templates<br/>7 solution packs"]
     end
 
     subgraph "AI tools"
@@ -48,34 +48,34 @@ graph LR
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Skills | 77 | github-cli-workflow, planning, dbt-validation, slack-cli |
-| Agent personas | 17 | architect, planner, code-reviewer, security-reviewer, tdd-guide, agentic-security-reviewer |
-| Loop templates | 10 | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
-| Tool profiles | 7 | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
-| MCP templates | 7 | github, slack, notion, linear, figma, clickup, chrome-devtools |
-| Solution packs | 7 | oss-maintenance, engineering-workflow, delivery-discipline, agentic-security, architecture, code-quality, design-engineering |
+| Skills | 116+ (`agent-toolkit inventory`) | jira-assistant, confluence-assistant, github-cli-workflow, planning, dbt-validation, slack-cli |
+| Agent personas | Live inventory | architect, planner, code-reviewer, security-reviewer, tdd-guide, agentic-security-reviewer |
+| Loop templates | Live inventory | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
+| Tool profiles | Live inventory | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
+| MCP templates | Live inventory | github, slack, notion, linear, figma, clickup, chrome-devtools |
+| Solution packs | Live inventory | oss-maintenance, engineering-workflow, delivery-discipline, agentic-security, architecture, code-quality, design-engineering |
 | Prompts | — | clickup-cli, engineering-review, pr-fallback |
 
 ### Skill domains
 
-| Domain | Skills | Key examples |
-|--------|--------|-------------|
-| `core` | 8 | assistant, workspace, project, onboarding |
-| `delivery` | 21 | prd, trd, adr, planning, epic, task, bug, incident, assessment |
-| `design` | 10 | figma-implement-design, figma-code-connect, frontend-design |
-| `forge` | 8 | github-cli-workflow, gitlab-cli-workflow, gh-fix-ci, worktree |
-| `integrations` | 5 | slack-cli, slack-assistant, linear, clickup-cli, mcp |
-| `data` | 2 | dbt-validation, snowflake-validation |
-| `tooling` | 6 | jupyter-notebook, playwright-cli, herdr, inventory |
-| `ops` | 6 | triage, docs-generator, swarm, llm-cost-advisor |
-| `loops` | 1 | loop-runner |
-| `agentic-security` | 4 | threat-modeling, mcp-audit |
-| `cloud` | 2 | cloud-design-patterns |
-| `architecture` | 1 | c4-model |
-| `accessibility` | 1 | review |
-| `quality` | 2 | megalinter, codeql |
+| Domain | Key examples |
+|--------|-------------|
+| `core` | assistant, workspace, project, onboarding |
+| `delivery` | prd, trd, adr, planning, epic, task, bug, incident, assessment |
+| `design` | figma-implement-design, figma-code-connect, frontend-design |
+| `forge` | github-cli-workflow, gitlab-cli-workflow, gh-fix-ci, worktree |
+| `integrations` | jira-assistant, confluence-assistant, slack-cli, linear, clickup-cli, mcp |
+| `data` | dbt-validation, snowflake-validation |
+| `tooling` | jupyter-notebook, playwright-cli, herdr, inventory |
+| `ops` | triage, docs-generator, swarm, llm-cost-advisor |
+| `loops` | loop-runner |
+| `agentic-security` | threat-modeling, mcp-audit |
+| `cloud` | cloud-design-patterns |
+| `architecture` | c4-model |
+| `accessibility` | review |
+| `quality` | megalinter, codeql |
 
-JIRA/Confluence skills are third-party packs on the workstation (`skills-external/`), not first-party toolkit skills.
+Jira and Confluence are vendored upstream capabilities in `agent-toolkit`; `agent-toolkit install` deploys them with the catalog. Their `jira-as` and `confluence-as` CLIs are host dependencies provisioned by the Workstation AI group.
 
 ---
 
@@ -196,10 +196,10 @@ See [SWARM_SETUP.md](SWARM_SETUP.md) for complete provisioning, questionnaire, a
 
 | Source | Install mechanism | Location | Examples |
 |--------|------------------|----------|---------|
-| **agent-toolkit** | `dots-skills install-toolkit` then `agent-toolkit install` | `~/.local/share/agentic-workstation/skills-external/agent-toolkit/` | 60 cross-domain skills, catalog via SKILL.md |
+| **agent-toolkit** | `dots-skills install-toolkit` then `agent-toolkit install` | `~/.local/share/agent-toolkit/` and tool-specific skill directories | 116+ cross-domain skills (`agent-toolkit inventory`), catalog via SKILL.md |
 
 > [!IMPORTANT]
-> **No bundled skills are shipped in this repository.** The `home/dot_local/share/agentic-workstation/skills/` directory is intentionally empty (placeholder README only). All capabilities come from `agent-toolkit`. Workstation-only runner logic lives in `home/dot_local/share/agentic-workstation/dev-companion/runner`.
+> **No bundled skills are shipped in this repository.** The `home/dot_local/share/agentic-workstation/skills/` directory is intentionally thin (placeholder `README.md` only; see [ARCHITECTURE.md](ARCHITECTURE.md) thin-host model). All capabilities come from `agent-toolkit` (verify with `agent-toolkit inventory`). Workstation-only host logic lives in `home/dot_local/share/agentic-workstation/dev-companion/runner` + LLM policy (`~/.config/agentic-workstation/env.d/`, `DOTS_*_LLM_*`) — see [DEV_COMPANION_LLM.md](DEV_COMPANION_LLM.md). No `loops/*`, `mcp/*`, `prompts/*`, `agents/*` are embedded; check `agent-toolkit inventory` for dynamic counts.
 
 ---
 
@@ -211,9 +211,13 @@ See [SWARM_SETUP.md](SWARM_SETUP.md) for complete provisioning, questionnaire, a
 
 ---
 
-## LLM policy is agentic-workstation-only
+## LLM policy is agentic-workstation-only — DevCompanion boundary
 
-`dots-devcompanion` LLM policy enforcement stays entirely in agentic-workstation. agent-toolkit has no LLM provider awareness — it distributes static skill/agent content only.
+**Boundary:** `dots-devcompanion` (runner + `policy.py` + `DOTS_AI_DEVCOMPANION_LLM_*` + `~/.config/agentic-workstation/env.d/` + audit log) stays entirely in **agentic-workstation** because it is **host-specific** (secrets, per-engagement allowlist/denylist/strict, fail-closed). `agent-toolkit` owns **generic queue behavior** (job JSON schema, queue directories `pending/processing/done/failed`, `agent-toolkit devcompanion queue …` generic plumbing) but has **no LLM provider awareness** — it distributes static skill/agent content only.
+
+**Why runner stays:** LLM policy must be enforced on the machine that holds the secrets and the `dots-devcompanion llm-status` check must be runnable without invoking a model; moving it to the stateless toolkit would couple vendor-neutral distribution to host billing/privacy constraints. See [DEV_COMPANION_LLM.md](DEV_COMPANION_LLM.md) and [DEV_COMPANION_IDE_ROADMAP.md](DEV_COMPANION_IDE_ROADMAP.md).
+
+> Toolkit generic queue vs Workstation runner: `agent-toolkit devcompanion queue/enqueue` (generic) → Workstation `dots-devcompanion run-once` + `policy.py` (host-specific enforcement) → audit to `~/.local/share/agentic-workstation/dev-companion/logs/llm-audit.log`.
 
 For client engagements, configure the policy before queuing any background jobs:
 
@@ -227,9 +231,9 @@ See [`docs/DEV_COMPANION_LLM.md`](DEV_COMPANION_LLM.md) for the full policy refe
 
 ---
 
-## Third-party boundary — plugins vs skills-external
+## Distribution boundary
 
-> **Rule: third-party never to `plugins/`** — external npm / github / url packs (JIRA 14, Confluence 17, future `uipro-cli`-like) live in `skills-external/*` via `chezmoiexternal` + `dots-skills sync` and are **never** compiled into `agent-toolkit` marketplace `plugins/` (`distributions/products.yaml` is first-party-only). Workstation owns their opt-in lifecycle (`install_skill_*=true` → `chezmoi apply --refresh-externals`). Toolkit remains vendor-neutral public (per `agent-toolkit/AGENTS.md:81`, `docs/TRUST.md`). See `docs/SKILLS.md` “Skill sources”.
+> **Rule: Jira and Confluence are distributed only by `agent-toolkit`.** Workstation does not download or maintain separate archives, directories, or installer flags for them. Any future standalone third-party addition remains separate from Toolkit marketplace plugins and must declare its own provenance and installation path. *Historical `uipro-cli` / `ui-ux-pro-max` pack removed in [#197](https://github.com/ulises-jeremias/agentic-workstation/pull/197); do not add `uipro_cli` flags — productivity group now covers `clickup`, `slack`, `rtk` only.*
 
 ---
 

@@ -3,18 +3,23 @@
 Shared AI resources are installed under `~/.local/share/agentic-workstation/`.
 
 > [!NOTE]
-> This document describes the **deployed** AI layer on the target machine. For the **source state** (before `chezmoi apply`), look under `home/dot_local/share/agentic-workstation/` in the repository.
+> This document describes the **deployed** AI layer on the target machine (thin host). For the **source state** (before `chezmoi apply`), look under `home/dot_local/share/agentic-workstation/` in the repository.
+> **Thin-host:** Workstation provisions the machine (chezmoi, shell, packages, LLM policy, tmux/Herdr, Toolkit installation) and delegates all capabilities (116+ skills via `agent-toolkit inventory`, 17 agents, 10 loops, MCP) to `agent-toolkit`. **Workstation installs tools, Toolkit owns orchestration.**
 
-## Directory structure
+## Directory structure — thin workstation
 
-| Path | Purpose |
-| --- | --- |
-| `prompts/` | Reusable internal prompts |
-| `skills/` | Bundled skills (managed by chezmoi); includes **`skill-catalog.yaml`** (routing metadata) |
-| `skills-external/` | External skills installed by `dots-skills` |
-| `templates/` | Reusable text templates |
-| `mcp/` | MCP provider examples and wrappers |
-| `skills-registry.yaml` | Runtime skills registry (deployed from chezmoidata) |
+| Path | Purpose | Owner |
+| --- | --- | --- |
+| `prompts/` | Reusable internal prompts (placeholder README — delegated to Toolkit) | L1.5 |
+| `skills/` | Workstation-specific orchestration only (assistant, triage, dev-companion, workflow-generic-project); includes **`skill-catalog.yaml`** — thin placeholder, 116+ skills via Toolkit | L1 / L1.5 |
+| `skills-external/` | Reserved for future standalone third-party additions; Agent Toolkit, Jira, and Confluence do not use this path | L1 |
+| `dev-companion/runner` | Host-specific runner + LLM policy (`dots-devcompanion`, `policy.py`, audit log) — **not delegated** | L1 (host-specific) |
+| `loops/` | Loop templates placeholder — delegated to Toolkit (`agent-toolkit loop`) | L1.5 |
+| `mcp/` | MCP provider placeholders — delegated to Toolkit | L1.5 |
+| `templates/` | Reusable text templates | L1 |
+| `skills-registry.yaml` | Runtime skills registry (deployed from chezmoidata) — slimmed to 7 active + 2 deprecated `workflow-*` stubs (`enabled:false`) | L1 |
+| `scopes/` | Workstation-only scopes | L1 |
+| `telemetry/` | Local telemetry sink | L1 |
 
 ## Skills system
 
@@ -43,19 +48,19 @@ See [docs/SKILLS.md](SKILLS.md) for the full skills system documentation includi
 
 **dots-workstation-assistant** (agentic-workstation Assistant) is the recommended **organization-wide orchestrator and fallback**: in **any** repo it drives a **document-first** pass (README, `docs/`, `AGENTS.md`, CONTRIBUTING, PR templates, task runners, devcontainer, CI, tooling config, then source), with **`AGENTS.md` as the primary agent contract** when present. It includes `references/REPO_INSPECTION.md`, `references/ORCHESTRATION.md`, and an optional **`AGENTS.project.md.tmpl`** in `home/.chezmoitemplates/agents/` for new application repos. On the baseline checkout it also uses `docs/` and `dots-*`. Future org playbooks should live under documented paths under `~/.local/share/agentic-workstation/` so the skill stays pointer-based.
 
-## Conceptual model: The Ralph Loop
+## Conceptual model: The Ralph Loop — thin host
 
-This workstation is the **infrastructure layer** of a [Ralph Loop](https://ghuntley.com/loop/) implementation. Each component is intentionally mapped to a Ralph concept:
+This workstation is the **provisioning (L1)** layer of a [Ralph Loop](https://ghuntley.com/loop/) implementation; **Toolkit (L1.5)** distributes the capability content. Each component is intentionally mapped to a Ralph concept:
 
-| Ralph concept | What this workstation provides |
-|---------------|-------------------------------|
-| **Backing specifications** | `AGENTS.md` templates in `home/.chezmoitemplates/agents/` — deployed to each repo/session |
-| **Context engineering** | `~/.local/share/agentic-workstation/skills/` — modular skills that prime each loop with domain context |
-| **Persistent memory between loops** | `ai-workspace/knowledge/` — the running instance's knowledge base |
-| **Fix the loop** | `dots-harness-knowledge-sync` skill — auto-syncs discoveries after each session |
-| **Monolithic orchestrator** | `dots-workstation-assistant` as single entry point; multi-agent is optional and bounded |
-| **Forward mode** | Dev companion skills driving autonomous delivery phases |
-| **Reverse mode** | Sanitized Archive archiving procedure |
+| Ralph concept | What this workstation provides | Layer |
+|---------------|-------------------------------|-------|
+| **Backing specifications** | `AGENTS.md` templates in `home/.chezmoitemplates/agents/` — deployed to each repo/session | L1 |
+| **Context engineering** | `agent-toolkit` skills (116+ via `agent-toolkit inventory`) — deployed by `agent-toolkit install`; `~/.local/share/agentic-workstation/skills/` is thin (workstation-only) | L1.5 → L1 |
+| **Persistent memory between loops** | `agentic-harness` `knowledge/` — the running harness knowledge base (L3) | L3 |
+| **Fix the loop** | `dots-harness-knowledge-sync` skill — auto-syncs discoveries after each session | L1 → L3 |
+| **Monolithic orchestrator** | `dots-workstation-assistant` as single entry point; multi-agent is optional and bounded (swarm via `agent-toolkit swarm …`) | L1 → L1.5 |
+| **Forward mode** | Dev companion host runner (`dots-devcompanion` + policy) + Toolkit generic queue | L1 + L1.5 |
+| **Reverse mode** | Sanitized Archive archiving procedure | L3 |
 
 The conceptual model, operational guide, and session loop documentation live in the running instance:
 **[ai-workspace/knowledge/learnings/general.md](https://github.com/ulises-jeremias/ai-workspace/blob/main/knowledge/learnings/general.md)**

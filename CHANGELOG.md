@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- **Docs** — Toolkit-facing counts match agent-toolkit disk inventory (77 skills / 17 agents / 7 MCP / 7 packs / 14 domains). JIRA/Confluence remain workstation `skills-external/` packs.
+- **Docs** — Toolkit-facing counts use floors and live inventory. Jira and Confluence are now bundled upstream capabilities in agent-toolkit, not workstation `skills-external/` packs.
 
 - **Canonical V Agent Toolkit bootstrap** ([#206](https://github.com/ulises-jeremias/agentic-workstation/issues/206)) — chezmoi and `dots-skills install-toolkit` prefer Homebrew / AUR `agent-toolkit-bin` / GitHub Release V binaries, then `uv tool install --force 'agent-toolkit-cli>=1.11.0'` (V launcher wheel). Shared helper `home/dot_local/lib/agentic-workstation/install-agent-toolkit.sh`. Rollback via `AGENT_TOOLKIT_CLI_VERSION` / `AGENT_TOOLKIT_RELEASE`. Docs (`docs/AGENT_TOOLKIT.md`, `COMPATIBILITY.md`) updated. Workstation does not `import agent_toolkit`.
 

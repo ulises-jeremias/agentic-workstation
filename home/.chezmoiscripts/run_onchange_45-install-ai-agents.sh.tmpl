@@ -46,6 +46,25 @@ else
 	warn "agent-toolkit install failed — retry with: dots-skills install-toolkit"
 fi
 
+{{- if $gAi }}
+install_python_cli() {
+	local package="$1" command="$2"
+	if has_cmd "$command"; then
+		ok "$command already installed"
+	elif has_cmd uv && uv tool install --force "$package"; then
+		ok "$command installed via uv"
+	elif has_cmd pipx && pipx install --force "$package"; then
+		ok "$command installed via pipx"
+	else
+		warn "could not install $command; install it manually with: uv tool install $package"
+	fi
+}
+
+# These CLIs execute the vendored Jira and Confluence skills distributed by Toolkit.
+install_python_cli jira-as jira-as
+install_python_cli confluence-as confluence-as
+{{- end }}
+
 if has_cmd dots-skills; then
 	log "Syncing skill symlinks via dots-skills sync"
 	dots-skills sync || warn "dots-skills sync failed"

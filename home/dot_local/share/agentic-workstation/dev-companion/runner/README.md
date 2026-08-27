@@ -26,10 +26,10 @@ Providers are configured via env vars (names only; secrets in `~/.config/agentic
 - Default mode is **plan_only**.
 - Any “edit/push/PR” requires `actions_allowed` in the job and account pack permission.
 
-## Integration with agentic-harness `bin/loop`
+## Integration with agentic-harness loops (Toolkit-owned)
 
-`bin/loop` and `bin/devcompanion` in [agentic-harness](https://github.com/ulises-jeremias/agentic-harness)
-try runners in this order: agentic-workstation runner → `claude --print` → skeleton.
+`agent-toolkit loop` (and legacy `bin/loop`) and `agent-toolkit devcompanion` (and legacy `bin/devcompanion`) in [agentic-harness](https://github.com/ulises-jeremias/agentic-harness)
+try runners in this order: agentic-workstation runner (`HARNESS_RUNNER_DIR`) → `claude --print` → skeleton. **Workstation runner stays host-specific** (LLM policy); Toolkit owns generic queue behavior.
 
 To use this runner as the primary executor for agentic-harness loops:
 

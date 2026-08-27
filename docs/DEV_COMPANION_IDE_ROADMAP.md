@@ -9,7 +9,7 @@
 
 ## Why we need this doc
 
-The dev-companion runner (`dots-devcompanion run-once`, `bin/devcompanion run-once`) calls an LLM **headlessly** through provider classes in
+The dev-companion runner (`dots-devcompanion run-once` — Workstation host runner; generic `agent-toolkit devcompanion run-once` / legacy `bin/devcompanion run-once`) calls an LLM **headlessly** through provider classes in
 [`runner/providers/`](../home/dot_local/share/agentic-workstation/dev-companion/runner/providers/).
 Today the only viable headless providers are:
 
@@ -134,7 +134,7 @@ non-interactive surface.
 repo content) happen on infrastructure they control.
 
 **How:** ship the runner (and the worker) to a VM the client provisions in
-their cloud, configure dots-workstation-side `bin/devcompanion` to delegate to it
+their cloud, configure harness-side `agent-toolkit devcompanion` (or legacy `bin/devcompanion`) to delegate to the Workstation runner via `HARNESS_RUNNER_DIR`
 (SSH or a queue gateway), and lock down the local runner with strict
 allowlist as in Mode A.
 

@@ -1,12 +1,12 @@
 # Jira Integration
 
-> Jira issue workflows through the optional assistant skill pack.
+> Jira issue workflows through the Agent Toolkit catalog.
 
 ---
 
 ## Best path
 
-Use the Jira assistant skill pack plus local env files. Jira does not use an MCP template here.
+Use the Jira capabilities included in Agent Toolkit plus local env files. Jira does not use an MCP template here.
 
 ## Setup
 
@@ -17,15 +17,15 @@ $EDITOR ~/.config/agentic-workstation/env.d/jira.env
 
 Fill in your Atlassian site URL, email, and API token.
 
-Then enable the Jira assistant pack in your local chezmoi config:
+Then install the Toolkit catalog:
 
-```toml
-[data]
-install_skill_jira_assistant = true
+```bash
+agent-toolkit install
 ```
 
 ## What you need
 
+- `jira-as`
 - `JIRA_SITE_URL`
 - `JIRA_EMAIL`
 - `JIRA_API_TOKEN`

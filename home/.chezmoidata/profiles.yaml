@@ -17,7 +17,7 @@
 profiles:
   technical:
     description: "Full developer stack (node, python, docker, AI, productivity skills)."
-    groups: [core, node, python, docker, ai, skills_jira, skills_confluence, skills_productivity, swarm]
+    groups: [core, node, python, docker, ai, skills_productivity, swarm]
   non-technical:
     description: "Productivity + AI only, no language runtimes."
     groups: [core, ai, skills_productivity, swarm]
@@ -32,7 +32,7 @@ profiles:
     groups: [core, python, skills_productivity]
   data:
     description: "Data engineering stack (python + AI + JIRA/Confluence skills)."
-    groups: [core, python, ai, skills_jira, skills_confluence, skills_productivity, swarm]
+    groups: [core, python, ai, skills_productivity, swarm]
   infra:
     description: "Infrastructure stack (docker + node + python)."
     groups: [core, docker, node, python, skills_productivity]
@@ -62,12 +62,6 @@ groups:
   ai:
     flag: install_group_ai
     description: "AI coding agents (Claude Code, OpenCode, pi, Copilot CLI, Muse)."
-  skills_jira:
-    flag: install_skill_jira_assistant
-    description: "JIRA Assistant skill pack (14 skills)."
-  skills_confluence:
-    flag: install_skill_confluence_assistant
-    description: "Confluence Assistant skill pack (17 skills)."
   lmstudio:
     flag: install_group_lmstudio
     description: "LM Studio local LLM (RTX 3060 12GB tuned, 10.5GB VRAM safe for Hyprland+Quickshell)."

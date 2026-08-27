@@ -7,7 +7,7 @@
 
 This repository provides a reusable `chezmoi`-based agentic-workstation baseline for agentic-workstation.
 
-**agentic-workstation's role is machine provisioning**: chezmoi, shell tools, packages, and LLM policy. Skills, agent personas, and profiles are distributed by [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit) — a separate repository installed automatically during `chezmoi apply`. `dots-skills` delegates to `agent-toolkit` for skill sync; `dots-loop` wraps `agent-toolkit loop`.
+**agentic-workstation's role is thin-host machine provisioning**: chezmoi, shell tools, packages, LLM policy, tmux/Herdr, and Toolkit installation (via `dots-skills install-toolkit`). **Workstation installs tools, Toolkit owns orchestration** (swarm recipes, loops, generic queue). Skills, agent personas, and profiles are distributed by [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit) — a separate repository installed automatically during `chezmoi apply`. `dots-skills` delegates to `agent-toolkit` for skill sync; `dots-loop` wraps `agent-toolkit loop`; `dots-devcompanion` runner + policy stays host-specific in Workstation (LLM policy, `env.d`), while `agent-toolkit devcompanion` owns generic queue behavior.
 
 The bundled **`agentic-workstation-assistant`** skill is the **agentic-workstation Assistant**: use it **in any repository** (including client work), not only this checkout. It instructs agents to **inspect project documentation in a fixed order** (README → `docs/` → `AGENTS.md` → CONTRIBUTING → PR templates → official scripts → devcontainer → CI → configs → code), to **cite sources**, and to treat **`AGENTS.md` as the primary agent contract** when present. On this repo it also uses `docs/` and `dots-*`; elsewhere it still applies the same repo-inspection model plus machine-local agentic-workstation tooling when relevant.
 
@@ -43,7 +43,7 @@ This repo is **L1 (machine provisioning)** in a three-tier personal DX stack:
 | Layer | Repo | Role |
 |-------|------|------|
 | **L1** | **agentic-workstation** (this repo) | Machine provisioning — chezmoi, shell, packages, LLM policy |
-| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | Capability distribution — 77 skills, loops, profiles, MCP |
+| **L1.5** | [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit) | Capability distribution — 116+ skills, loops, profiles, MCP |
 | **L3** | [agentic-harness](https://github.com/ulises-jeremias/agentic-harness) | AI workspace scaffold for multi-repo orchestration |
 
 ## Skills and agents
@@ -62,7 +62,7 @@ agent-toolkit install [--force]                # deploy to all detected AI tools
 dots-skills install-toolkit                    # same — also runs dots-skills sync
 
 # Discover capabilities
-agent-toolkit inventory                        # list all 77 skills
+agent-toolkit inventory                        # list all 116+ skills
 agent-toolkit doctor                           # verify installation health
 dots-skills list                               # list skills with per-tool status
 

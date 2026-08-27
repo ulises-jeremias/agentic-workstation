@@ -14,7 +14,7 @@
 # `dots-skills install-toolkit && agent-toolkit install`.
 # Only workstation-specific orchestration skills remain here; cross-domain
 # skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
-# are now provided by agent-toolkit (60 skills) and cleaned via
+# are now provided by agent-toolkit (116+ skills via `agent-toolkit inventory`) and cleaned via
 # .chezmoiremove on each target.
 #
 # Field reference:
@@ -40,7 +40,7 @@ skills:
     source: bundled
     enabled: true
     version: 1.0.0
-    # depends_on: github-cli-workflow and output-handshake now via agent-toolkit (60 skills) — delegated, not bundled
+    # depends_on: github-cli-workflow and output-handshake now via agent-toolkit — delegated, not bundled
 
   - name: dots-workstation-dev-companion
     source: bundled
@@ -77,11 +77,7 @@ skills:
     enabled: true
     version: 1.0.0
 
-  # ── github/url skills → managed by .chezmoiexternal.toml.tmpl ────────────────
-  # JIRA Assistant Skills (14 skills) — install_skill_jira_assistant = true
-  # Confluence Assistant Skills (17 skills) — install_skill_confluence_assistant = true
-  # See: home/dot_local/share/agentic-workstation/.chezmoiexternal.toml.tmpl
-  #
-  # Third-party note: external packs (JIRA, Confluence) and any future npm
-  # third-party skills never belong in agent-toolkit's plugins/ (ADR-004).
-  # Workstation owns their lifecycle via chezmoiexternal + skills-external/.
+  # ── External skills ─────────────────────────────────────────────────────────
+  # Jira and Confluence are bundled in agent-toolkit. Workstation does not
+  # download or maintain duplicate archives; `agent-toolkit install` deploys
+  # them together with every other Toolkit capability.

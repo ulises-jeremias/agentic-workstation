@@ -19,7 +19,7 @@ set -eo pipefail
 ## Note: github and url skills are managed by chezmoi (.chezmoiexternal).
 ##       Enable them in chezmoi config and run: chezmoi apply
 ##
-## Note: The bulk of cross-domain skills (60 skills) come from agent-toolkit.
+## Note: The bulk of cross-domain skills come from agent-toolkit; use `agent-toolkit inventory` for the live catalog.
 ##       Use 'dots-skills install-toolkit' or 'chezmoi apply' to install/update them.
 ##
 ## Options:
