@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # chezmoi:template:left-delimiter="{{" right-delimiter="}}"
 {{- $lmstudio := index . "install_group_lmstudio" | default false -}}
-{{- $models   := index . "lmstudio_models_selection" | default "recommended" -}}
+{{- $models := index . "lmstudio_models_selection" | default "recommended" -}}
 {{- if $lmstudio }}
 set -euo pipefail
 
@@ -16,16 +16,16 @@ if [[ -t 1 && -z ${NO_COLOR:-} ]]; then
 else
   c_reset='' c_blue='' c_green='' c_yellow='' c_red='' c_dim=''
 fi
-log()  { printf '%b[lmstudio]%b %s\n' "$c_blue" "$c_reset" "$*"; }
-ok()   { printf '  %b✓%b %s\n' "$c_green" "$c_reset" "$*"; }
+log() { printf '%b[lmstudio]%b %s\n' "$c_blue" "$c_reset" "$*"; }
+ok() { printf '  %b✓%b %s\n' "$c_green" "$c_reset" "$*"; }
 warn() { printf '  %b!%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 fail() { printf '  %b✗%b %s\n' "$c_red" "$c_reset" "$*"; }
-dim()  { printf '%b%s%b\n' "$c_dim" "$*" "$c_reset"; }
+dim() { printf '%b%s%b\n' "$c_dim" "$*" "$c_reset"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
 can_sudo() { sudo -n true >/dev/null 2>&1; }
 
 # ── CI guard ─────────────────────────────────────────────────────────────
-if [[ "${CI:-}" == "true" && -z "${LMSTUDIO_FORCE_INSTALL:-}" ]]; then
+if [[ ${CI:-} == "true" && -z ${LMSTUDIO_FORCE_INSTALL:-} ]]; then
   log "CI detected — skipping LM Studio install (use LMSTUDIO_FORCE_INSTALL=1 to force)"
   exit 0
 fi
@@ -39,7 +39,7 @@ log "Selection: ${LMSTUDIO_MODELS_SELECTION}"
 
 # ── 1. Install LM Studio ─────────────────────────────────────────────────
 install_lmstudio() {
-  if has_cmd lms || [[ -x "$LMS_BIN" ]]; then
+  if has_cmd lms || [[ -x $LMS_BIN ]]; then
     ok "LM Studio already installed: $(${LMS_BIN:-lms} --version 2>&1 | head -n1 || echo 'lms found')"
     return 0
   fi
@@ -65,7 +65,7 @@ install_lmstudio() {
     warn "On Arch: yay -S lmstudio-bin  |  On other distros: download from lmstudio.ai"
   fi
   # Check if .lmstudio/bin/lms appeared via previous partial install
-  if [[ -x "$LMS_BIN" ]]; then
+  if [[ -x $LMS_BIN ]]; then
     ok "LM Studio binary appeared at $LMS_BIN"
     return 0
   fi
@@ -76,7 +76,7 @@ install_lmstudio() {
 # ── 2. Patch LM Studio settings.json (context + GPU) ─────────────────────
 patch_lmstudio_settings() {
   local settings="${HOME}/.lmstudio/settings.json"
-  if [[ ! -f "$settings" ]]; then
+  if [[ ! -f $settings ]]; then
     log "No settings.json yet — LM Studio will create on first launch"
     return 0
   fi
@@ -112,12 +112,12 @@ PY
 # ── 3. Download models via lms (GGUF) ────────────────────────────────────
 download_models() {
   local sel="$LMSTUDIO_MODELS_SELECTION"
-  if [[ "$sel" == "none" ]]; then
+  if [[ $sel == "none" ]]; then
     log "Model selection 'none' — skipping downloads (LM Studio installed only)"
     return 0
   fi
   local lms="${LMS_BIN:-lms}"
-  if ! has_cmd lms && [[ ! -x "$LMS_BIN" ]]; then
+  if ! has_cmd lms && [[ ! -x $LMS_BIN ]]; then
     warn "lms not found — skipping model downloads (install LM Studio first)"
     return 0
   fi
@@ -166,7 +166,7 @@ configure_agents() {
   log "Configuring agents to use LM Studio local server (OpenAI-compatible http://localhost:1234/v1)..."
   # opencode.json — add lmstudio provider if not present
   local ocfg="${HOME}/.config/opencode/opencode.json"
-  if [[ -f "$ocfg" ]] || mkdir -p "$(dirname "$ocfg")" 2>/dev/null; then
+  if [[ -f $ocfg ]] || mkdir -p "$(dirname "$ocfg")" 2>/dev/null; then
     python3 <<'PY'
 import json, pathlib
 p = pathlib.Path.home() / ".config/opencode/opencode.json"
@@ -202,7 +202,7 @@ PY
 
   # Muse / opencode env hint for designers — doc file
   mkdir -p "${HOME}/.local/share/agentic-workstation/lmstudio" 2>/dev/null || true
-  cat > "${HOME}/.local/share/agentic-workstation/lmstudio/README.md" <<'MDEOF'
+  cat >"${HOME}/.local/share/agentic-workstation/lmstudio/README.md" <<'MDEOF'
 # LM Studio — colibri (RTX 3060 12GB)
 
 - Server: http://localhost:1234/v1 (OpenAI-compatible, auto-started by LM Studio)
