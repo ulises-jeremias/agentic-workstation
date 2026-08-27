@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+# dots-lmstudio — helper for LM Studio on colibri (RTX 3060 12GB)
+# VRAM budget: 10.5GB safe (1.5GB reserved for Hyprland 42MB + Quickshell 158MB + Zen)
+set -euo pipefail
+
+SCRIPT_NAME="dots-lmstudio"
+LMS="${HOME}/.lmstudio/bin/lms"
+MODELS_DIR="${HOME}/.lmstudio/models"
+
+if [[ ! -x $LMS ]] && command -v lms >/dev/null 2>&1; then
+  LMS="lms"
+fi
+
+# Colors
+if [[ -t 1 && -z ${NO_COLOR:-} ]]; then
+  c_reset=$'\033[0m'
+  c_blue=$'\033[1;34m'
+  c_green=$'\033[1;32m'
+  c_yellow=$'\033[1;33m'
+  c_red=$'\033[1;31m'
+  c_dim=$'\033[2m'
+else
+  c_reset=''
+  c_blue=''
+  c_green=''
+  c_yellow=''
+  c_red=''
+  c_dim=''
+fi
+log() { printf '%b[%s]%b %s\n' "$c_blue" "$SCRIPT_NAME" "$c_reset" "$*"; }
+ok() { printf '  %b✓%b %s\n' "$c_green" "$c_reset" "$*"; }
+warn() { printf '  %b!%b %s\n' "$c_yellow" "$c_reset" "$*"; }
+fail() { printf '  %b✗%b %s\n' "$c_red" "$c_reset" "$*"; }
+
+usage() {
+  cat <<USAGE
+${c_blue}dots-lmstudio${c_reset} — LM Studio helper (colibri, RTX 3060 12GB, 10.5GB VRAM safe)
+
+${c_dim}VRAM baseline: Hyprland 42M + Quickshell 158M + Xorg 23M + Zen 31-175M ≈ 700M reserved
+Only one model loaded at a time (unloadPreviousModelOnSelect=true).${c_reset}
+
+Usage:
+  $SCRIPT_NAME status              Show LM Studio + GPU + model status
+  $SCRIPT_NAME ls                  List downloaded models (lms ls)
+  $SCRIPT_NAME ps                  List loaded models (lms ps)
+  $SCRIPT_NAME load <alias>        Load a model by alias: coder | reasoning | flash | vl
+  $SCRIPT_NAME load <model-id>     Load any model: lms load <id>
+  $SCRIPT_NAME unload              Unload current model
+  $SCRIPT_NAME server start|stop   Control local server (port 1234)
+  $SCRIPT_NAME bench               Quick tps benchmark (if model loaded)
+  $SCRIPT_NAME install [sel]       Download models: minimal|recommended|full (default: recommended)
+  $SCRIPT_NAME doctor              Full diagnostic (GPU, VRAM, settings, agents)
+
+Aliases:
+  coder      → bartowski/Qwen2.5-Coder-7B-Instruct-GGUF (4.8GB, 52t/s, tool_use, 32k)
+  reasoning  → bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF (8.9GB, 26t/s, 131k)
+  flash      → bartowski/Qwen2.5-Coder-3B-Instruct-GGUF (2GB, 64t/s)
+  vl         → lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF (5GB, vision)
+
+Examples:
+  $SCRIPT_NAME status
+  $SCRIPT_NAME load coder
+  $SCRIPT_NAME load reasoning
+  lms server start --port 1234 && $SCRIPT_NAME load coder && curl http://localhost:1234/v1/models
+USAGE
+}
+
+# Alias map
+resolve_alias() {
+  case "$1" in
+    coder) echo "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF" ;;
+    reasoning) echo "bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" ;;
+    flash) echo "bartowski/Qwen2.5-Coder-3B-Instruct-GGUF" ;;
+    vl) echo "lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF" ;;
+    *) echo "$1" ;;
+  esac
+}
+
+cmd_status() {
+  echo
+  printf '%bLM Studio Status — colibri (RTX 3060 12GB, 10.5GB safe)%b\n' "$c_blue" "$c_reset"
+  printf '─────────────────────────────────────────────────────\n'
+  echo
+  nvidia-smi --query-gpu=name,memory.total,memory.used,memory.free --format=csv 2>&1 | head -5
+  echo
+  nvidia-smi 2>&1 | grep -A 10 "Processes:" | head -20
+  echo
+  printf '%bLM Studio:%b\n' "$c_blue" "$c_reset"
+  if [[ -x $LMS ]]; then
+    ok "lms: $($LMS --version 2>&1 | head -n1)"
+    echo
+    printf '%bDownloaded models (lms ls):%b\n' "$c_dim" "$c_reset"
+    "$LMS" ls 2>&1 | head -40 || warn "lms ls failed"
+    echo
+    printf '%bLoaded models (lms ps):%b\n' "$c_dim" "$c_reset"
+    "$LMS" ps 2>&1 | head -40 || true
+    echo
+    printf '%bServer:%b\n' "$c_dim" "$c_reset"
+    "$LMS" server status 2>&1 | head -20 || true
+    # Check local endpoint
+    if curl -sf http://localhost:1234/v1/models >/dev/null 2>&1; then
+      ok "Local server UP — http://localhost:1234/v1"
+      curl -s http://localhost:1234/v1/models 2>&1 | python3 -c "import json,sys; d=json.load(sys.stdin); print('  Models:', ', '.join(m['id'] for m in d.get('data',[])))" 2>/dev/null || true
+    else
+      warn "Local server DOWN — start with: lms server start --port 1234"
+    fi
+  else
+    warn "lms not found at $LMS — install with: chezmoi apply (needs install_group_lmstudio=true) or yay -S lmstudio-bin"
+  fi
+  echo
+  # Settings check
+  if [[ -f "${HOME}/.lmstudio/settings.json" ]]; then
+    python3 <<'PY' 2>&1 | head -20
+import json, pathlib
+p = pathlib.Path.home() / ".lmstudio/settings.json"
+j = json.loads(p.read_text())
+print(f"  settings: defaultContextLength={j.get('defaultContextLength')}, enableLocalService={j.get('enableLocalService')}, jitTTL={j.get('developer',{}).get('jitModelTTL')}")
+PY
+  fi
+  # opencode check
+  if [[ -f "${HOME}/.config/opencode/opencode.json" ]]; then
+    if grep -q "lmstudio" "${HOME}/.config/opencode/opencode.json" 2>/dev/null; then
+      ok "opencode: lmstudio provider configured"
+    else
+      warn "opencode: lmstudio provider NOT configured"
+    fi
+  fi
+  echo
+}
+
+cmd_install() {
+  local sel="${1:-recommended}"
+  log "Installing models: $sel"
+  local models=""
+  case "$sel" in
+    minimal) models="bartowski/Qwen2.5-Coder-7B-Instruct-GGUF" ;;
+    recommended) models="bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" ;;
+    full) models="bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF bartowski/Qwen2.5-Coder-3B-Instruct-GGUF" ;;
+    *) models="bartowski/Qwen2.5-Coder-7B-Instruct-GGUF bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" ;;
+  esac
+  for m in $models; do
+    log "lms get $m --gguf -y"
+    "$LMS" get "$m" --gguf -y 2>&1 | tail -20 || warn "failed: $m"
+  done
+  ok "install $sel complete — lms ls to verify"
+}
+
+# Dispatch
+case "${1:-}" in
+  status) cmd_status ;;
+  ls) "$LMS" ls 2>&1 | cat ;;
+  ps) "$LMS" ps 2>&1 | cat ;;
+  load)
+    if [[ -z ${2:-} ]]; then
+      fail "Usage: $SCRIPT_NAME load <alias|coder|reasoning|flash>"
+      exit 1
+    fi
+    mid=$(resolve_alias "$2")
+    log "Loading $mid ..."
+    "$LMS" load "$mid" --gguf -y 2>&1 | tail -30
+    ;;
+  unload) "$LMS" unload 2>&1 | tail -20 || true ;;
+  server)
+    shift
+    "$LMS" server "$@" 2>&1 | cat
+    ;;
+  install) cmd_install "${2:-recommended}" ;;
+  bench)
+    log "Bench — curl local server if loaded"
+    curl -s http://localhost:1234/v1/models 2>&1 | head -20
+    echo "Run llmfit bench for tps measurement"
+    ;;
+  doctor)
+    cmd_status
+    echo
+    log "doctor: also run dots-doctor, agent-toolkit doctor"
+    ;;
+  -h | --help | help | "") usage ;;
+  *)
+    fail "Unknown: $1"
+    usage
+    exit 1
+    ;;
+esac
