@@ -43,9 +43,9 @@ dots-doctor
 ```
 
 ```text
-Skills: 77 via agent-toolkit (agent-toolkit inventory)
-Agents: 17 via agent-toolkit
-MCP templates: 7 via agent-toolkit
+Skills: 116+ via agent-toolkit (agent-toolkit inventory)
+Agents: see agent-toolkit inventory
+MCP templates: see agent-toolkit inventory
 CLI tools: dots-doctor, dots-skills, dots-devcompanion, dots-mcp, dots-loop (delegate to agent-toolkit)
 ```
 
@@ -165,7 +165,7 @@ claude  # or opencode / cursor
 ```text
 [AI reads AGENTS.md]
 Workspace context loaded: hello-stack
-Skills available: 77 (jira-assistant, github-cli-workflow, planner, implementer, code-reviewer, ...) via agent-toolkit inventory
+Skills available: 116+ (jira-assistant, github-cli-workflow, planner, implementer, code-reviewer, ...) via agent-toolkit inventory
 Knowledge: 0 entries (new workspace)
 ```
 

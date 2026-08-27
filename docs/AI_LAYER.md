@@ -12,7 +12,7 @@ Shared AI resources are installed under `~/.local/share/agentic-workstation/`.
 | --- | --- | --- |
 | `prompts/` | Reusable internal prompts (placeholder README — delegated to Toolkit) | L1.5 |
 | `skills/` | Workstation-specific orchestration only (assistant, triage, dev-companion, workflow-generic-project); includes **`skill-catalog.yaml`** — thin placeholder, 116+ skills via Toolkit | L1 / L1.5 |
-| `skills-external/` | External skills installed via `agent-toolkit` + `dots-skills` + `chezmoiexternal` (`agent-toolkit/`, `jira-assistant/`, `confluence-assistant/`) | L1.5 + Workstation external packs |
+| `skills-external/` | Reserved for future standalone third-party additions; Agent Toolkit, Jira, and Confluence do not use this path | L1 |
 | `dev-companion/runner` | Host-specific runner + LLM policy (`dots-devcompanion`, `policy.py`, audit log) — **not delegated** | L1 (host-specific) |
 | `loops/` | Loop templates placeholder — delegated to Toolkit (`agent-toolkit loop`) | L1.5 |
 | `mcp/` | MCP provider placeholders — delegated to Toolkit | L1.5 |
@@ -55,7 +55,7 @@ This workstation is the **provisioning (L1)** layer of a [Ralph Loop](https://gh
 | Ralph concept | What this workstation provides | Layer |
 |---------------|-------------------------------|-------|
 | **Backing specifications** | `AGENTS.md` templates in `home/.chezmoitemplates/agents/` — deployed to each repo/session | L1 |
-| **Context engineering** | `agent-toolkit` skills (77 via `agent-toolkit inventory`) — symlinked via `dots-skills sync`; `~/.local/share/agentic-workstation/skills/` is thin (workstation-only) | L1.5 → L1 |
+| **Context engineering** | `agent-toolkit` skills (116+ via `agent-toolkit inventory`) — deployed by `agent-toolkit install`; `~/.local/share/agentic-workstation/skills/` is thin (workstation-only) | L1.5 → L1 |
 | **Persistent memory between loops** | `agentic-harness` `knowledge/` — the running harness knowledge base (L3) | L3 |
 | **Fix the loop** | `dots-harness-knowledge-sync` skill — auto-syncs discoveries after each session | L1 → L3 |
 | **Monolithic orchestrator** | `dots-workstation-assistant` as single entry point; multi-agent is optional and bounded (swarm via `agent-toolkit swarm …`) | L1 → L1.5 |

@@ -1,6 +1,6 @@
 # Confluence Integration
 
-> Confluence page workflows through the optional assistant skill pack.
+> Confluence page workflows through the Agent Toolkit catalog.
 
 ---
 
@@ -17,10 +17,9 @@ $EDITOR ~/.config/agentic-workstation/env.d/confluence.env
 
 Fill in the same Atlassian site, email, and token used for Jira.
 
-Then enable the Confluence assistant pack in your local chezmoi config:
+Then install the Toolkit catalog:
 
-```toml
-[data]
+```bash
 agent-toolkit install
 ```
 

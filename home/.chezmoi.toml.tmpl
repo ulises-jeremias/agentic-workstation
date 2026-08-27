@@ -72,12 +72,12 @@
      leaves every group disabled unless individual install_* keys are
      overridden through --override-data / --override-data-file).            */}}
 {{- $profileGroupsMap := dict
-        "technical"      (list "node" "python" "docker" "ai" "jira" "confluence" "productivity" "swarm")
+        "technical"      (list "node" "python" "docker" "ai"                   "productivity" "swarm")
         "non-technical"  (list                              "ai"                   "productivity" "swarm")
         "ai"             (list                              "ai"                   "productivity" "swarm")
         "node"           (list "node"                                              "productivity")
         "python"         (list        "python"                                     "productivity")
-        "data"           (list        "python"             "ai" "jira" "confluence" "productivity" "swarm")
+        "data"           (list        "python"             "ai"                   "productivity" "swarm")
         "infra"          (list "node" "python" "docker"                            "productivity")
         "minimal"        (list)
         "custom"         (list)
@@ -105,7 +105,7 @@
 
 {{/* ── Step 1: profile ──────────────────────────────────────────────────── */}}
 {{-   $profileChoices := list "technical" "non-technical" "ai" "node" "python" "data" "infra" "minimal" "custom" -}}
-{{-   $profilePrompt := printf "%s\n\n  PROFILE — which persona matches your role?\n    technical     node + python + docker + ai + jira + confluence + productivity\n    non-technical productivity + ai\n    ai            ai + productivity\n    node          node + productivity\n    python        python + productivity\n    data          python + ai + jira + confluence + productivity\n    infra         docker + node + python + productivity\n    minimal       core baseline only\n    custom        answer every group question yourself\n\n  Choose one" $banner -}}
+{{-   $profilePrompt := printf "%s\n\n  PROFILE — which persona matches your role?\n    technical     node + python + docker + ai + productivity\n    non-technical productivity + ai\n    ai            ai + productivity\n    node          node + productivity\n    python        python + productivity\n    data          python + ai + productivity\n    infra         docker + node + python + productivity\n    minimal       core baseline only\n    custom        answer every group question yourself\n\n  Choose one" $banner -}}
 {{-   $profileDefault := index . "profile" | default "technical" -}}
 {{-   $profile = promptChoice $profilePrompt $profileChoices $profileDefault -}}
 

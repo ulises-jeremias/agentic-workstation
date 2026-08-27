@@ -1,6 +1,6 @@
 # Jira Integration
 
-> Jira issue workflows through the optional assistant skill pack.
+> Jira issue workflows through the Agent Toolkit catalog.
 
 ---
 
@@ -17,10 +17,9 @@ $EDITOR ~/.config/agentic-workstation/env.d/jira.env
 
 Fill in your Atlassian site URL, email, and API token.
 
-Then enable the Jira assistant pack in your local chezmoi config:
+Then install the Toolkit catalog:
 
-```toml
-[data]
+```bash
 agent-toolkit install
 ```
 

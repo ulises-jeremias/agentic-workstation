@@ -3,7 +3,7 @@ dots-harness-*
 # ── Delegated to agent-toolkit — clean legacy workstation copies ──
 # These were previously bundled in workstation and are now provided via
 # `uv tool install --force agent-toolkit-cli && agent-toolkit install`
-# at ~/.local/share/agentic-workstation/skills-external/agent-toolkit/
+# from ~/.local/share/agent-toolkit/ and supported tool-specific directories.
 clickup-cli
 slack-cli
 github-cli-workflow
