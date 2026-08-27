@@ -6,7 +6,7 @@
 
 ## Best path
 
-Use the Confluence assistant skill pack plus local env files. Confluence does not use an MCP template here.
+Use the Confluence capabilities included in Agent Toolkit plus local env files. Confluence does not use an MCP template here.
 
 ## Setup
 
@@ -25,6 +25,7 @@ agent-toolkit install
 
 ## What you need
 
+- `confluence-as`
 - `CONFLUENCE_SITE_URL`
 - `CONFLUENCE_EMAIL`
 - `CONFLUENCE_API_TOKEN`

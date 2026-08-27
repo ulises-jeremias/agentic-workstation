@@ -6,7 +6,7 @@
 
 ## Best path
 
-Use the Jira assistant skill pack plus local env files. Jira does not use an MCP template here.
+Use the Jira capabilities included in Agent Toolkit plus local env files. Jira does not use an MCP template here.
 
 ## Setup
 
@@ -25,6 +25,7 @@ agent-toolkit install
 
 ## What you need
 
+- `jira-as`
 - `JIRA_SITE_URL`
 - `JIRA_EMAIL`
 - `JIRA_API_TOKEN`
