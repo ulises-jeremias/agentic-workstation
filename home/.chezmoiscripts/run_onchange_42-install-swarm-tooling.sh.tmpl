@@ -20,7 +20,6 @@ log() { printf '%b[swarm]%b %s\n' "$c_blue" "$c_reset" "$*"; }
 warn() { printf '%b[swarm]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 ok() { printf '%b[swarm]%b %s\n' "$c_green" "$c_reset" "$*"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 
 # CI skip unless mocked
 if [[ "${CI:-}" == "true" && -z "${SWARM_FORCE_INSTALL:-}" ]]; then
@@ -36,11 +35,11 @@ install_tmux() {
   fi
   log "Installing tmux"
   if has_cmd pacman; then
-    if can_sudo; then sudo pacman -S --noconfirm --needed tmux; else warn "skip tmux (sudo unavailable)"; fi
+    sudo pacman -S --noconfirm --needed tmux
   elif has_cmd apt-get; then
-    if can_sudo; then sudo apt-get update -y && sudo apt-get install -y tmux; else warn "skip tmux (sudo unavailable)"; fi
+    sudo apt-get update -y && sudo apt-get install -y tmux
   elif has_cmd dnf; then
-    if can_sudo; then sudo dnf install -y tmux; else warn "skip tmux (sudo unavailable)"; fi
+    sudo dnf install -y tmux
   elif has_cmd brew; then
     brew install tmux
   else

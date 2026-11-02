@@ -238,10 +238,6 @@ _at_install_aur() {
   else
     return 1
   fi
-  if ! sudo -n true >/dev/null 2>&1 && [[ ${EUID:-1} -ne 0 ]]; then
-    _at_warn "AUR helper '${helper}' needs sudo; skipping ${AGENT_TOOLKIT_AUR_PKG}"
-    return 1
-  fi
   _at_log "Installing via AUR (${helper} -S ${AGENT_TOOLKIT_AUR_PKG})"
   "$helper" -S --noconfirm --needed "$AGENT_TOOLKIT_AUR_PKG" || return 1
   _at_ensure_path

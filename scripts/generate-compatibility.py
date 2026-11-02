@@ -151,7 +151,7 @@ Profiles `technical`, `non-technical`, `ai`, `data` include swarm by default; `c
 
 - No credentials read or written by swarm provisioning.
 - `curl | sh` for Herdr only after `brew`/`mise` fallback fails, logged to `/tmp/herdr-install.log`, no `sudo` required for Herdr.
-- `tmux` install via system package manager respects `can_sudo`; no `~/.tmux.conf` overwrite.
+- `tmux` install via system package manager invokes `sudo` directly and prompts for the password when needed; no `~/.tmux.conf` overwrite.
 - Isolated tmux socket (`agent-toolkit-swarm-<run-id>`) prevents interference with user sessions.
 
 ---

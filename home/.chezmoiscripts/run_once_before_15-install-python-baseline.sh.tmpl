@@ -23,7 +23,6 @@ log() { printf '%b[python-baseline]%b %s\n' "$c_blue" "$c_reset" "$*"; }
 warn() { printf '%b[python-baseline]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 ok() { printf '%b[python-baseline]%b %s\n' "$c_green" "$c_reset" "$*"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 is_arch() { has_cmd pacman; }
 has_brew() { has_cmd brew; }
 
@@ -33,11 +32,11 @@ has_brew() { has_cmd brew; }
 if ! has_cmd python3; then
   log "installing python3..."
   if is_arch; then
-    if can_sudo; then sudo pacman -S --noconfirm --needed python; else warn "skip python (sudo unavailable)"; fi
+    sudo pacman -S --noconfirm --needed python
   elif has_cmd apt-get; then
-    if can_sudo; then sudo apt-get update -y && sudo apt-get install -y python3; else warn "skip python3 (sudo unavailable)"; fi
+    sudo apt-get update -y && sudo apt-get install -y python3
   elif has_cmd dnf; then
-    if can_sudo; then sudo dnf install -y python3; else warn "skip python3 (sudo unavailable)"; fi
+    sudo dnf install -y python3
   elif has_brew; then
     brew install python
   else
@@ -74,11 +73,11 @@ fi
 if ! has_cmd pipx; then
   log "installing pipx as fallback..."
   if is_arch; then
-    if can_sudo; then sudo pacman -S --noconfirm --needed python-pipx; else warn "skip pipx (sudo unavailable)"; fi
+    sudo pacman -S --noconfirm --needed python-pipx
   elif has_cmd apt-get; then
-    if can_sudo; then sudo apt-get install -y pipx; else warn "skip pipx (sudo unavailable)"; fi
+    sudo apt-get install -y pipx
   elif has_cmd dnf; then
-    if can_sudo; then sudo dnf install -y pipx; else warn "skip pipx (sudo unavailable)"; fi
+    sudo dnf install -y pipx
   elif has_brew; then
     brew install pipx
   elif has_cmd uv; then

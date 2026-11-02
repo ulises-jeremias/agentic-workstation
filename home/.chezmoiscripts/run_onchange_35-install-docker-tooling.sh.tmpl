@@ -20,7 +20,6 @@ log() { printf '%b[docker-tooling]%b %s\n' "$c_blue" "$c_reset" "$*"; }
 warn() { printf '%b[docker-tooling]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 ok() { printf '%b[docker-tooling]%b %s\n' "$c_green" "$c_reset" "$*"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 
 install_pkg() {
   pkg="$1"
@@ -30,11 +29,11 @@ install_pkg() {
   fi
 
   if has_cmd pacman; then
-    if can_sudo; then sudo pacman -S --noconfirm --needed "$pkg"; else warn "skip $pkg (sudo unavailable)"; fi
+    sudo pacman -S --noconfirm --needed "$pkg"
   elif has_cmd apt-get; then
-    if can_sudo; then sudo apt-get update -y && sudo apt-get install -y "$pkg"; else warn "skip $pkg (sudo unavailable)"; fi
+    sudo apt-get update -y && sudo apt-get install -y "$pkg"
   elif has_cmd dnf; then
-    if can_sudo; then sudo dnf install -y "$pkg"; else warn "skip $pkg (sudo unavailable)"; fi
+    sudo dnf install -y "$pkg"
   elif has_cmd brew; then
     brew install "$pkg"
   else

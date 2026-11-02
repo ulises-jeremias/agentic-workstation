@@ -18,14 +18,8 @@ warn() { printf '%b[github-cli]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 ok() { printf '%b[github-cli]%b %s\n' "$c_green" "$c_reset" "$*"; }
 
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 
 install_github_cli_apt() {
-  if ! can_sudo; then
-    warn "skip gh (sudo unavailable)"
-    return 0
-  fi
-
   sudo apt-get update -y
   sudo apt-get install -y ca-certificates curl
   sudo mkdir -p -m 755 /etc/apt/keyrings
@@ -48,11 +42,11 @@ install_github_cli() {
   fi
 
   if has_cmd pacman; then
-    if can_sudo; then sudo pacman -S --noconfirm --needed github-cli; else warn "skip gh (sudo unavailable)"; fi
+    sudo pacman -S --noconfirm --needed github-cli
   elif has_cmd apt-get; then
     install_github_cli_apt
   elif has_cmd dnf; then
-    if can_sudo; then sudo dnf install -y gh; else warn "skip gh (sudo unavailable)"; fi
+    sudo dnf install -y gh
   elif has_cmd brew; then
     brew install gh
   else

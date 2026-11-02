@@ -21,7 +21,6 @@ log() { printf '%b[editors]%b %s\n' "$c_blue" "$c_reset" "$*"; }
 warn() { printf '%b[editors]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 ok() { printf '%b[editors]%b %s\n' "$c_green" "$c_reset" "$*"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 
 aur_install() {
   local pkg="$1"
@@ -42,23 +41,17 @@ install_vscode() {
   fi
 
   if has_cmd pacman; then
-    if can_sudo; then
-      sudo pacman -S --noconfirm --needed code || warn "failed to install VSCode with pacman"
-    else
-      warn "skip VSCode install (sudo unavailable)"
-    fi
+    sudo pacman -S --noconfirm --needed code
   elif has_cmd apt-get; then
-    if can_sudo; then
-      sudo apt-get update -y && sudo apt-get install -y code || warn "VSCode apt package unavailable; configure Microsoft repo or install manually"
-    else
-      warn "skip VSCode install (sudo unavailable)"
-    fi
+    sudo apt-get update -y && sudo apt-get install -y code || {
+      warn "VSCode apt package unavailable; configure Microsoft repo or install manually"
+      return 1
+    }
   elif has_cmd dnf; then
-    if can_sudo; then
-      sudo dnf install -y code || warn "VSCode dnf package unavailable; configure Microsoft repo or install manually"
-    else
-      warn "skip VSCode install (sudo unavailable)"
-    fi
+    sudo dnf install -y code || {
+      warn "VSCode dnf package unavailable; configure Microsoft repo or install manually"
+      return 1
+    }
   elif has_cmd brew; then
     brew install --cask visual-studio-code || warn "failed to install VSCode with brew"
   else
@@ -73,7 +66,7 @@ install_cursor() {
   fi
 
   if has_cmd pacman; then
-    aur_install cursor-bin || warn "failed to install Cursor from AUR"
+    aur_install cursor-bin
   elif has_cmd brew; then
     brew install --cask cursor || warn "failed to install Cursor with brew"
   else

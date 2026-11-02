@@ -22,7 +22,6 @@ warn() { printf '  %b!%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 fail() { printf '  %b✗%b %s\n' "$c_red" "$c_reset" "$*"; }
 dim() { printf '%b%s%b\n' "$c_dim" "$*" "$c_reset"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 
 # ── CI guard ─────────────────────────────────────────────────────────────
 if [[ ${CI:-} == "true" && -z ${LMSTUDIO_FORCE_INSTALL:-} ]]; then
@@ -54,7 +53,7 @@ install_lmstudio() {
     warn "yay install failed — trying official installer — see /tmp/lmstudio-install.log"
   fi
   if has_cmd pacman; then
-    if can_sudo && sudo pacman -S --noconfirm --needed lmstudio-bin 2>&1 | tee /tmp/lmstudio-install.log; then
+    if sudo pacman -S --noconfirm --needed lmstudio-bin 2>&1 | tee /tmp/lmstudio-install.log; then
       ok "LM Studio installed via pacman (lmstudio-bin)"
       return 0
     fi

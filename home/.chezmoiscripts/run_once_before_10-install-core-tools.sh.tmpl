@@ -18,7 +18,6 @@ warn() { printf '%b[core-tools]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 ok() { printf '%b[core-tools]%b %s\n' "$c_green" "$c_reset" "$*"; }
 
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 
 # Some packages have a different binary name than their apt package name.
 # Returns the apt package name to use for a given canonical package name.
@@ -39,11 +38,6 @@ has_pkg() {
 }
 
 install_github_cli_apt() {
-  if ! can_sudo; then
-    warn "skip gh (sudo unavailable)"
-    return 0
-  fi
-
   sudo apt-get update -y
   sudo apt-get install -y ca-certificates curl
   sudo mkdir -p -m 755 /etc/apt/keyrings
@@ -69,32 +63,28 @@ install_pkg() {
 
   if has_cmd pacman; then
     if [[ $pkg == gh ]]; then
-      if can_sudo; then sudo pacman -S --noconfirm --needed github-cli; else warn "skip $pkg (sudo unavailable)"; fi
+      sudo pacman -S --noconfirm --needed github-cli
       return 0
     fi
-    if can_sudo; then sudo pacman -S --noconfirm --needed "$pkg"; else warn "skip $pkg (sudo unavailable)"; fi
+    sudo pacman -S --noconfirm --needed "$pkg"
   elif has_cmd apt-get; then
     if [[ $pkg == gh ]]; then
       install_github_cli_apt
       return 0
     fi
     apt_pkg="$(debian_pkg_name "$pkg")"
-    if can_sudo; then
-      sudo apt-get update -y && sudo apt-get install -y "$apt_pkg"
-      # Create ~/.local/bin symlink for packages whose binary name differs from the package name.
-      case "$pkg" in
-        fd)
-          if ! has_cmd fd && has_cmd fdfind; then
-            mkdir -p "$HOME/.local/bin"
-            ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
-          fi
-          ;;
-      esac
-    else
-      warn "skip $pkg (sudo unavailable)"
-    fi
+    sudo apt-get update -y && sudo apt-get install -y "$apt_pkg"
+    # Create ~/.local/bin symlink for packages whose binary name differs from the package name.
+    case "$pkg" in
+      fd)
+        if ! has_cmd fd && has_cmd fdfind; then
+          mkdir -p "$HOME/.local/bin"
+          ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+        fi
+        ;;
+    esac
   elif has_cmd dnf; then
-    if can_sudo; then sudo dnf install -y "$pkg"; else warn "skip $pkg (sudo unavailable)"; fi
+    sudo dnf install -y "$pkg"
   elif has_cmd brew; then
     brew install "$pkg"
   else
