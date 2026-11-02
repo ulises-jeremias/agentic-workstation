@@ -156,9 +156,9 @@ for command_name in muse pi; do
 done
 chmod +x "$arch_mock_dir/bin/"*
 if PATH="$arch_mock_dir/bin:$PATH" MOCK_INSTALL_LOG="$arch_mock_dir/install-aur.log" \
-  AGENTIC_WS_OS_RELEASE_ID=arch install_catalog_agent muse_code force &&
+  AI_AGENTS_CI_BLOCKED=0 AGENTIC_WS_OS_RELEASE_ID=arch install_catalog_agent muse_code force &&
   PATH="$arch_mock_dir/bin:$PATH" MOCK_INSTALL_LOG="$arch_mock_dir/install-aur.log" \
-    AGENTIC_WS_OS_RELEASE_ID=arch install_catalog_agent pi force &&
+    AI_AGENTS_CI_BLOCKED=0 AGENTIC_WS_OS_RELEASE_ID=arch install_catalog_agent pi force &&
   grep -qx 'yay:muse-code-bin' "$arch_mock_dir/install-aur.log" &&
   grep -qx 'yay:pi-coding-agent-bin' "$arch_mock_dir/install-aur.log"; then
   ok "Muse Code and Pi AUR packages install and pass command verification"
