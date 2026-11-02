@@ -93,9 +93,10 @@ unset AI_AGENTS_INSTALL_CHANNEL || true
 expect_eq "$(agent_arch_packages claude_code | tr '\n' ' ')" "claude-code claude-code-bin " "Claude Code checks configured Arch packages first"
 expect_eq "$(agent_arch_packages opencode)" "opencode" "OpenCode uses the native Arch package"
 expect_eq "$(agent_arch_packages copilot_cli)" "github-copilot-cli" "Copilot CLI checks its Arch package"
+expect_eq "$(agent_arch_packages muse_code)" "muse-code-bin" "Muse Code uses its AUR binary package"
+expect_eq "$(agent_arch_packages pi)" "pi-coding-agent-bin" "Pi uses its AUR binary package"
 expect_eq "$(agent_arch_packages gemini_cli)" "gemini-cli" "Gemini CLI uses the native Arch package"
 expect_eq "$(agent_arch_packages codex)" "openai-codex" "Codex uses the native Arch package"
-expect_fail "Muse Code has no assumed Arch package" agent_arch_packages muse_code
 arch_mock_dir="$(mktemp -d)"
 trap 'rm -rf "$arch_mock_dir"' EXIT
 cat >"$arch_mock_dir/pacman" <<'EOF'
@@ -129,6 +130,42 @@ if grep -q 'installed with pacman package claude-code-bin' <<<"$arch_lookup_outp
 else
   bad "all configured repository candidates are checked before AUR"
 fi
+
+# AUR packages for Muse Code and Pi must install successfully and pass each
+# agent's command verification gate.
+mkdir -p "$arch_mock_dir/bin"
+cat >"$arch_mock_dir/bin/pacman" <<'EOF'
+#!/usr/bin/env bash
+case "$1" in
+  -Qq|-Si) exit 1 ;;
+esac
+EOF
+cat >"$arch_mock_dir/bin/yay" <<'EOF'
+#!/usr/bin/env bash
+if [[ $1 == -Si && ( $2 == muse-code-bin || $2 == pi-coding-agent-bin ) ]]; then
+  exit 0
+fi
+printf 'yay:%s\n' "${@: -1}" >>"$MOCK_INSTALL_LOG"
+EOF
+cat >"$arch_mock_dir/bin/sudo" <<'EOF'
+#!/usr/bin/env bash
+exec "$@"
+EOF
+for command_name in muse pi; do
+  printf '#!/usr/bin/env bash\nexit 0\n' >"$arch_mock_dir/bin/$command_name"
+done
+chmod +x "$arch_mock_dir/bin/"*
+if PATH="$arch_mock_dir/bin:$PATH" MOCK_INSTALL_LOG="$arch_mock_dir/install-aur.log" \
+  AGENTIC_WS_OS_RELEASE_ID=arch install_catalog_agent muse_code force &&
+  PATH="$arch_mock_dir/bin:$PATH" MOCK_INSTALL_LOG="$arch_mock_dir/install-aur.log" \
+    AGENTIC_WS_OS_RELEASE_ID=arch install_catalog_agent pi force &&
+  grep -qx 'yay:muse-code-bin' "$arch_mock_dir/install-aur.log" &&
+  grep -qx 'yay:pi-coding-agent-bin' "$arch_mock_dir/install-aur.log"; then
+  ok "Muse Code and Pi AUR packages install and pass command verification"
+else
+  bad "Muse Code and Pi AUR packages install and pass command verification"
+fi
+
 if AI_AGENTS_ALLOW_REMOTE_INSTALL=0 _aa_remote_fallback_allowed arch; then
   bad "Arch remote installer fallback is disabled by default"
 else
