@@ -152,6 +152,8 @@ agent_arch_packages() {
     claude_code) printf 'claude-code\nclaude-code-bin\n' ;;
     opencode) printf 'opencode\n' ;;
     copilot_cli) printf 'github-copilot-cli\n' ;;
+    muse_code) printf 'muse-code-bin\n' ;;
+    pi) printf 'pi-coding-agent-bin\n' ;;
     gemini_cli) printf 'gemini-cli\n' ;;
     codex) printf 'openai-codex\n' ;;
     *) return 1 ;;
@@ -508,7 +510,7 @@ install_catalog_agent() {
   fi
   if _aa_install_arch_package "$name" "$force"; then
     case "$name" in
-      claude_code | opencode | copilot_cli | gemini_cli | codex)
+      claude_code | opencode | copilot_cli | muse_code | pi | gemini_cli | codex)
         verify_agent_install "$name" || {
           _aa_warn "${name} package installed, but its command check failed"
           return 1

@@ -114,7 +114,8 @@ On Arch Linux, the installer checks all mapped candidates in configured `pacman`
 repositories first, then tries `yay` or `paru` for each AUR candidate. If no package
 is available, script and npm fallbacks are disabled by default; set
 `AI_AGENTS_ALLOW_REMOTE_INSTALL=1` only when you explicitly want those
-upstream installers on Arch. Package availability is checked at install time.
+upstream installers on Arch. Current AUR mappings include `muse-code-bin` and
+`pi-coding-agent-bin`. Package availability is checked at install time.
 
 ### Catalog entries
 
