@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- **Arch Python tooling hook** — after pacman upgrades Python, a new hook runs `uv tool upgrade --all` for user-installed uv tools, alongside the existing pipx reinstall hook.
+- **Arch Python tooling hook** — after pacman upgrades Python, a new hook runs `uv tool upgrade --all` for eligible users with installed uv tools, alongside the existing pipx reinstall hook. Upgrade errors remain visible and are recorded in the system journal.
 
 ## [1.7.1] — 2026-11-02
 
