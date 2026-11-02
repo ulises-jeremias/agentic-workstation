@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # run_onchange_after_25-setup-arch-python.sh.tmpl
 # hash: {{ include (joinPath .chezmoi.sourceDir "dot_local/share/agentic-workstation/pacman-hooks/pipx-reinstall.hook") | sha256sum }}
+# uv-tools hash: {{ include (joinPath .chezmoi.sourceDir "dot_local/share/agentic-workstation/pacman-hooks/uv-tools-reinstall.hook") | sha256sum }}
 {{- $gPy := index . "install_group_python" | default false -}}
 {{- $gAi := index . "install_group_ai"     | default false -}}
 {{- if or $gPy $gAi -}}
@@ -35,15 +36,18 @@ fi
 
 log "configuring Python environment for Arch Linux..."
 
-# ── 1. Install pacman hook for auto-reinstalling pipx after Python upgrades ──
+# ── 1. Install pacman hooks for Python tools ────────────────────────────────
 
-HOOK_SRC="{{ .chezmoi.homeDir }}/.local/share/agentic-workstation/pacman-hooks/pipx-reinstall.hook"
 HOOK_DIR="/etc/pacman.d/hooks"
-HOOK_DST="${HOOK_DIR}/pipx-reinstall.hook"
+for hook_name in pipx-reinstall.hook uv-tools-reinstall.hook; do
+  HOOK_SRC="{{ .chezmoi.homeDir }}/.local/share/agentic-workstation/pacman-hooks/${hook_name}"
+  HOOK_DST="${HOOK_DIR}/${hook_name}"
 
-if [[ ! -f "$HOOK_SRC" ]]; then
-  warn "hook source not found at ${HOOK_SRC} — skipping pacman hook install"
-else
+  if [[ ! -f "$HOOK_SRC" ]]; then
+    warn "hook source not found at ${HOOK_SRC} — skipping"
+    continue
+  fi
+
   if [[ -f "$HOOK_DST" ]] && diff -q "$HOOK_SRC" "$HOOK_DST" >/dev/null 2>&1; then
     ok "pacman hook already up to date: ${HOOK_DST}"
   else
@@ -51,7 +55,7 @@ else
     sudo cp "$HOOK_SRC" "$HOOK_DST"
     ok "pacman hook installed: ${HOOK_DST}"
   fi
-fi
+done
 
 # ── 2. Ensure pipx bin dir exists and is on PATH ──────────────────────────────
 

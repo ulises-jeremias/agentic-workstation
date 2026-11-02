@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - **Privileged package installs** — removed non-interactive `sudo` prechecks that silently skipped installs when credentials were not cached. Package managers and AUR helpers now invoke their normal sudo prompt; failed privileged installs remain failures so chezmoi can retry them.
 
+### Added
+
+- **Arch Python tooling hook** — after pacman upgrades Python, a new hook runs `uv tool upgrade --all` for user-installed uv tools, alongside the existing pipx reinstall hook.
+
 ## [1.7.1] — 2026-11-02
 
 ### Changed
