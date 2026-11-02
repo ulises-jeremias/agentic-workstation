@@ -42,6 +42,8 @@
 {{- $installAgentPi       := index . "install_agent_pi"           | default false -}}
 {{- $installAgentCopilot  := index . "install_agent_copilot_cli"  | default false -}}
 {{- $installAgentMuse     := index . "install_agent_muse_code"    | default false -}}
+{{- $installAgentGemini   := index . "install_agent_gemini_cli"   | default false -}}
+{{- $installAgentCodex    := index . "install_agent_codex"        | default false -}}
 
 {{- $installEditorVscode := index . "install_editor_vscode" | default false -}}
 {{- $installEditorCursor := index . "install_editor_cursor" | default false -}}
@@ -59,7 +61,7 @@
 {{- $lmstudioModelsRaw   := index . "lmstudio_models_selection"        | default "recommended" -}}
 
 {{/* ── Raw multi-choice selections persisted to [data] for re-prompt defaults */}}
-{{- $agentsRaw  := index . "ai_agents_selection"          | default "opencode" -}}
+{{- $agentsRaw  := index . "ai_agents_selection"          | default "all" -}}
 {{- $editorsRaw := index . "editors_selection"            | default "none" -}}
 {{- $extRaw     := index . "vscode_extensions_selection"  | default "recommended" -}}
 
@@ -95,7 +97,14 @@
 {{-   $installSwarm      = has "swarm"        $preset -}}
 {{-   $installProd       = has "productivity" $preset -}}
 {{-   if $installAi -}}
+{{-     $installNode = true -}}
+{{-     $installAgentClaude = true -}}
 {{-     $installAgentOpencode = true -}}
+{{-     $installAgentPi = true -}}
+{{-     $installAgentCopilot = true -}}
+{{-     $installAgentMuse = true -}}
+{{-     $installAgentGemini = true -}}
+{{-     $installAgentCodex = true -}}
 {{-   end -}}
 {{-   $done = true -}}
 {{- end -}}
@@ -132,14 +141,14 @@
 {{-     $installNode       = eq "yes" (promptChoice (printf "%s\n  Install Node.js tooling (fnm + Node LTS + pnpm)?"           $grpBanner) $yesNo $dNode) -}}
 {{-     $installPython     = eq "yes" (promptChoice "  Install Python tooling (python + uv + pipx)?"                                   $yesNo $dPython) -}}
 {{-     $installDocker     = eq "yes" (promptChoice "  Install Docker CLI?"                                                             $yesNo $dDocker) -}}
-{{-     $installAi         = eq "yes" (promptChoice "  Install AI coding agents group? (Claude Code, OpenCode, pi, Copilot CLI, Muse)" $yesNo $dAi) -}}
+{{-     $installAi         = eq "yes" (promptChoice "  Install AI coding agents group? (Claude Code, OpenCode, pi, Copilot CLI, Muse, Gemini CLI, Codex)" $yesNo $dAi) -}}
 {{-     $installSwarm      = eq "yes" (promptChoice "  Install Agent Toolkit Swarms (tmux + Herdr)?"                                     $yesNo $dSwarm) -}}
 {{-     $installProd       = eq "yes" (promptChoice "  Install productivity CLIs (clickup, slack, rtk)?"                                   $yesNo $dProd) -}}
 {{-   end -}}
 
 {{/* ── Step 4: AI agents (only asked when ai group is enabled) ──────────── */}}
 {{-   if $installAi -}}
-{{-     $agentsBanner := "\n  ──────────────────────────── AI AGENTS ────────────────────────────\n  Enter a comma-separated list. Shortcuts: all, none, recommended\n  Options: claude-code, opencode, pi, copilot-cli, muse" -}}
+{{-     $agentsBanner := "\n  ──────────────────────────── AI AGENTS ────────────────────────────\n  Enter a comma-separated list. Shortcuts: all, none, recommended\n  Options: claude-code, opencode, pi, copilot-cli, muse, gemini-cli, codex" -}}
 {{-     $agentsRaw = promptString (printf "%s\n  Agents" $agentsBanner) $agentsRaw -}}
 {{-     $agentList := splitList "," (lower (trim $agentsRaw)) -}}
 {{-     $normalized := list -}}
@@ -155,12 +164,16 @@
 {{-       $installAgentPi = false -}}
 {{-       $installAgentCopilot = false -}}
 {{-       $installAgentMuse = false -}}
+{{-       $installAgentGemini = false -}}
+{{-       $installAgentCodex = false -}}
 {{-     else -}}
 {{-       $installAgentClaude   = or $all (has "claude-code" $normalized) -}}
 {{-       $installAgentOpencode = or $all $rec (has "opencode" $normalized) -}}
 {{-       $installAgentPi       = or $all (has "pi" $normalized) -}}
 {{-       $installAgentCopilot  = or $all (has "copilot-cli" $normalized) -}}
 {{-       $installAgentMuse     = or $all (has "muse" $normalized) -}}
+{{-       $installAgentGemini   = or $all (has "gemini-cli" $normalized) -}}
+{{-       $installAgentCodex    = or $all (has "codex" $normalized) -}}
 {{-     end -}}
 {{-   end -}}
 
@@ -277,6 +290,8 @@
   install_agent_pi                     = {{ $installAgentPi }}
   install_agent_copilot_cli            = {{ $installAgentCopilot }}
   install_agent_muse_code              = {{ $installAgentMuse }}
+  install_agent_gemini_cli             = {{ $installAgentGemini }}
+  install_agent_codex                  = {{ $installAgentCodex }}
 
   # ── Productivity CLIs (one group toggle drives all three — uipro-cli removed in #197) ──
   install_agent_clickup_cli            = {{ $installProd }}

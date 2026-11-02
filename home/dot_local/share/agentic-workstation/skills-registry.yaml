@@ -14,7 +14,7 @@
 # `dots-skills install-toolkit && agent-toolkit install`.
 # Only workstation-specific orchestration skills remain here; cross-domain
 # skills (clickup-cli, github-cli-workflow, dbt-validation, figma*, etc.)
-# are now provided by agent-toolkit (116+ skills via `agent-toolkit inventory`) and cleaned via
+# are now provided by agent-toolkit (106+ skills via `agent-toolkit inventory`) and cleaned via
 # .chezmoiremove on each target.
 #
 # Field reference:

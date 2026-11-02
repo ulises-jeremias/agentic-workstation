@@ -42,7 +42,7 @@ technical + ai + data → full data AI stack
 | Group | Flag | Description |
 |-------|------|-------------|
 | `swarm` | `install_group_swarm` | **Agent Toolkit Swarms — tmux + Herdr** (see [SWARM_SETUP](../../docs/SWARM_SETUP.md)). Provisioned via `run_onchange_42-install-swarm-tooling.sh.tmpl`: tmux via package manager, Herdr via brew→mise→`https://herdr.dev/install.sh` fallback, optional `herdr integration install opencode` |
-| `ai` | `install_group_ai` | AI coding agents (Claude Code, OpenCode, pi, Copilot CLI, Muse) |
+| `ai` | `install_group_ai` | All selected AI coding agents (Claude Code, OpenCode, Muse Code, pi, Copilot CLI, Gemini CLI, Codex) |
 | `node` | `install_group_node` | fnm + Node.js LTS + pnpm |
 | `python` | `install_group_python` | Python + uv + pipx |
 | `docker` | `install_group_docker` | Docker CLI |

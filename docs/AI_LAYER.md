@@ -4,14 +4,14 @@ Shared AI resources are installed under `~/.local/share/agentic-workstation/`.
 
 > [!NOTE]
 > This document describes the **deployed** AI layer on the target machine (thin host). For the **source state** (before `chezmoi apply`), look under `home/dot_local/share/agentic-workstation/` in the repository.
-> **Thin-host:** Workstation provisions the machine (chezmoi, shell, packages, LLM policy, tmux/Herdr, Toolkit installation) and delegates all capabilities (116+ skills via `agent-toolkit inventory`, 17 agents, 10 loops, MCP) to `agent-toolkit`. **Workstation installs tools, Toolkit owns orchestration.**
+> **Thin-host:** Workstation provisions the machine (chezmoi, shell, packages, LLM policy, tmux/Herdr, Toolkit installation) and delegates all capabilities (106+ skills via `agent-toolkit inventory`, 18 agents, 10 loops, MCP) to `agent-toolkit`. **Workstation installs tools, Toolkit owns orchestration.**
 
 ## Directory structure — thin workstation
 
 | Path | Purpose | Owner |
 | --- | --- | --- |
 | `prompts/` | Reusable internal prompts (placeholder README — delegated to Toolkit) | L1.5 |
-| `skills/` | Workstation-specific orchestration only (assistant, triage, dev-companion, workflow-generic-project); includes **`skill-catalog.yaml`** — thin placeholder, 116+ skills via Toolkit | L1 / L1.5 |
+| `skills/` | Workstation-specific orchestration only (assistant, triage, dev-companion, workflow-generic-project); includes **`skill-catalog.yaml`** — thin placeholder, 106+ skills via Toolkit | L1 / L1.5 |
 | `skills-external/` | Reserved for future standalone third-party additions; Agent Toolkit, Jira, and Confluence do not use this path | L1 |
 | `dev-companion/runner` | Host-specific runner + LLM policy (`dots-devcompanion`, `policy.py`, audit log) — **not delegated** | L1 (host-specific) |
 | `loops/` | Loop templates placeholder — delegated to Toolkit (`agent-toolkit loop`) | L1.5 |
@@ -55,7 +55,7 @@ This workstation is the **provisioning (L1)** layer of a [Ralph Loop](https://gh
 | Ralph concept | What this workstation provides | Layer |
 |---------------|-------------------------------|-------|
 | **Backing specifications** | `AGENTS.md` templates in `home/.chezmoitemplates/agents/` — deployed to each repo/session | L1 |
-| **Context engineering** | `agent-toolkit` skills (116+ via `agent-toolkit inventory`) — deployed by `agent-toolkit install`; `~/.local/share/agentic-workstation/skills/` is thin (workstation-only) | L1.5 → L1 |
+| **Context engineering** | `agent-toolkit` skills (106+ via `agent-toolkit inventory`) — deployed by `agent-toolkit install`; `~/.local/share/agentic-workstation/skills/` is thin (workstation-only) | L1.5 → L1 |
 | **Persistent memory between loops** | `agentic-harness` `knowledge/` — the running harness knowledge base (L3) | L3 |
 | **Fix the loop** | `dots-harness-knowledge-sync` skill — auto-syncs discoveries after each session | L1 → L3 |
 | **Monolithic orchestrator** | `dots-workstation-assistant` as single entry point; multi-agent is optional and bounded (swarm via `agent-toolkit swarm …`) | L1 → L1.5 |
@@ -82,7 +82,7 @@ Project-level assistant templates live in `home/.chezmoitemplates/agents/` and i
 
 Interactive `chezmoi init` captures user choices for:
 
-- AI agent CLIs (ClickUp, Slack, rtk, Claude Code, OpenCode, pi, Copilot CLI extension)
+- AI agent CLIs (Claude Code, OpenCode, Muse Code, pi, Copilot CLI, Gemini CLI, Codex)
 - Editor installation (VSCode, Cursor)
 - VSCode extension installation (including Claude Code extension)
 
@@ -96,7 +96,7 @@ Terminal coding agents are declared in **`home/.chezmoidata/ai.yaml`** under `ai
 | --- | --- | --- |
 | `description` | string | Human-readable summary |
 | `enabled` | bool | Opt-in switch (questionnaire selection / profile preset / private data override) |
-| `channel` | enum | Install strategy: `native`, `script`, `npm`, `gh-extension`, `auto` |
+| `channel` | enum | Install strategy: `native`, `script`, `npm`, `auto` |
 | `pin` | string | `""` = latest; exact version otherwise. Overridable at install time via `<NAME>_PIN` / `<NAME>_VERSION` environment variables, consistent with the existing pin pattern in `install-agent-toolkit.sh` |
 | `check` | string | Post-install gate: command that must succeed for the install to count as OK |
 | `requires_node` | bool | `npm`-channel entries require the node group to be installed first |
@@ -107,15 +107,20 @@ Terminal coding agents are declared in **`home/.chezmoidata/ai.yaml`** under `ai
 | --- | --- | --- |
 | `native` | Vendor installer without sudo | Claude Code |
 | `script` | Official `curl … \| bash` installer | OpenCode, Muse Code |
-| `npm` | Global npm package (needs node group) | pi, Gemini CLI, Codex |
-| `gh-extension` | `gh extension install` | Copilot CLI |
+| `npm` | Global npm package (needs node group) | Copilot CLI, pi, Gemini CLI, Codex |
 | `auto` | Best-available chain (brew → mise → script) | Herdr |
+
+On Arch Linux, the installer checks all mapped candidates in configured `pacman`
+repositories first, then tries `yay` or `paru` for each AUR candidate. If no package
+is available, script and npm fallbacks are disabled by default; set
+`AI_AGENTS_ALLOW_REMOTE_INSTALL=1` only when you explicitly want those
+upstream installers on Arch. Package availability is checked at install time.
 
 ### Catalog entries
 
 `claude_code`, `opencode`, `muse_code`, `copilot_cli`, `pi`, `gemini_cli`, `codex`, `herdr`.
 
-The legacy boolean flags under `agents` (e.g. `claude_code: false`) are **deprecated** and kept only until the questionnaire migrates to the catalog; new tooling must read `agent_catalog` exclusively. Installs are idempotent (`has_cmd` early-outs), CI/hermetic-guarded, and report a per-agent status line — the same conventions as the swarm and editors installers.
+The legacy boolean flags under `agents` (e.g. `claude_code: false`) are **deprecated** and kept only until the questionnaire migrates to the catalog; new tooling must read `agent_catalog` exclusively. The questionnaire defaults to all catalog agents and passes the selected flags to this installer. Installs are idempotent, CI/hermetic-guarded, prefer Arch packages when available, and report a per-agent status line — the same conventions as the swarm and editors installers.
 
 ### Installer library
 

@@ -55,6 +55,16 @@ render_profile() {
     --source "$CHEZMOI_SOURCE" \
     <"$HOME_DIR/.chezmoi.toml.tmpl" >"$rendered_toml"
 
+  case "$profile" in
+    ai | data | non-technical)
+      if ! grep -Eq '^[[:space:]]*install_group_node[[:space:]]*=[[:space:]]*true([[:space:]]|$)' "$rendered_toml"; then
+        printf '  %b✗ Node group must be enabled for the %s preset%b\n' "$c_red" "$profile" "$c_reset"
+        fail=$((fail + 1))
+        return
+      fi
+      ;;
+  esac
+
   # Step 2 — render every install script against those values.
   local any_fail=0
   for tmpl in "$SCRIPTS_DIR"/*.tmpl "$EXTERNALS"; do

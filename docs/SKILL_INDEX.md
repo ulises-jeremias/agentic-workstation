@@ -2,7 +2,7 @@
 
 > Thin workstation — skill catalog is delegated to [agent-toolkit](https://github.com/ulises-jeremias/agent-toolkit).
 > No embedded `skill.json` manifests are shipped in this repository.
-> Run `agent-toolkit skills list` at runtime to list 116+ cross-domain skills,
+> Run `agent-toolkit skills list` at runtime to list 106+ cross-domain skills,
 > or see [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for the full catalog reference.
 
 > To regenerate from the toolkit catalog, ensure `agent-toolkit` is installed and run:
@@ -20,12 +20,12 @@
 | `dots-slack-assistant` | Slack workspace ops |
 | `dots-harness-knowledge-sync` | Session knowledge persistence |
 
-> All other cross-domain skills (116+ skills across 14 domains — `delivery`, `forge`, `integrations`, `data`, `tooling`, etc.)
+> All other cross-domain skills (106+ skills across 14 domains — `delivery`, `forge`, `integrations`, `data`, `tooling`, etc.)
 > are provided by `agent-toolkit` via `dots-skills install-toolkit` and deployed by `agent-toolkit install`.
 > Jira and Confluence are included in that catalog and use the same installation path.
 
 ## See Also
 
-- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — full capability catalog (116+ skills, 17 agents, 10 loops)
+- [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) — full capability catalog (106+ skills, 18 agents, 10 loops)
 - [SKILLS.md](SKILLS.md) — skill system and lifecycle (thin workstation)
 - [ARCHITECTURE.md](ARCHITECTURE.md) — thin workstation architecture

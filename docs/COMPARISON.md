@@ -11,7 +11,7 @@
 | Aspect | oh-my-zsh | agentic-workstation |
 |--------|-----------|-------------------|
 | Focus | Shell configuration and plugins | AI-native developer workstation |
-| AI integration | None built-in | 77 AI skill packs via `agent-toolkit` (`agent-toolkit inventory`), 17 sub-agents, 7 MCP templates |
+| AI integration | None built-in | 106+ skills via `agent-toolkit` (`agent-toolkit inventory`), 18 agents, 7 MCP templates |
 | Setup | `sh -c "$(curl ...)"` | `chezmoi init --apply` with profile selection |
 | Portability | Shell-specific | Cross-tool: Claude Code, opencode, Cursor, Copilot, Gemini |
 | Skills | Community plugins | Curated skill packs with compatibility matrix |
@@ -26,8 +26,8 @@
 | Aspect | starship | agentic-workstation |
 |--------|----------|-------------------|
 | Purpose | Shell prompt customization | Complete AI workstation baseline |
-| Scope | Prompt only | Dotfiles, skills, agents, MCP, loops (116+ skills via Toolkit) |
-| AI features | None | Full AI layer with 116+ skills via Toolkit |
+| Scope | Prompt only | Dotfiles, skills, agents, MCP, loops (106+ skills via Toolkit) |
+| AI features | None | Full AI layer with 106+ skills via Toolkit |
 
 **Agentic-workstation includes** shell configuration. You can use starship as your prompt and still get the AI layer from agentic-workstation.
 
@@ -50,7 +50,7 @@
 
 | Aspect | Cursor | Cursor + agentic-workstation |
 |--------|--------|------------------------------|
-| Skills | Manual .cursor/rules/ | 77 pre-built skill packs via Toolkit with routing |
+| Skills | Manual .cursor/rules/ | 106+ skills via Toolkit with routing |
 | Memory | Session-only | Persistent knowledge across sessions |
 | Work modes | Ad-hoc instructions | Persona system with allow/deny/handoff |
 | Task automation | Manual | Loop engineering with scheduling |
@@ -65,7 +65,7 @@
 |--------|---------|------------------------------|
 | Context | Inline completions | Pack-based project context + knowledge base |
 | Instructions | Single .github/copilot-instructions.md | Personas, packs, profiles |
-| Delegation | No sub-agent support | 13+ specialized sub-agents via skills |
+| Delegation | No sub-agent support | 18 Toolkit agents plus portable skills |
 | Automation | None | Loop engineering and dev companion |
 | Memory | None | Persistent cross-session knowledge |
 
@@ -76,7 +76,7 @@
 | Aspect | Claude Code | Claude Code + agentic-workstation |
 |--------|-------------|----------------------------------|
 | Projects | Manual CLAUDE.md per project | Pack-based context with profiles |
-| Skills | Custom instructions | 77 pre-built skill packs via Toolkit |
+| Skills | Custom instructions | 106+ Toolkit skills |
 | Persistence | Project-level | Cross-project knowledge base (harness L3) |
 | Automation | Manual | Loop engineering for recurring tasks (10 templates via Toolkit) |
 | Multi-client | No isolation | Per-pack LLM policies with strict mode (Workstation runner) |
@@ -93,7 +93,7 @@
 |--------|------|-------------------|
 | Approach | Git-based dotfile manager | chezmoi-based with AI layer |
 | Templates | Limited (Git filters) | Full Go template engine |
-| AI skills | None | 77 skill packs via Toolkit (`agent-toolkit inventory`) |
+| AI skills | None | 106+ skills via Toolkit (`agent-toolkit inventory`) |
 | Community | Larger, more plugins | Opinionated, curated |
 
 **Agentic-workstation is more than a dotfile manager** — it's an AI workstation baseline. yadm is excellent if you only need dotfile management.
@@ -122,7 +122,7 @@
 |--------|-------------|-------------------|
 | Scope | IDE plugin | System-wide workstation |
 | AI tools | Continue extension | Claude Code, opencode, Cursor, Copilot, Gemini |
-| Skills | Custom slash commands | 77 curated skill packs via Toolkit |
+| Skills | Custom slash commands | 106+ curated skills via Toolkit |
 | Memory | None built-in | Persistent knowledge base |
 | Automation | None | Loop engineering and job queue |
 
@@ -134,7 +134,7 @@
 |--------|----------------|-------------------|
 | Skills | opencode-specific | Cross-tool: 5+ AI tools supported |
 | Management | Manual skill.json | dots-skills CLI with sync, list, install |
-| Sub-agents | None | 13+ specialized sub-agents |
+| Sub-agents | None | 18 specialized Toolkit agents |
 | Memory | None | Knowledge base with assistant-memory CLI |
 | Automation | None | Loop engineering, dev companion queue |
 

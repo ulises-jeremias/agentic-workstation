@@ -47,6 +47,34 @@ else
 fi
 
 {{- if $gAi }}
+selected_agents=()
+{{ if index . "install_agent_claude_code" | default false }}selected_agents+=(claude_code){{ end }}
+{{ if index . "install_agent_opencode" | default false }}selected_agents+=(opencode){{ end }}
+{{ if index . "install_agent_pi" | default false }}selected_agents+=(pi){{ end }}
+{{ if index . "install_agent_copilot_cli" | default false }}selected_agents+=(copilot_cli){{ end }}
+{{ if index . "install_agent_muse_code" | default false }}selected_agents+=(muse_code){{ end }}
+{{ if index . "install_agent_gemini_cli" | default false }}selected_agents+=(gemini_cli){{ end }}
+{{ if index . "install_agent_codex" | default false }}selected_agents+=(codex){{ end }}
+
+if ((${#selected_agents[@]})); then
+	_AA_LIB="${HOME}/.local/lib/agentic-workstation/install-ai-agents-lib.sh"
+	_AA_FALLBACK="{{ .chezmoi.sourceDir }}/home/dot_local/lib/agentic-workstation/install-ai-agents-lib.sh"
+	if [[ ! -f $_AA_LIB && -f $_AA_FALLBACK ]]; then
+		_AA_LIB="$_AA_FALLBACK"
+	fi
+	if [[ -f $_AA_LIB ]]; then
+		# shellcheck source=/dev/null
+		. "$_AA_LIB"
+		if install_ai_agents "${selected_agents[@]}"; then
+			ok "selected AI coding agents are installed"
+		else
+			warn "one or more selected AI coding agents could not be installed"
+		fi
+	else
+		warn "AI agent installer library is missing — re-run chezmoi apply"
+	fi
+fi
+
 install_python_cli() {
 	local package="$1" command="$2"
 	if has_cmd "$command"; then
