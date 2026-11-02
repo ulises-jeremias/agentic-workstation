@@ -26,7 +26,6 @@ warn() { printf '  %b!%b %s\n'           "$c_yellow" "$c_reset" "$*"; }
 fail() { printf '  %b✗%b %s\n'           "$c_red"    "$c_reset" "$*"; }
 
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 
 # Only run on Arch Linux
 if ! has_cmd pacman; then
@@ -45,16 +44,12 @@ HOOK_DST="${HOOK_DIR}/pipx-reinstall.hook"
 if [[ ! -f "$HOOK_SRC" ]]; then
   warn "hook source not found at ${HOOK_SRC} — skipping pacman hook install"
 else
-  if ! can_sudo; then
-    warn "sudo unavailable — cannot install pacman hook (run manually: sudo cp ${HOOK_SRC} ${HOOK_DST})"
+  if [[ -f "$HOOK_DST" ]] && diff -q "$HOOK_SRC" "$HOOK_DST" >/dev/null 2>&1; then
+    ok "pacman hook already up to date: ${HOOK_DST}"
   else
     sudo mkdir -p "$HOOK_DIR"
-    if [[ -f "$HOOK_DST" ]] && diff -q "$HOOK_SRC" "$HOOK_DST" >/dev/null 2>&1; then
-      ok "pacman hook already up to date: ${HOOK_DST}"
-    else
-      sudo cp "$HOOK_SRC" "$HOOK_DST"
-      ok "pacman hook installed: ${HOOK_DST}"
-    fi
+    sudo cp "$HOOK_SRC" "$HOOK_DST"
+    ok "pacman hook installed: ${HOOK_DST}"
   fi
 fi
 

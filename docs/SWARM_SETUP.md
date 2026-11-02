@@ -73,7 +73,7 @@ See [`agent-toolkit` docs](https://github.com/ulises-jeremias/agent-toolkit) —
 
 ## Security
 
-No credentials read/written. `curl | sh` only after brew/mise fallback, with log to `/tmp/herdr-install.log`. No sudo required for Herdr; tmux via package manager respects `can_sudo` check.
+No credentials read/written. `curl | sh` only after brew/mise fallback, with log to `/tmp/herdr-install.log`. No sudo required for Herdr; tmux uses the system package manager and invokes `sudo` directly, prompting for the password when needed.
 
 ---
 

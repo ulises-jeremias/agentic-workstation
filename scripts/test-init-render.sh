@@ -20,6 +20,7 @@ CHEZMOI_SOURCE="$REPO_ROOT"
 HOME_DIR="${REPO_ROOT}/home"
 SCRIPTS_DIR="${HOME_DIR}/.chezmoiscripts"
 EXTERNALS="${HOME_DIR}/dot_local/share/agentic-workstation/.chezmoiexternal.toml.tmpl"
+AGENT_TOOLKIT_INSTALLER="${HOME_DIR}/dot_local/lib/agentic-workstation/install-agent-toolkit.sh"
 
 PROFILES_DEFAULT=(technical non-technical ai node python data infra minimal custom)
 if [[ $# -gt 0 ]]; then
@@ -43,6 +44,14 @@ pass=0
 fail=0
 out_dir="$(mktemp -d)"
 trap 'rm -rf "$out_dir"' EXIT
+
+# Privileged package installs must invoke sudo directly so sudo can prompt.
+# A non-interactive preflight must never turn a required install into a
+# successful no-op, especially in run_once scripts.
+if grep -R -n -E 'can_sudo|sudo -n|sudo unavailable' "$SCRIPTS_DIR" "$AGENT_TOOLKIT_INSTALLER"; then
+  printf '%b✗ privileged install scripts must not preflight sudo or skip on missing cached credentials%b\n' "$c_red" "$c_reset" >&2
+  exit 1
+fi
 
 render_profile() {
   local profile="$1"

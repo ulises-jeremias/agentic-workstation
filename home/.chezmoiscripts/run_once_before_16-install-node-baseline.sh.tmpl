@@ -29,7 +29,6 @@ log() { printf '%b[node-baseline]%b %s\n' "$c_blue" "$c_reset" "$*"; }
 warn() { printf '%b[node-baseline]%b %s\n' "$c_yellow" "$c_reset" "$*"; }
 ok() { printf '%b[node-baseline]%b %s\n' "$c_green" "$c_reset" "$*"; }
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
-can_sudo() { sudo -n true >/dev/null 2>&1; }
 is_arch() { has_cmd pacman; }
 has_brew() { has_cmd brew; }
 
@@ -39,7 +38,7 @@ has_brew() { has_cmd brew; }
 if ! has_cmd fnm; then
   log "installing fnm..."
   if is_arch; then
-    if can_sudo; then sudo pacman -S --noconfirm --needed fnm; else warn "skip fnm (sudo unavailable)"; fi
+    sudo pacman -S --noconfirm --needed fnm
   elif has_brew; then
     brew install fnm
   else

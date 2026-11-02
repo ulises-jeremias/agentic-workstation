@@ -162,7 +162,7 @@ agent-toolkit loop sync          # pull latest loop templates from agent-toolkit
 
 ### What Workstation provisions
 
-- **tmux** — package manager install (apt/brew/pacman/dnf), respects `can_sudo`. Verify: `tmux -V`. No `~/.tmux.conf` overwrite.
+- **tmux** — package manager install (apt/brew/pacman/dnf); system package installs invoke `sudo` directly and prompt for the password when needed. Verify: `tmux -V`. No `~/.tmux.conf` overwrite.
 - **Herdr** — brew → mise → `curl -fsSL https://herdr.dev/install.sh | sh` fallback, logged to `/tmp/herdr-install.log`, no sudo. Verify: `herdr --version`. Skipped in CI unless `SWARM_FORCE_INSTALL=1`.
 - **OpenCode Herdr integration** — `herdr integration install opencode` when both present; `mkdir -p ~/.config/opencode` safe if missing. Verify: `herdr integration list --json`; if `outdated`, re-run the install. Herdr is the preferred UI; tmux is the fallback.
 

@@ -53,7 +53,7 @@ irm https://github.com/ulises-jeremias/agentic-workstation/releases/latest/downl
 
 | Component | Purpose | Install method | Verify | Platform notes |
 |-----------|---------|----------------|--------|----------------|
-| **tmux** | Terminal multiplexer for swarm panes | `apt` / `brew` / `pacman` / `dnf` (via `run_onchange_42-install-swarm-tooling.sh.tmpl`, gated by `install_group_swarm`) | `tmux -V` | Respects `can_sudo`; uses isolated socket `agent-toolkit-swarm-<run-id>`; no `~/.tmux.conf` overwrite |
+| **tmux** | Terminal multiplexer for swarm panes | `apt` / `brew` / `pacman` / `dnf` (via `run_onchange_42-install-swarm-tooling.sh.tmpl`, gated by `install_group_swarm`) | `tmux -V` | Calls `sudo` directly for package installs so it can prompt for the password; uses isolated socket `agent-toolkit-swarm-<run-id>`; no `~/.tmux.conf` overwrite |
 | **Herdr** | Orchestration UI for Agent Toolkit Swarms | `brew` → `mise` → `curl -fsSL https://herdr.dev/install.sh \| sh` fallback | `herdr --version` | No sudo; logged to `/tmp/herdr-install.log`; skipped in CI unless `SWARM_FORCE_INSTALL=1` |
 | **OpenCode Herdr integration** | Connects `opencode` runner to Herdr | `herdr integration install opencode` (idempotent) | `herdr integration list --json` | Creates `~/.config/opencode` if missing; safe, no credentials; re-run if `outdated` |
 
