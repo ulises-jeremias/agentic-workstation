@@ -94,7 +94,7 @@ yay -S agent-toolkit-bin && agent-toolkit install
 # Option D: uv tool (V launcher wheel)
 uv tool install --force 'agent-toolkit-cli>=1.11.0' && agent-toolkit install
 
-# Option E: install-skills.sh (agentic-workstation wrapper)
+# Option E: install-skills.sh (legacy wrapper; Pi, Gemini CLI, and Codex require Option A–D)
 curl -fsSL https://github.com/ulises-jeremias/agentic-workstation/releases/latest/download/install-skills.sh | bash
 ```
 

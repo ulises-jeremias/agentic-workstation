@@ -28,11 +28,10 @@ agents:
 # Schema per entry:
 #   description   - human-readable summary
 #   enabled       - opt-in switch (questionnaire / profile / private data)
-#   channel       - native | script | npm | gh-extension | auto
+#   channel       - native | script | npm | auto
 #                   native: vendor installer without sudo
 #                   script: official curl|bash installer
 #                   npm: global npm package (requires_node: true)
-#                   gh-extension: GitHub CLI extension
 #                   auto: chain best-available channels (brew → mise → script)
 #                   Arch checks mapped pacman repositories and AUR packages
 #                   first; remote installer fallbacks are opt-in.
@@ -65,10 +64,10 @@ agent_catalog:
   copilot_cli:
     description: GitHub Copilot CLI (requires authentication)
     enabled: true
-    channel: gh-extension
+    channel: npm
     pin: ""
     check: "copilot --version"
-    requires_node: false
+    requires_node: true
   pi:
     description: pi coding agent by Mario Zechner
     enabled: true

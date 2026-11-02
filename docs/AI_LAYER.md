@@ -96,7 +96,7 @@ Terminal coding agents are declared in **`home/.chezmoidata/ai.yaml`** under `ai
 | --- | --- | --- |
 | `description` | string | Human-readable summary |
 | `enabled` | bool | Opt-in switch (questionnaire selection / profile preset / private data override) |
-| `channel` | enum | Install strategy: `native`, `script`, `npm`, `gh-extension`, `auto` |
+| `channel` | enum | Install strategy: `native`, `script`, `npm`, `auto` |
 | `pin` | string | `""` = latest; exact version otherwise. Overridable at install time via `<NAME>_PIN` / `<NAME>_VERSION` environment variables, consistent with the existing pin pattern in `install-agent-toolkit.sh` |
 | `check` | string | Post-install gate: command that must succeed for the install to count as OK |
 | `requires_node` | bool | `npm`-channel entries require the node group to be installed first |
@@ -107,12 +107,11 @@ Terminal coding agents are declared in **`home/.chezmoidata/ai.yaml`** under `ai
 | --- | --- | --- |
 | `native` | Vendor installer without sudo | Claude Code |
 | `script` | Official `curl … \| bash` installer | OpenCode, Muse Code |
-| `npm` | Global npm package (needs node group) | pi, Gemini CLI, Codex |
-| `gh-extension` | `gh extension install` | Copilot CLI |
+| `npm` | Global npm package (needs node group) | Copilot CLI, pi, Gemini CLI, Codex |
 | `auto` | Best-available chain (brew → mise → script) | Herdr |
 
-On Arch Linux, the installer checks mapped packages in configured `pacman`
-repositories first, then tries `yay` or `paru` for AUR packages. If no package
+On Arch Linux, the installer checks all mapped candidates in configured `pacman`
+repositories first, then tries `yay` or `paru` for each AUR candidate. If no package
 is available, script and npm fallbacks are disabled by default; set
 `AI_AGENTS_ALLOW_REMOTE_INSTALL=1` only when you explicitly want those
 upstream installers on Arch. Package availability is checked at install time.

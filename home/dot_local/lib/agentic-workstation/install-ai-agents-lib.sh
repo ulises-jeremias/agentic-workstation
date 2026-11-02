@@ -9,8 +9,7 @@
 # Channels (per ai.yaml agent_catalog.<name>.channel):
 #   native        vendor installer without sudo        → claude_code
 #   script        official curl|sh installer           → opencode, muse_code
-#   npm           global npm package (node required)   → pi, gemini_cli, codex
-#   gh-extension  GitHub CLI extension                 → copilot_cli
+#   npm           global npm package (node required)   → copilot_cli, pi, gemini_cli, codex
 #   auto          best-available chain brew→mise→script→ herdr
 #
 # Env (per agent NAME, e.g. CLAUDE_CODE):
@@ -27,7 +26,7 @@
 # Usage (sourced API):
 #   agent_pin <name>
 #   agent_npm_spec <npm-package> <name>
-#   agent_channel_plan <native|script|npm|gh-extension|auto>
+#   agent_channel_plan <native|script|npm|auto>
 #   install_catalog_agent <name> [force]
 #   verify_agent_install <name>
 #   install_ai_agents <name>... [force]
@@ -110,7 +109,7 @@ agent_channel_plan() {
   local ch="$1"
   ch="${AI_AGENTS_INSTALL_CHANNEL:-$ch}"
   case "$ch" in
-    native | script | npm | gh-extension)
+    native | script | npm)
       printf '%s\n' "$ch"
       ;;
     auto)
@@ -160,19 +159,28 @@ agent_arch_packages() {
 }
 
 _aa_install_arch_package() {
-  local agent="$1" force="${2:-}" package helper
+  local agent="$1" force="${2:-}" package helper pin
   local -a packages=()
   [[ $(_aa_os_id) == arch ]] || return 2
   _aa_has_cmd pacman || return 2
   mapfile -t packages < <(agent_arch_packages "$agent" 2>/dev/null || true)
   ((${#packages[@]})) || return 2
 
+  pin="$(agent_pin "$agent")"
+  if [[ -n $pin ]]; then
+    _aa_warn "${agent} has exact pin ${pin}; configured Arch packages cannot guarantee that version"
+    return 2
+  fi
+
   for package in "${packages[@]}"; do
     if pacman -Qq "$package" >/dev/null 2>&1 && [[ $force != force ]]; then
       _aa_ok "${agent} already installed from Arch package ${package}"
       return 0
     fi
+  done
 
+  # Check every repository candidate before consulting AUR helpers.
+  for package in "${packages[@]}"; do
     if pacman -Si "$package" >/dev/null 2>&1; then
       if _aa_is_root; then
         pacman -S --noconfirm --needed "$package" || return 1
@@ -185,7 +193,9 @@ _aa_install_arch_package() {
       _aa_ok "${agent} installed with pacman package ${package}"
       return 0
     fi
+  done
 
+  for package in "${packages[@]}"; do
     for helper in paru yay; do
       _aa_has_cmd "$helper" || continue
       if "$helper" -Si "$package" >/dev/null 2>&1; then
@@ -293,25 +303,23 @@ install_copilot_cli() {
     _aa_warn "CI environment detected — skipping copilot_cli install"
     return 1
   fi
-  if { _aa_has_cmd copilot || gh extension list 2>/dev/null | grep -qE '(^|[[:space:]])github/gh-copilot([[:space:]]|$)'; } &&
-    [[ ${1:-} != "force" ]]; then
-    _aa_ok "gh-copilot extension already installed"
+  if _aa_has_cmd copilot && [[ ${1:-} != "force" ]]; then
+    _aa_ok "copilot already installed: $(copilot --version 2>&1 | head -n1)"
     return 0
   fi
-  if ! _aa_has_cmd gh; then
-    _aa_warn "gh CLI not found — install the github-cli group first"
-    return 1
-  fi
-  local pin spec
-  pin="$(agent_pin copilot_cli)"
-  spec="github/gh-copilot"
-  [[ -n $pin ]] && spec="${spec}@${pin}"
-  _aa_log "Installing Copilot CLI (${spec})"
-  if gh extension install "$spec"; then
-    _aa_ok "gh-copilot extension installed"
+  ensure_node_for_npm || return 1
+  local spec
+  spec="$(agent_npm_spec "${COPILOT_CLI_NPM_PACKAGE:-@github/copilot}" copilot_cli)"
+  _aa_log "Installing GitHub Copilot CLI (npm ${spec})"
+  if npm install -g "$spec"; then
+    if ! _aa_has_cmd copilot; then
+      _aa_warn "Copilot CLI package installed but the copilot command is not available on PATH"
+      return 1
+    fi
+    _aa_ok "GitHub Copilot CLI installed: $(copilot --version 2>&1 | head -n1)"
     return 0
   fi
-  _aa_warn "gh extension install failed — check 'gh auth status' and retry"
+  _aa_warn "Copilot CLI install failed — check Node.js 22+ and retry"
   return 1
 }
 
@@ -435,7 +443,7 @@ verify_agent_install() {
     claude_code) _aa_has_cmd claude ;;
     opencode) _aa_has_cmd opencode ;;
     muse_code) _aa_has_cmd muse ;;
-    copilot_cli) _aa_has_cmd copilot || gh extension list 2>/dev/null | grep -q github/gh-copilot ;;
+    copilot_cli) _aa_has_cmd copilot ;;
     pi) _aa_has_cmd pi ;;
     gemini_cli) _aa_has_cmd gemini ;;
     codex) _aa_has_cmd codex ;;
@@ -447,16 +455,56 @@ verify_agent_install() {
   esac
 }
 
+agent_version_output() {
+  local command_name
+  case "$1" in
+    claude_code) command_name=claude ;;
+    opencode) command_name=opencode ;;
+    muse_code) command_name=muse ;;
+    copilot_cli) command_name=copilot ;;
+    pi) command_name=pi ;;
+    gemini_cli) command_name=gemini ;;
+    codex) command_name=codex ;;
+    herdr) command_name=herdr ;;
+    *) return 1 ;;
+  esac
+  _aa_has_cmd "$command_name" || return 1
+  "$command_name" --version 2>&1 | head -n1
+}
+
+agent_pin_matches_output() {
+  local name="$1" output="$2" pin token
+  local -a tokens=()
+  pin="$(agent_pin "$name")"
+  [[ -n $pin ]] || return 1
+  read -r -a tokens <<<"$output"
+  for token in "${tokens[@]}"; do
+    token="${token#v}"
+    [[ $token == "$pin" ]] && return 0
+  done
+  return 1
+}
+
+agent_pin_satisfied() {
+  local output
+  output="$(agent_version_output "$1")" || return 1
+  agent_pin_matches_output "$1" "$output"
+}
+
 install_catalog_agent() {
-  local name="$1" force="${2:-}"
+  local name="$1" force="${2:-}" pin
   local package_status=0
   if _aa_ci_blocked; then
     _aa_warn "CI environment detected — skipping ${name} install"
     return 1
   fi
+  pin="$(agent_pin "$name")"
   if [[ $force != force ]] && verify_agent_install "$name"; then
-    _aa_ok "${name} already installed"
-    return 0
+    if [[ -z $pin ]] || agent_pin_satisfied "$name"; then
+      _aa_ok "${name} already installed${pin:+ at pinned version ${pin}}"
+      return 0
+    fi
+    force=force
   fi
   if _aa_install_arch_package "$name" "$force"; then
     case "$name" in
@@ -475,6 +523,10 @@ install_catalog_agent() {
     return 1
   fi
   if ! _aa_remote_fallback_allowed; then
+    if [[ -n $pin ]]; then
+      _aa_warn "${name} exact pin ${pin} is not provided by a configured Arch package; remote fallback is disabled (set AI_AGENTS_ALLOW_REMOTE_INSTALL=1 to opt in)"
+      return 1
+    fi
     case "$name" in
       claude_code | opencode | copilot_cli | muse_code | pi | gemini_cli | codex)
         _aa_warn "no pacman/AUR package found for ${name}; remote installer fallback is disabled on Arch (set AI_AGENTS_ALLOW_REMOTE_INSTALL=1 to opt in)"
