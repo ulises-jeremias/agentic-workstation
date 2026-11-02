@@ -12,9 +12,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 <!-- markdownlint-disable MD024 -->
 ## [Unreleased]
 
+## [1.7.1] — 2026-11-02
+
 ### Changed
 
-- Arch Linux AI agent installation now uses the available AUR packages for Muse Code (`muse-code-bin`) and Pi (`pi-coding-agent-bin`) and verifies each installed command.
+- **Arch Linux AI agent installation** ([#231](https://github.com/ulises-jeremias/agentic-workstation/pull/231)) — uses the available AUR packages for Muse Code (`muse-code-bin`) and Pi (`pi-coding-agent-bin`) and verifies each installed command.
 
 ## [1.7.0] — 2026-11-02
 
@@ -134,8 +136,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-[Unreleased]: https://github.com/ulises-jeremias/agentic-workstation/compare/v1.7.0...HEAD
-[1.7.0]: https://github.com/ulises-jeremias/agentic-workstation/compare/v1.6.0...v1.7.0
+[Unreleased]: https://github.com/ulises-jeremias/agentic-workstation/compare/v1.7.1...HEAD
+[1.7.1]: https://github.com/ulises-jeremias/agentic-workstation/compare/v1.7.0...v1.7.1
+[1.7.0]: https://github.com/ulises-jeremias/agentic-workstation/releases/tag/v1.7.0
 [1.6.0]: https://github.com/ulises-jeremias/agentic-workstation/tree/v1.6.0
 [1.3.0]: https://github.com/ulises-jeremias/agentic-workstation/releases/tag/v1.3.0
 [1.2.0]: https://github.com/ulises-jeremias/agentic-workstation/releases/tag/v1.2.0
