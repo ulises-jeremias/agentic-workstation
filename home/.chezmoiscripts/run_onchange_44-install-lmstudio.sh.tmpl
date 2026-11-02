@@ -1,0 +1,256 @@
+#!/usr/bin/env bash
+# chezmoi:template:left-delimiter="{{" right-delimiter="}}"
+{{- $lmstudio := index . "install_group_lmstudio" | default false -}}
+{{- $models := index . "lmstudio_models_selection" | default "recommended" -}}
+{{- if $lmstudio }}
+set -euo pipefail
+
+# ── Colors ───────────────────────────────────────────────────────────────
+if [[ -t 1 && -z ${NO_COLOR:-} ]]; then
+  c_reset=$'\033[0m'
+  c_blue=$'\033[1;34m'
+  c_green=$'\033[1;32m'
+  c_yellow=$'\033[1;33m'
+  c_red=$'\033[1;31m'
+  c_dim=$'\033[2m'
+else
+  c_reset='' c_blue='' c_green='' c_yellow='' c_red='' c_dim=''
+fi
+log() { printf '%b[lmstudio]%b %s\n' "$c_blue" "$c_reset" "$*"; }
+ok() { printf '  %b✓%b %s\n' "$c_green" "$c_reset" "$*"; }
+warn() { printf '  %b!%b %s\n' "$c_yellow" "$c_reset" "$*"; }
+fail() { printf '  %b✗%b %s\n' "$c_red" "$c_reset" "$*"; }
+dim() { printf '%b%s%b\n' "$c_dim" "$*" "$c_reset"; }
+has_cmd() { command -v "$1" >/dev/null 2>&1; }
+can_sudo() { sudo -n true >/dev/null 2>&1; }
+
+# ── CI guard ─────────────────────────────────────────────────────────────
+if [[ ${CI:-} == "true" && -z ${LMSTUDIO_FORCE_INSTALL:-} ]]; then
+  log "CI detected — skipping LM Studio install (use LMSTUDIO_FORCE_INSTALL=1 to force)"
+  exit 0
+fi
+
+LMS_BIN="${HOME}/.lmstudio/bin/lms"
+MODELS_DIR="${HOME}/.lmstudio/models"
+LMSTUDIO_MODELS_SELECTION="{{ $models }}"
+
+log "LM Studio — RTX 3060 12GB tuned (10.5GB VRAM safe, 1.5GB reserved for Hyprland+Quickshell)"
+log "Selection: ${LMSTUDIO_MODELS_SELECTION}"
+
+# ── 1. Install LM Studio ─────────────────────────────────────────────────
+install_lmstudio() {
+  if has_cmd lms || [[ -x $LMS_BIN ]]; then
+    ok "LM Studio already installed: $(${LMS_BIN:-lms} --version 2>&1 | head -n1 || echo 'lms found')"
+    return 0
+  fi
+  log "Installing LM Studio..."
+
+  # AUR: lmstudio-bin (preferred on Arch)
+  if has_cmd yay; then
+    if yay -S --noconfirm --needed lmstudio-bin 2>&1 | tee /tmp/lmstudio-install.log; then
+      ok "LM Studio installed via yay (lmstudio-bin)"
+      return 0
+    fi
+    warn "yay install failed — trying official installer — see /tmp/lmstudio-install.log"
+  fi
+  if has_cmd pacman; then
+    if can_sudo && sudo pacman -S --noconfirm --needed lmstudio-bin 2>&1 | tee /tmp/lmstudio-install.log; then
+      ok "LM Studio installed via pacman (lmstudio-bin)"
+      return 0
+    fi
+  fi
+  # Fallback: official installer (if available)
+  if has_cmd curl; then
+    warn "AUR not available — manual install required: https://lmstudio.ai/download"
+    warn "On Arch: yay -S lmstudio-bin  |  On other distros: download from lmstudio.ai"
+  fi
+  # Check if .lmstudio/bin/lms appeared via previous partial install
+  if [[ -x $LMS_BIN ]]; then
+    ok "LM Studio binary appeared at $LMS_BIN"
+    return 0
+  fi
+  warn "LM Studio not installed — install manually then re-run chezmoi apply"
+  return 1
+}
+
+# ── 2. Patch LM Studio settings.json (context + GPU) ─────────────────────
+patch_lmstudio_settings() {
+  local settings="${HOME}/.lmstudio/settings.json"
+  if [[ ! -f $settings ]]; then
+    log "No settings.json yet — LM Studio will create on first launch"
+    return 0
+  fi
+  log "Patching LM Studio settings.json (context 32768, GPU-safe defaults)..."
+  python3 <<'PY'
+import json, pathlib
+p = pathlib.Path.home() / ".lmstudio/settings.json"
+try:
+    j = json.loads(p.read_text())
+except Exception as e:
+    print(f"  ! could not parse {p}: {e}")
+    exit(0)
+
+# Increase default context from 8192 → 32768 for coding (Qwen2.5-Coder needs 32k)
+# Keep VRAM headroom: modelLoadingGuardrails high (4GB threshold already in file)
+j.setdefault("defaultContextLength", {})["value"] = 32768
+j.setdefault("defaultContextLength", {})["type"] = "custom"
+# Keep JIT TTL 3600s (unload after 1h idle) — leaves GPU for Hyprland
+j.setdefault("developer", {}).setdefault("jitModelTTL", {})["enabled"] = True
+j["developer"]["jitModelTTL"]["ttlSeconds"] = 3600
+# Ensure local server enabled
+j["enableLocalService"] = True
+# Keep unloading previous model on new load (single-model GPU fit)
+j.setdefault("chat", {})["unloadPreviousModelOnSelect"] = True
+j.setdefault("developer", {})["unloadPreviousJITModelOnLoad"] = True
+
+p.write_text(json.dumps(j, indent=2))
+print("  ✓ settings.json patched: defaultContextLength=32768, JIT TTL 3600s, unloadPreviousModelOnSelect")
+PY
+  ok "LM Studio settings patched"
+}
+
+# ── 3. Download models via lms (GGUF) ────────────────────────────────────
+download_models() {
+  local sel="$LMSTUDIO_MODELS_SELECTION"
+  if [[ $sel == "none" ]]; then
+    log "Model selection 'none' — skipping downloads (LM Studio installed only)"
+    return 0
+  fi
+  local lms="${LMS_BIN:-lms}"
+  if ! has_cmd lms && [[ ! -x $LMS_BIN ]]; then
+    warn "lms not found — skipping model downloads (install LM Studio first)"
+    return 0
+  fi
+  # Ensure models dir exists
+  mkdir -p "$MODELS_DIR" 2>/dev/null || true
+
+  # Model map — RTX 3060 12GB VRAM-aware (10.5GB safe)
+  # All are GGUF via LM Studio Hub (lms get handles quant selection)
+  # Q4_K_M is default for lms (best balance)
+  download_one() {
+    local id="$1" desc="$2"
+    log "Downloading: ${desc} (${id})..."
+    # lms get --yes picks hardware-optimal quant automatically
+    if "$lms" get "$id" --gguf -y 2>&1 | tee "/tmp/lms-get-$(echo "$id" | tr '/:@' '-').log"; then
+      ok "Downloaded ${id}"
+    else
+      warn "Failed to download ${id} — retry with: lms get ${id} --gguf -y (see /tmp/lms-get-*.log)"
+    fi
+  }
+
+  case "$sel" in
+    minimal)
+      download_one "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF" "Qwen2.5-Coder-7B (daily coder, 4.8GB, 52t/s, tool_use)"
+      ;;
+    recommended)
+      download_one "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF" "Qwen2.5-Coder-7B (daily coder, 4.8GB, 52t/s, tool_use)"
+      download_one "bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" "DeepSeek-R1-Distill-Qwen-7B (reasoning, 8.9GB, 131k ctx)"
+      ;;
+    full)
+      download_one "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF" "Qwen2.5-Coder-7B (daily coder)"
+      download_one "bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" "DeepSeek-R1-7B reasoning"
+      download_one "bartowski/Qwen2.5-Coder-3B-Instruct-GGUF" "Qwen2.5-Coder-3B flash (2GB, 64t/s)"
+      download_one "lmstudio-community/Qwen3.5-9B-Claude-Polaris-GGUF" "Qwen3.5-9B reasoning 262k (if available)"
+      ;;
+    *)
+      warn "Unknown selection '${sel}' — using recommended"
+      download_one "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF" "Qwen2.5-Coder-7B"
+      download_one "bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF" "DeepSeek-R1-7B"
+      ;;
+  esac
+  ok "Model downloads complete — verify with: lms ls"
+}
+
+# ── 4. Configure agents to use LM Studio local server ────────────────────
+configure_agents() {
+  log "Configuring agents to use LM Studio local server (OpenAI-compatible http://localhost:1234/v1)..."
+  # opencode.json — add lmstudio provider if not present
+  local ocfg="${HOME}/.config/opencode/opencode.json"
+  if [[ -f $ocfg ]] || mkdir -p "$(dirname "$ocfg")" 2>/dev/null; then
+    python3 <<'PY'
+import json, pathlib
+p = pathlib.Path.home() / ".config/opencode/opencode.json"
+try:
+    j = json.loads(p.read_text()) if p.exists() and p.read_text().strip() else {}
+except: j = {}
+if "$schema" not in j:
+    j["$schema"] = "https://opencode.ai/config.json"
+# Add lmstudio provider alias (OpenAI-compatible)
+# opencode supports openai provider with custom baseURL
+providers = j.setdefault("provider", {})
+# Keep existing, add lmstudio if missing
+if "lmstudio" not in providers:
+    providers["lmstudio"] = {
+        "npm": "@ai-sdk/openai-compatible",
+        "name": "LM Studio (local, RTX 3060)",
+        "options": {
+            "baseURL": "http://localhost:1234/v1",
+            "apiKey": "lm-studio"
+        },
+        "models": {
+            "qwen2.5-coder-7b": {"name": "Qwen2.5-Coder-7B (local, 52t/s)"},
+            "deepseek-r1-distill-qwen-7b": {"name": "DeepSeek-R1-7B reasoning (local)"}
+        }
+    }
+    print("  ✓ opencode provider lmstudio added")
+else:
+    print("  · opencode provider lmstudio already present")
+p.write_text(json.dumps(j, indent=2))
+PY
+    ok "opencode.json configured for lmstudio"
+  fi
+
+  # Muse / opencode env hint for designers — doc file
+  mkdir -p "${HOME}/.local/share/agentic-workstation/lmstudio" 2>/dev/null || true
+  cat >"${HOME}/.local/share/agentic-workstation/lmstudio/README.md" <<'MDEOF'
+# LM Studio — colibri (RTX 3060 12GB)
+
+- Server: http://localhost:1234/v1 (OpenAI-compatible, auto-started by LM Studio)
+- VRAM budget: 10.5GB safe (1.5GB reserved for Hyprland 42MB + Quickshell 158MB + Zen)
+- Default context: 32768 (Qwen2.5-Coder-7B is 32768, reasoning models 131k-262k)
+- Models:
+  - Qwen2.5-Coder-7B Q4_K_M  ~4.8GB  52t/s  tool_use  — daily driver
+  - DeepSeek-R1-7B Q4_K_M   ~8.9GB  26t/s  reasoning — architecture/planning
+  - (full) Qwen2.5-Coder-3B  ~2GB  64t/s flash
+
+## Usage
+
+```bash
+# Start server (LM Studio GUI does this, or CLI):
+lms server start --port 1234
+lms load --gguf qwen2.5-coder-7b
+lms ps
+lms server stop
+
+# Helper
+dots-lmstudio status
+dots-lmstudio load coder
+dots-lmstudio load reasoning
+```
+
+## Agents
+
+- opencode: `provider: lmstudio` in `~/.config/opencode/opencode.json`
+- Muse: use OPENAI_BASE_URL=http://localhost:1234/v1 with `lm-studio` key
+- agent-toolkit dev-companion: set `ANTHROPIC_API_KEY` unused, `OPENAI_API_KEY=lm-studio`, `OPENAI_BASE_URL=http://localhost:1234/v1`
+
+MDEOF
+  ok "Agent docs written to ~/.local/share/agentic-workstation/lmstudio/README.md"
+}
+
+# ── Run ─────────────────────────────────────────────────────────────────
+install_lmstudio
+patch_lmstudio_settings
+download_models
+configure_agents
+
+ok "LM Studio setup complete — selection: ${LMSTUDIO_MODELS_SELECTION}"
+dim "  Verify: lms ls && lms ps && dots-lmstudio status"
+dim "  Start:  lms server start --port 1234 && lms load <model>"
+dim "  Docs:   cat ~/.local/share/agentic-workstation/lmstudio/README.md"
+
+{{- else }}
+# LM Studio disabled — no-op
+set -euo pipefail
+exit 0
+{{- end }}

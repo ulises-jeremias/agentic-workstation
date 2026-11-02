@@ -10,7 +10,7 @@ on:
       - "home/**"
       - "install.sh"
       - "install.ps1"
-      - ".github/workflows/validate-workstation.yml"
+      - ".github/workflows/**"
   push:
     branches: [main]
     paths:
@@ -20,7 +20,7 @@ on:
       - "home/**"
       - "install.sh"
       - "install.ps1"
-      - ".github/workflows/validate-workstation.yml"
+      - ".github/workflows/**"
   schedule:
     # Weekly full matrix run (macOS/Windows are costlier).
     - cron: "23 6 * * 1"

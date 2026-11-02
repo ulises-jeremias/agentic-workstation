@@ -62,6 +62,9 @@ groups:
   ai:
     flag: install_group_ai
     description: "AI coding agents (Claude Code, OpenCode, pi, Copilot CLI, Muse)."
+  lmstudio:
+    flag: install_group_lmstudio
+    description: "LM Studio local LLM (RTX 3060 12GB tuned, 10.5GB VRAM safe for Hyprland+Quickshell)."
   skills_productivity:
     flag: install_group_skills_productivity
     description: "Productivity CLIs: clickup, slack, rtk."
