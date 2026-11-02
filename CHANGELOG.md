@@ -12,6 +12,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 <!-- markdownlint-disable MD024 -->
 ## [Unreleased]
 
+## [1.7.0] — 2026-11-02
+
+### Added
+
+- **Native Arch Linux AI agent installation** ([#230](https://github.com/ulises-jeremias/agentic-workstation/pull/230)) — AI coding agents now prefer configured pacman packages and then AUR packages through `yay` or `paru`. Remote, npm, and curl-based fallbacks stay disabled on Arch unless explicitly enabled. The installer supports Claude Code, OpenCode, GitHub Copilot CLI, Gemini CLI, and Codex packages where available, and reports unsupported package mappings for Muse and Pi.
+
+- **LM Studio local inference setup** ([#220](https://github.com/ulises-jeremias/agentic-workstation/pull/220)) — Optional chezmoi setup for LM Studio and VRAM-aware model selections, with an RTX 3060 profile and a `dots-lmstudio` helper.
+
 ### Changed
 
 - **Docs** — Toolkit-facing counts use floors and live inventory. Jira and Confluence are now bundled upstream capabilities in agent-toolkit, not workstation `skills-external/` packs.
@@ -19,6 +27,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Canonical V Agent Toolkit bootstrap** ([#206](https://github.com/ulises-jeremias/agentic-workstation/issues/206)) — chezmoi and `dots-skills install-toolkit` prefer Homebrew / AUR `agent-toolkit-bin` / GitHub Release V binaries, then `uv tool install --force 'agent-toolkit-cli>=1.11.0'` (V launcher wheel). Shared helper `home/dot_local/lib/agentic-workstation/install-agent-toolkit.sh`. Rollback via `AGENT_TOOLKIT_CLI_VERSION` / `AGENT_TOOLKIT_RELEASE`. Docs (`docs/AGENT_TOOLKIT.md`, `COMPATIBILITY.md`) updated. Workstation does not `import agent_toolkit`.
 
 - **Thin-workstation cleanup — duplicate skills and `ui-ux-pro-max` removal** ([#197](https://github.com/ulises-jeremias/agentic-workstation/pull/197)) — `home/.chezmoidata/skills-registry.yaml` (and deployed `home/dot_local/share/agentic-workstation/skills-registry.yaml`) slimmed from 47 to **9** workstation-only entries; removed 16 cross-domain skills now in `agent-toolkit` (60 skills: `clickup-cli`, `github-cli-workflow`, `figma*`, `dbt-validation`, etc.), 21 `dots-workstation-*` delivery skills (`prd`, `trd`, `adr`, etc. → `agent-toolkit` `delivery/*`/`core/*`), and the third-party `ui-ux-pro-max` (`uipro-cli`) npm pack. Added `.chezmoiremove` on **every** target (`skills/`, `.claude/skills/`, `.agents/skills/`, `.config/muse/skills/`, `.config/opencode/skills/`, `.cursor/rules/`, `.windsurf/rules/`, `.pi/agent/skills/`) to delete legacy flat installs now at `skills-external/agent-toolkit/`. Updated docs `README.md` 52→60, `AGENTS.md` L1.5 52→60, `docs/SKILLS.md` thin tree + 60, `docs/AGENT_TOOLKIT.md` + `docs/ARCHITECTURE.md` 52→60 and new “Third-party boundary” (`plugins/` vs `skills-external/`), `docs/SKILL_INDEX.md` 21→20, `docs/COMPATIBILITY.md` regenerated thin, `docs/wiki/*` and `docs/AI_LAYER.md`. `home/.chezmoidata/profiles.yaml` `skills_productivity` drops `uipro-cli`.
+
+## [Unreleased]
 
 ## [1.6.0] — 2026-08-06
 
@@ -122,7 +132,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-[Unreleased]: https://github.com/ulises-jeremias/agentic-workstation/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/ulises-jeremias/agentic-workstation/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/ulises-jeremias/agentic-workstation/compare/v1.6.0...v1.7.0
+[1.6.0]: https://github.com/ulises-jeremias/agentic-workstation/tree/v1.6.0
 [1.3.0]: https://github.com/ulises-jeremias/agentic-workstation/releases/tag/v1.3.0
 [1.2.0]: https://github.com/ulises-jeremias/agentic-workstation/releases/tag/v1.2.0
 [0.1.0]: https://github.com/ulises-jeremias/agentic-workstation/commits/main
