@@ -21,9 +21,9 @@ agents:
   muse_code: false     # DEPRECATED (legacy boolean) → use agent_catalog.muse_code
 
 # ── Agent catalog ────────────────────────────────────────────────────────────
-# Canonical schema for first-class terminal coding agent installs. The
-# installer script iterates this map; the legacy booleans under `agents` are
-# retained only until the questionnaire migrates to the catalog.
+# Canonical metadata for first-class terminal coding agent installs. The
+# questionnaire selects agents from this catalog and passes those selections
+# to the installer; legacy booleans under `agents` remain for compatibility.
 #
 # Schema per entry:
 #   description   - human-readable summary
@@ -34,6 +34,8 @@ agents:
 #                   npm: global npm package (requires_node: true)
 #                   gh-extension: GitHub CLI extension
 #                   auto: chain best-available channels (brew → mise → script)
+#                   Arch checks mapped pacman repositories and AUR packages
+#                   first; remote installer fallbacks are opt-in.
 #   pin           - "" = latest; exact version otherwise. Overridable at
 #                   install time via <NAME>_PIN or <NAME>_VERSION env vars.
 #   check         - command that must succeed after install (post-install gate)
@@ -41,7 +43,7 @@ agents:
 agent_catalog:
   claude_code:
     description: Anthropic Claude Code terminal agent
-    enabled: false
+    enabled: true
     channel: native
     pin: ""
     check: "claude --version"
@@ -55,35 +57,35 @@ agent_catalog:
     requires_node: false
   muse_code:
     description: Meta Muse Code terminal agent
-    enabled: false
+    enabled: true
     channel: script
     pin: ""
     check: "muse --version"
     requires_node: false
   copilot_cli:
-    description: GitHub Copilot CLI extension (requires gh auth)
-    enabled: false
+    description: GitHub Copilot CLI (requires authentication)
+    enabled: true
     channel: gh-extension
     pin: ""
-    check: "gh copilot --version"
+    check: "copilot --version"
     requires_node: false
   pi:
     description: pi coding agent by Mario Zechner
-    enabled: false
+    enabled: true
     channel: npm
     pin: ""
     check: "pi --version"
     requires_node: true
   gemini_cli:
     description: Google Gemini CLI
-    enabled: false
+    enabled: true
     channel: npm
     pin: ""
     check: "gemini --version"
     requires_node: true
   codex:
     description: OpenAI Codex CLI
-    enabled: false
+    enabled: true
     channel: npm
     pin: ""
     check: "codex --version"

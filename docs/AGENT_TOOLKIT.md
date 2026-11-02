@@ -19,7 +19,7 @@ graph LR
     end
 
     subgraph "agent-toolkit (L1.5)"
-        AT["116+ skills<br/>17 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>7 MCP templates<br/>7 solution packs"]
+        AT["106+ skills<br/>18 agent personas<br/>10 loop templates<br/>7 tool profiles<br/>7 MCP templates<br/>7 solution packs"]
     end
 
     subgraph "AI tools"
@@ -48,7 +48,7 @@ graph LR
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Skills | 116+ (`agent-toolkit inventory`) | jira-assistant, confluence-assistant, github-cli-workflow, planning, dbt-validation, slack-cli |
+| Skills | 106+ (`agent-toolkit inventory`) | jira-assistant, confluence-assistant, github-cli-workflow, planning, dbt-validation, slack-cli |
 | Agent personas | Live inventory | architect, planner, code-reviewer, security-reviewer, tdd-guide, agentic-security-reviewer |
 | Loop templates | Live inventory | oss-pr-monitor, oss-triage, oss-daily-briefing, ci-sweeper |
 | Tool profiles | Live inventory | Claude Code, Cursor, OpenCode, GitHub Copilot, Windsurf, Pi, Muse |
@@ -196,7 +196,7 @@ See [SWARM_SETUP.md](SWARM_SETUP.md) for complete provisioning, questionnaire, a
 
 | Source | Install mechanism | Location | Examples |
 |--------|------------------|----------|---------|
-| **agent-toolkit** | `dots-skills install-toolkit` then `agent-toolkit install` | `~/.local/share/agent-toolkit/` and tool-specific skill directories | 116+ cross-domain skills (`agent-toolkit inventory`), catalog via SKILL.md |
+| **agent-toolkit** | `dots-skills install-toolkit` then `agent-toolkit install` | `~/.local/share/agent-toolkit/` and tool-specific skill directories | 106+ cross-domain skills (`agent-toolkit inventory`), catalog via SKILL.md |
 
 > [!IMPORTANT]
 > **No bundled skills are shipped in this repository.** The `home/dot_local/share/agentic-workstation/skills/` directory is intentionally thin (placeholder `README.md` only; see [ARCHITECTURE.md](ARCHITECTURE.md) thin-host model). All capabilities come from `agent-toolkit` (verify with `agent-toolkit inventory`). Workstation-only host logic lives in `home/dot_local/share/agentic-workstation/dev-companion/runner` + LLM policy (`~/.config/agentic-workstation/env.d/`, `DOTS_*_LLM_*`) — see [DEV_COMPANION_LLM.md](DEV_COMPANION_LLM.md). No `loops/*`, `mcp/*`, `prompts/*`, `agents/*` are embedded; check `agent-toolkit inventory` for dynamic counts.

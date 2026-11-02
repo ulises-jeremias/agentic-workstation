@@ -76,6 +76,24 @@ expect_eq "$(agent_channel_plan npm)" "npm" "forced single channel passthrough"
 expect_eq "$(agent_channel_plan auto)" "npm" "global channel override beats auto"
 unset AI_AGENTS_INSTALL_CHANNEL || true
 
+# --- Arch package preferences ---
+expect_eq "$(agent_arch_packages claude_code | tr '\n' ' ')" "claude-code claude-code-bin " "Claude Code checks configured Arch packages first"
+expect_eq "$(agent_arch_packages opencode)" "opencode" "OpenCode uses the native Arch package"
+expect_eq "$(agent_arch_packages copilot_cli)" "github-copilot-cli" "Copilot CLI checks its Arch package"
+expect_eq "$(agent_arch_packages gemini_cli)" "gemini-cli" "Gemini CLI uses the native Arch package"
+expect_eq "$(agent_arch_packages codex)" "openai-codex" "Codex uses the native Arch package"
+expect_fail "Muse Code has no assumed Arch package" agent_arch_packages muse_code
+if AI_AGENTS_ALLOW_REMOTE_INSTALL=0 _aa_remote_fallback_allowed arch; then
+  bad "Arch remote installer fallback is disabled by default"
+else
+  ok "Arch remote installer fallback is disabled by default"
+fi
+if AI_AGENTS_ALLOW_REMOTE_INSTALL=1 _aa_remote_fallback_allowed arch; then
+  ok "Arch remote installer fallback requires an explicit opt-in"
+else
+  bad "Arch remote installer fallback requires an explicit opt-in"
+fi
+
 expect_fail "unknown channel rejected" agent_channel_plan teleport
 
 # --- CI guard ---

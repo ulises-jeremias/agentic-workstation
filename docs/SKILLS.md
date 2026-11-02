@@ -5,7 +5,7 @@ This document describes the agentic-workstation skill system — how skills are 
 > [!IMPORTANT]
 > **Skills are now distributed via [`agent-toolkit`](https://github.com/ulises-jeremias/agent-toolkit).**
 > agentic-workstation provisions your machine. agent-toolkit provides the capability library
-> (116+ skills, 17 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
+> (106+ skills, 18 agent personas, 10 loop templates). See [AGENT_TOOLKIT.md](AGENT_TOOLKIT.md) for
 > the integration details.
 >
 > **Quick install:**
@@ -126,7 +126,7 @@ Skills come from the Toolkit catalog or the small workstation-local set:
 
 | Source | Mechanism | Example |
 |--------|-----------|---------|
-| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 116+ cross-domain skills (`agent-toolkit inventory`) |
+| `agent-toolkit` | `agent-toolkit install` (via chezmoi) | 106+ cross-domain skills (`agent-toolkit inventory`) |
 | `bundled` | chezmoi source state | `dots-workstation-triage`, `dots-workstation-assistant` (workstation-only) |
 
 **`agent-toolkit` is the primary source for cross-domain skills.** It is installed automatically during `chezmoi init` via `run_once_after_50-install-agent-toolkit.sh.tmpl` (and kept current by `run_onchange_45-install-ai-agents.sh.tmpl` on subsequent `chezmoi apply` runs). `dots-skills install-toolkit` provides the manual equivalent.

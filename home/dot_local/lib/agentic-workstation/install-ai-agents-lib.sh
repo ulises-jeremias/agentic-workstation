@@ -18,6 +18,8 @@
 #   <NAME>_VERSION          alias of PIN
 # Global env:
 #   AI_AGENTS_INSTALL_CHANNEL   force one channel for all agents (debug)
+#   AI_AGENTS_ALLOW_REMOTE_INSTALL=1 allow script/npm fallbacks on Arch when
+#                               no pacman/AUR package is available
 #   MUSE_CODE_INSTALL_URL       override Muse installer URL
 #   HERDR_INSTALL_URL           override Herdr installer URL
 #   AI_AGENTS_CI_BLOCKED        set to 0/1 to override CI detection (tests)
@@ -43,6 +45,11 @@ _aa_ok() { printf '\033[1;32m[ai-agents]\033[0m %s\n' "$*"; }
 _aa_warn() { printf '\033[1;33m[ai-agents]\033[0m %s\n' "$*"; }
 
 _aa_has_cmd() { command -v "$1" >/dev/null 2>&1; }
+_aa_is_root() { [[ ${EUID:-1} -eq 0 ]]; }
+_aa_remote_fallback_allowed() {
+  local os_id="${1:-$(_aa_os_id)}"
+  [[ $os_id != arch || ${AI_AGENTS_ALLOW_REMOTE_INSTALL:-0} == 1 ]]
+}
 
 # --- testable pure helpers ---------------------------------------------------
 
@@ -58,7 +65,11 @@ _aa_os_id() {
     (
       # shellcheck disable=SC1090,SC1091
       . "$osrel"
-      printf '%s\n' "${ID:-linux}"
+      if [[ ${ID:-} == arch || ${ID_LIKE:-} == *arch* ]]; then
+        printf 'arch\n'
+      else
+        printf '%s\n' "${ID:-linux}"
+      fi
     )
     return
   fi
@@ -132,6 +143,60 @@ ensure_node_for_npm() {
   fi
   _aa_warn "npm not found — enable the node group (fnm + Node LTS) first"
   return 1
+}
+
+# Arch packages are preferred when the enabled repositories or AUR provide a
+# packaged agent. Unmapped or unavailable agents continue through their
+# catalog channel below (for example Muse Code's upstream installer).
+agent_arch_packages() {
+  case "$1" in
+    claude_code) printf 'claude-code\nclaude-code-bin\n' ;;
+    opencode) printf 'opencode\n' ;;
+    copilot_cli) printf 'github-copilot-cli\n' ;;
+    gemini_cli) printf 'gemini-cli\n' ;;
+    codex) printf 'openai-codex\n' ;;
+    *) return 1 ;;
+  esac
+}
+
+_aa_install_arch_package() {
+  local agent="$1" force="${2:-}" package helper
+  local -a packages=()
+  [[ $(_aa_os_id) == arch ]] || return 2
+  _aa_has_cmd pacman || return 2
+  mapfile -t packages < <(agent_arch_packages "$agent" 2>/dev/null || true)
+  ((${#packages[@]})) || return 2
+
+  for package in "${packages[@]}"; do
+    if pacman -Qq "$package" >/dev/null 2>&1 && [[ $force != force ]]; then
+      _aa_ok "${agent} already installed from Arch package ${package}"
+      return 0
+    fi
+
+    if pacman -Si "$package" >/dev/null 2>&1; then
+      if _aa_is_root; then
+        pacman -S --noconfirm --needed "$package" || return 1
+      elif _aa_has_cmd sudo; then
+        sudo pacman -S --noconfirm --needed "$package" || return 1
+      else
+        _aa_warn "sudo is required to install Arch package ${package}"
+        return 1
+      fi
+      _aa_ok "${agent} installed with pacman package ${package}"
+      return 0
+    fi
+
+    for helper in paru yay; do
+      _aa_has_cmd "$helper" || continue
+      if "$helper" -Si "$package" >/dev/null 2>&1; then
+        "$helper" -S --noconfirm --needed "$package" || return 1
+        _aa_ok "${agent} installed with ${helper} package ${package}"
+        return 0
+      fi
+    done
+  done
+
+  return 2
 }
 
 # --- per-agent installers ----------------------------------------------------
@@ -228,7 +293,7 @@ install_copilot_cli() {
     _aa_warn "CI environment detected — skipping copilot_cli install"
     return 1
   fi
-  if gh extension list 2>/dev/null | grep -qE '(^|[[:space:]])github/gh-copilot([[:space:]]|$)' &&
+  if { _aa_has_cmd copilot || gh extension list 2>/dev/null | grep -qE '(^|[[:space:]])github/gh-copilot([[:space:]]|$)'; } &&
     [[ ${1:-} != "force" ]]; then
     _aa_ok "gh-copilot extension already installed"
     return 0
@@ -370,7 +435,7 @@ verify_agent_install() {
     claude_code) _aa_has_cmd claude ;;
     opencode) _aa_has_cmd opencode ;;
     muse_code) _aa_has_cmd muse ;;
-    copilot_cli) gh extension list 2>/dev/null | grep -q github/gh-copilot ;;
+    copilot_cli) _aa_has_cmd copilot || gh extension list 2>/dev/null | grep -q github/gh-copilot ;;
     pi) _aa_has_cmd pi ;;
     gemini_cli) _aa_has_cmd gemini ;;
     codex) _aa_has_cmd codex ;;
@@ -384,6 +449,39 @@ verify_agent_install() {
 
 install_catalog_agent() {
   local name="$1" force="${2:-}"
+  local package_status=0
+  if _aa_ci_blocked; then
+    _aa_warn "CI environment detected — skipping ${name} install"
+    return 1
+  fi
+  if [[ $force != force ]] && verify_agent_install "$name"; then
+    _aa_ok "${name} already installed"
+    return 0
+  fi
+  if _aa_install_arch_package "$name" "$force"; then
+    case "$name" in
+      claude_code | opencode | copilot_cli | gemini_cli | codex)
+        verify_agent_install "$name" || {
+          _aa_warn "${name} package installed, but its command check failed"
+          return 1
+        }
+        return 0
+        ;;
+    esac
+  else
+    package_status=$?
+  fi
+  if [[ $package_status -eq 1 ]]; then
+    return 1
+  fi
+  if ! _aa_remote_fallback_allowed; then
+    case "$name" in
+      claude_code | opencode | copilot_cli | muse_code | pi | gemini_cli | codex)
+        _aa_warn "no pacman/AUR package found for ${name}; remote installer fallback is disabled on Arch (set AI_AGENTS_ALLOW_REMOTE_INSTALL=1 to opt in)"
+        return 1
+        ;;
+    esac
+  fi
   case "$name" in
     claude_code) install_claude_code "$force" ;;
     opencode) install_opencode "$force" ;;

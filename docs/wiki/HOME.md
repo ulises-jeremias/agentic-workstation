@@ -17,7 +17,7 @@ context, pair this workstation layer with
 | Area | What you get |
 |------|-------------|
 | **Bootstrap** | Idempotent `chezmoi` source state with profile-driven behavior |
-| **Skills** | 17+ bundled + opt-in JIRA/Confluence packs for Claude Code, OpenCode, Cursor, Windsurf, Copilot |
+| **Skills** | 106+ Agent Toolkit skills for Claude Code, OpenCode, Cursor, Windsurf, Pi, Muse, and other supported tools |
 | **Agents** | 15 specialized subagents (code review, architecture, security, TDD, etc.) |
 | **CLI** | `dots-*` commands for health checks, skill management, updates |
 | **Dev Companion** | LLM-powered background job runner with multi-provider support |
