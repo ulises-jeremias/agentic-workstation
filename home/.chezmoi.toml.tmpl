@@ -12,7 +12,7 @@
        the silent "speed mode" feel of promptChoiceOnce, which used to skip
        the prompt entirely whenever a value was already on disk.
     3. Profile-first flow — one prompt chooses a persona (technical,
-       non-technical, ai, node, python, data, infra, minimal, custom). Most
+       non-technical, ai, node, python, data, infra, creative, minimal, custom). Most
        users finish with 3-5 questions total.
     4. Feature groups — ai / node / python / docker / skills_* flags expand
        into concrete install_* flags consumed by .chezmoiscripts/*.tmpl.
@@ -36,6 +36,7 @@
 {{- $installAi        := index . "install_group_ai"                    | default false -}}
 {{- $installSwarm     := index . "install_group_swarm"                 | default false -}}
 {{- $installProd      := index . "install_group_skills_productivity"   | default false -}}
+{{- $installCreative  := index . "install_group_creative"                | default false -}}
 
 {{- $installAgentClaude   := index . "install_agent_claude_code"  | default false -}}
 {{- $installAgentOpencode := index . "install_agent_opencode"     | default false -}}
@@ -83,6 +84,7 @@
         "python"         (list        "python"                                     "productivity")
         "data"           (list        "python"             "ai"                   "productivity" "swarm")
         "infra"          (list "node" "python" "docker"                            "productivity")
+        "creative"       (list        "python"             "ai"                   "productivity"          "creative")
         "minimal"        (list)
         "custom"         (list)
 -}}
@@ -96,6 +98,7 @@
 {{-   $installAi         = has "ai"           $preset -}}
 {{-   $installSwarm      = has "swarm"        $preset -}}
 {{-   $installProd       = has "productivity" $preset -}}
+{{-   $installCreative   = has "creative"     $preset -}}
 {{-   if $installAi -}}
 {{-     $installNode = true -}}
 {{-     $installAgentClaude = true -}}
@@ -115,8 +118,8 @@
 {{-   $banner := "\n  ═══════════════════════════════════════════════════════════════\n  ║  agentic-workstation Workstation — Interactive setup\n  ║\n  ║  Each prompt shows your previous answer as the default in [brackets].\n  ║  Press Enter to keep it, or type a new value (e.g. yes / no /\n  ║  technical / custom). For unattended installs use\n  ║  WORKSTATION_PROFILE=… or --promptChoice / --promptString.\n  ╚══════════════════════════════════════════════════════════════" -}}
 
 {{/* ── Step 1: profile ──────────────────────────────────────────────────── */}}
-{{-   $profileChoices := list "technical" "non-technical" "ai" "node" "python" "data" "infra" "minimal" "custom" -}}
-{{-   $profilePrompt := printf "%s\n\n  PROFILE — which persona matches your role?\n    technical     node + python + docker + ai + productivity\n    non-technical productivity + ai\n    ai            ai + productivity\n    node          node + productivity\n    python        python + productivity\n    data          python + ai + productivity\n    infra         docker + node + python + productivity\n    minimal       core baseline only\n    custom        answer every group question yourself\n\n  Choose one" $banner -}}
+{{-   $profileChoices := list "technical" "non-technical" "ai" "node" "python" "data" "infra" "creative" "minimal" "custom" -}}
+{{-   $profilePrompt := printf "%s\n\n  PROFILE — which persona matches your role?\n    technical     node + python + docker + ai + productivity\n    non-technical productivity + ai\n    ai            ai + productivity\n    node          node + productivity\n    python        python + productivity\n    data          python + ai + productivity\n    infra         docker + node + python + productivity\n    creative      python + ai + productivity + creative apps (Kdenlive, Blender, FFmpeg/MLT)\n    minimal       core baseline only\n    custom        answer every group question yourself\n\n  Choose one" $banner -}}
 {{-   $profileDefault := index . "profile" | default "technical" -}}
 {{-   $profile = promptChoice $profilePrompt $profileChoices $profileDefault -}}
 
@@ -128,6 +131,7 @@
 {{-   $installAi         = has "ai"           $selected -}}
 {{-   $installSwarm      = has "swarm"        $selected -}}
 {{-   $installProd       = has "productivity" $selected -}}
+{{-   $installCreative   = has "creative"     $selected -}}
 
 {{/* ── Step 3: custom → ask each group individually ─────────────────────── */}}
 {{-   if eq $profile "custom" -}}
@@ -138,12 +142,14 @@
 {{-     $dAi         := ternary "yes" "no" (index . "install_group_ai"                   | default false) -}}
 {{-     $dSwarm      := ternary "yes" "no" (index . "install_group_swarm"                | default false) -}}
 {{-     $dProd       := ternary "yes" "no" (index . "install_group_skills_productivity"  | default false) -}}
+{{-     $dCreative   := ternary "yes" "no" (index . "install_group_creative"               | default false) -}}
 {{-     $installNode       = eq "yes" (promptChoice (printf "%s\n  Install Node.js tooling (fnm + Node LTS + pnpm)?"           $grpBanner) $yesNo $dNode) -}}
 {{-     $installPython     = eq "yes" (promptChoice "  Install Python tooling (python + uv + pipx)?"                                   $yesNo $dPython) -}}
 {{-     $installDocker     = eq "yes" (promptChoice "  Install Docker CLI?"                                                             $yesNo $dDocker) -}}
 {{-     $installAi         = eq "yes" (promptChoice "  Install AI coding agents group? (Claude Code, OpenCode, pi, Copilot CLI, Muse, Gemini CLI, Codex)" $yesNo $dAi) -}}
 {{-     $installSwarm      = eq "yes" (promptChoice "  Install Agent Toolkit Swarms (tmux + Herdr)?"                                     $yesNo $dSwarm) -}}
 {{-     $installProd       = eq "yes" (promptChoice "  Install productivity CLIs (clickup, slack, rtk)?"                                   $yesNo $dProd) -}}
+{{-     $installCreative   = eq "yes" (promptChoice "  Install creative apps (ffmpeg, MLT/melt, Kdenlive, Blender + Kdenlive MCP)?"        $yesNo $dCreative) -}}
 {{-   end -}}
 
 {{/* ── Step 4: AI agents (only asked when ai group is enabled) ──────────── */}}
@@ -264,6 +270,7 @@
   install_group_ai                     = {{ $installAi }}
   install_group_swarm                  = {{ $installSwarm }}
   install_group_skills_productivity    = {{ $installProd }}
+  install_group_creative               = {{ $installCreative }}
 
   # ── Backwards-compat aliases (match what existing scripts still look up) ─
   enable_node                          = {{ $installNode }}

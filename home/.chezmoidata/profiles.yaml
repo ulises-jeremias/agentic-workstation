@@ -36,6 +36,9 @@ profiles:
   infra:
     description: "Infrastructure stack (docker + node + python)."
     groups: [core, docker, node, python, skills_productivity]
+  creative:
+    description: "Creative workstation (AI + python + creative apps: Kdenlive, Blender, FFmpeg/MLT)."
+    groups: [core, python, ai, skills_productivity, creative]
   minimal:
     description: "Core CLI baseline only. Nothing else."
     groups: [core]
@@ -68,6 +71,9 @@ groups:
   skills_productivity:
     flag: install_group_skills_productivity
     description: "Productivity CLIs: clickup, slack, rtk."
+  creative:
+    flag: install_group_creative
+    description: "Creative applications + media toolchain (ffmpeg, MLT/melt, Kdenlive, Blender) and the Kdenlive MCP for Agent Toolkit Creative Studio. Optional; nothing is auto-configured."
 
 # VSCode extension sets
 vscode_extension_sets:

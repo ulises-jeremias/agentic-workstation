@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+## dots-creative-doctor
+##
+## Read-only diagnostics for the creative workstation: creative
+## applications, media toolchain, Kdenlive MCP readiness, GPU/hardware
+## encoding, PipeWire audio stack, Wayland capture portal, and free
+## resources. Reports real status only (ADR-046 states); never installs,
+## downloads models, or enables recording/microphone access.
+##
+## Usage:
+##     dots-creative-doctor [--json]
+##
+## Exit code is 0 when the core media tools (ffmpeg, ffprobe, melt) are
+## present, 1 otherwise. Optional applications never fail the run.
+
+JSON=0
+case "${1:-}" in
+  --json) JSON=1 ;;
+  -h | --help)
+    sed -n '4,20p' "$0" | sed 's/^## \{0,1\}//'
+    exit 0
+    ;;
+  "") ;;
+  *)
+    echo "[dots-creative-doctor] unknown option: $1 (try --json)" >&2
+    exit 2
+    ;;
+esac
+
+has_cmd() { command -v "$1" >/dev/null 2>&1; }
+
+declare -a ROWS=()
+CORE_MISSING=0
+
+# probe <tool> <version-arg> <core:0|1>
+probe() {
+  local tool="$1" varg="$2" core="$3" status version path
+  if has_cmd "$tool"; then
+    path="$(command -v "$tool")"
+    version="$("$tool" "$varg" 2>/dev/null | head -n 1 | tr -d '\r' | tr '|' '/' || true)"
+    status="available"
+  else
+    path="" version=""
+    status="unsupported"
+    [[ $core == 1 ]] && CORE_MISSING=1
+  fi
+  ROWS+=("$tool|$status|$version|$path")
+}
+
+probe ffmpeg -version 1
+probe ffprobe -version 1
+probe melt --version 1
+probe kdenlive --version 0
+probe blender --version 0
+probe gimp --version 0
+probe krita --version 0
+probe inkscape --version 0
+probe obs --version 0
+probe reaper -h 0
+probe kdenlive-mcp --version 0
+
+json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+
+if [[ $JSON == 1 ]]; then
+  printf '{"tools":['
+  first=1
+  for row in "${ROWS[@]}"; do
+    IFS='|' read -r tool status version path <<<"$row"
+    [[ $first == 1 ]] || printf ','
+    first=0
+    printf '{"tool":"%s","status":"%s","version":"%s","path":"%s"}' \
+      "$(json_escape "$tool")" "$status" "$(json_escape "$version")" "$(json_escape "$path")"
+  done
+  printf '],"core_missing":%s}\n' "$([[ $CORE_MISSING == 1 ]] && echo true || echo false)"
+else
+  printf '%-14s %-13s %s\n' TOOL STATUS VERSION/PATH
+  for row in "${ROWS[@]}"; do
+    IFS='|' read -r tool status version path <<<"$row"
+    if [[ $status == available ]]; then
+      printf '%-14s %-13s %s [%s]\n' "$tool" "$status" "$version" "$path"
+    else
+      printf '%-14s %-13s %s\n' "$tool" "$status" "not on PATH"
+    fi
+  done
+  echo
+  if has_cmd kdenlive-mcp; then
+    echo "── kdenlive-mcp diagnose ──"
+    kdenlive-mcp diagnose || true
+    echo
+  fi
+  echo "── resources ──"
+  echo "cpu: $(nproc 2>/dev/null || echo unknown) cores"
+  free -h 2>/dev/null | awk 'NR==2 {print "ram: " $2 " total, " $7 " available"}' || true
+  df -h "${HOME:-/}" 2>/dev/null | awk 'NR==2 {print "disk(home): " $4 " free of " $2}' || true
+  if has_cmd nvidia-smi; then
+    nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader 2>/dev/null | sed 's/^/gpu: /' || true
+    if ffmpeg -hide_banner -encoders 2>/dev/null | grep -qw h264_nvenc; then
+      echo "hw-encode: h264_nvenc available"
+    fi
+  else
+    echo "gpu: no NVIDIA driver tools found (check your vendor's tools manually)"
+  fi
+  echo
+  echo "── audio/capture stack (presence only — nothing is enabled) ──"
+  for tool in pipewire wireplumber wpctl; do
+    has_cmd "$tool" && echo "$tool: present" || echo "$tool: missing"
+  done
+  if has_cmd busctl; then
+    if busctl --user list 2>/dev/null | grep -q "org.freedesktop.portal.Desktop"; then
+      echo "xdg-desktop-portal: present (Wayland capture goes through it)"
+    else
+      echo "xdg-desktop-portal: not seen on the session bus"
+    fi
+  fi
+  echo
+  echo "Bound heavy renders, e.g.: systemd-run --user --scope -p MemoryMax=6G -p MemorySwapMax=0 <command>"
+  echo "Capabilities (skills/MCP config) are managed by agent-toolkit — see: agent-toolkit inventory"
+fi
+
+exit "$CORE_MISSING"

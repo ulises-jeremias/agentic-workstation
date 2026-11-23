@@ -21,6 +21,7 @@ During `chezmoi init`, you select one or more profiles. Each profile maps to a s
 | `python` | Python developers | Python, pip, virtualenv tools |
 | `data` | Data engineers | dbt, SQL tools, data stack, **swarm: tmux + Herdr** |
 | `infra` | DevOps / infrastructure | Terraform, AWS CLI, k8s tools |
+| `creative` | Creators / video & audio production | Python + AI + creative apps (Kdenlive, Blender, FFmpeg/MLT) + Kdenlive MCP — see [CREATIVE_WORKSTATION](../../docs/CREATIVE_WORKSTATION.md) |
 | `minimal` | Minimal setup | Core baseline only (no swarm) |
 | `custom` | Custom | Answer every group question — opt-in `Install Agent Toolkit Swarms (tmux + Herdr)?` |
 
@@ -47,6 +48,7 @@ technical + ai + data → full data AI stack
 | `python` | `install_group_python` | Python + uv + pipx |
 | `docker` | `install_group_docker` | Docker CLI |
 | `skills_productivity` | `install_group_skills_productivity` | Productivity CLIs (clickup, slack, rtk) |
+| `creative` | `install_group_creative` | Creative applications + media toolchain via `run_onchange_48-install-creative-tooling.sh.tmpl` (ffmpeg, MLT/melt, Kdenlive, Blender, `mcp-kdenlive` via pipx). Diagnose with `dots-creative-doctor` |
 
 > **Workstation installs tools, Toolkit owns orchestration.** Workstation ensures `tmux` + `Herdr` (+ `herdr integration install opencode`) exist; Toolkit owns `agent-toolkit swarm doctor` and `agent-toolkit swarm start --recipe pair --ui herdr|tmux --runner opencode`.
 
