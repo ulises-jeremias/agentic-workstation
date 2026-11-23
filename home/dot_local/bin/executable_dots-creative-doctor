@@ -61,7 +61,7 @@ probe obs --version 0
 probe reaper -h 0
 probe kdenlive-mcp --version 0
 
-json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+json_escape() { printf '%s' "$1" | tr -d '\000-\010\013\014\016-\037\177' | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g'; }
 
 if [[ $JSON == 1 ]]; then
   printf '{"tools":['
@@ -96,8 +96,13 @@ else
   df -h "${HOME:-/}" 2>/dev/null | awk 'NR==2 {print "disk(home): " $4 " free of " $2}' || true
   if has_cmd nvidia-smi; then
     nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader 2>/dev/null | sed 's/^/gpu: /' || true
-    if ffmpeg -hide_banner -encoders 2>/dev/null | grep -qw h264_nvenc; then
-      echo "hw-encode: h264_nvenc available"
+    encoders="$(ffmpeg -hide_banner -encoders 2>/dev/null || true)"
+    if [[ $encoders == *h264_nvenc* ]]; then
+      if timeout 20 ffmpeg -hide_banner -loglevel error -f lavfi -i "color=c=black:size=256x144:rate=5:duration=1" -frames:v 2 -c:v h264_nvenc -f null - >/dev/null 2>&1; then
+        echo "hw-encode: h264_nvenc functional (2-frame probe encode passed)"
+      else
+        echo "hw-encode: h264_nvenc listed by ffmpeg but probe encode FAILED (driver/library mismatch?)"
+      fi
     fi
   else
     echo "gpu: no NVIDIA driver tools found (check your vendor's tools manually)"

@@ -57,6 +57,11 @@ install_pkg() {
     ok "already installed: $bin"
     return 0
   fi
+  # Fedora's mlt package ships the renderer as melt-7 in some releases.
+  if [[ $bin == melt ]] && has_cmd melt-7; then
+    ok "already installed: melt-7"
+    return 0
+  fi
   real="$(translate_pkg "$pkg")"
   if [[ -z $real ]]; then
     warn "no package mapping for $pkg on this system — install it manually if you need it"
@@ -68,7 +73,10 @@ install_pkg() {
   elif has_cmd apt-get; then
     sudo apt-get update -y && sudo apt-get install -y "$real"
   elif has_cmd dnf; then
-    sudo dnf install -y "$real" || warn "dnf could not install $real (ffmpeg/kdenlive may need RPM Fusion) — continuing"
+    # Failures must propagate: this is a run_onchange script, so exiting 0
+    # after a failed install would record the step as done and chezmoi
+    # would never retry it. (ffmpeg/kdenlive on Fedora may need RPM Fusion.)
+    sudo dnf install -y "$real"
   elif has_cmd brew; then
     brew install "$real"
   fi
@@ -90,13 +98,23 @@ install_pkg blender blender
 # Installed as an isolated pipx app; skipped when pipx is absent so this
 # script never reaches for sudo pip. Capability install/enablement stays
 # with agent-toolkit — this only provides the executable.
+# Pinned to the reviewed release verified end-to-end by Agent Toolkit
+# (mcp/registry/kdenlive.yaml records the evaluated upstream revision;
+# 0.3.0 is the reviewed PyPI release of that line). Bump deliberately,
+# never float on latest.
+KDENLIVE_MCP_VERSION="0.3.0"
 if has_cmd kdenlive-mcp; then
-  ok "already installed: kdenlive-mcp"
+  installed_version="$(kdenlive-mcp --version 2>/dev/null || true)"
+  if [[ $installed_version == *"$KDENLIVE_MCP_VERSION"* ]]; then
+    ok "already installed: $installed_version"
+  else
+    warn "kdenlive-mcp present but not the pinned $KDENLIVE_MCP_VERSION (found: ${installed_version:-unknown}) — left as-is; align with: pipx install --force mcp-kdenlive==$KDENLIVE_MCP_VERSION"
+  fi
 elif has_cmd pipx; then
-  log "installing mcp-kdenlive via pipx"
-  pipx install mcp-kdenlive || warn "pipx install mcp-kdenlive failed — run it manually to see why"
+  log "installing mcp-kdenlive==$KDENLIVE_MCP_VERSION via pipx"
+  pipx install "mcp-kdenlive==$KDENLIVE_MCP_VERSION" || warn "pipx install mcp-kdenlive failed — run it manually to see why"
 else
-  warn "pipx not found — skipping kdenlive-mcp (enable the python group, then: pipx install mcp-kdenlive)"
+  warn "pipx not found — skipping kdenlive-mcp (enable the python group, then: pipx install mcp-kdenlive==$KDENLIVE_MCP_VERSION)"
 fi
 
 if has_cmd kdenlive-mcp; then
