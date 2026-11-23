@@ -22,7 +22,7 @@ SCRIPTS_DIR="${HOME_DIR}/.chezmoiscripts"
 EXTERNALS="${HOME_DIR}/dot_local/share/agentic-workstation/.chezmoiexternal.toml.tmpl"
 AGENT_TOOLKIT_INSTALLER="${HOME_DIR}/dot_local/lib/agentic-workstation/install-agent-toolkit.sh"
 
-PROFILES_DEFAULT=(technical non-technical ai node python data infra minimal custom)
+PROFILES_DEFAULT=(technical non-technical ai node python data infra creative minimal custom)
 if [[ $# -gt 0 ]]; then
   PROFILES=("$@")
 else
