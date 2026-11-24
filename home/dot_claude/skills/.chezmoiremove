@@ -1,28 +1,9 @@
 dots-workstation-*
 dots-harness-*
-workspace-knowledge-sync
-onboarding
-output-handshake
-pr-fallback
-# ── Delegated to agent-toolkit — clean legacy flat installs ──
-clickup-cli
-slack-cli
-github-cli-workflow
-gitlab-cli-workflow
-dbt-validation
-snowflake-validation
-gh-address-comments
-gh-fix-ci
-linear
-figma
-figma-implement-design
-figma-code-connect-components
-figma-create-design-system-rules
-figma-create-new-file
-playwright-cli
-jupyter-notebook
-ui-ux-pro-max
-# Workstation delivery skills now in toolkit delivery/* (explicit for safety)
+# Legacy workstation flat installs only.
+# Cross-domain/core skills are owned by agent-toolkit-cli
+# (`agent-toolkit install`) and must never be listed here:
+# chezmoi and the toolkit installer would fight over them.
 dots-workstation-prd
 dots-workstation-trd
 dots-workstation-adr
