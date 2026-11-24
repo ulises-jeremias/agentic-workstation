@@ -59,3 +59,12 @@ package_groups:
   # Docker profile
   docker:
     - docker       # Docker Engine and CLI
+
+  # Creative profile — media toolchain for Agent Toolkit Creative Studio.
+  # Canonical names; run_onchange_48 translates per package manager
+  # (Arch: mlt provides melt; Debian: melt package provides melt).
+  creative:
+    - ffmpeg       # media inspection, loudness, exports (ffprobe included)
+    - mlt          # MLT framework + melt renderer
+    - kdenlive     # nonlinear video editor (editable .kdenlive projects)
+    - blender      # 3D / motion graphics

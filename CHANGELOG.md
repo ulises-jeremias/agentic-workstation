@@ -12,6 +12,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 <!-- markdownlint-disable MD024 -->
 ## [Unreleased]
 
+### Added
+
+- Optional `creative` profile/group: provisions ffmpeg, MLT/melt, Kdenlive
+  and Blender plus the Kdenlive MCP (`mcp-kdenlive` via pipx) for Agent
+  Toolkit Creative Studio, with a read-only `dots-creative-doctor`
+  diagnostic (apps, MCP readiness, GPU/NVENC, PipeWire, capture portal,
+  resources). Nothing is auto-configured and no recording is ever enabled.
+  See `docs/CREATIVE_WORKSTATION.md`.
+
+
 ### Fixed
 
 - **Privileged package installs** — removed non-interactive `sudo` prechecks that silently skipped installs when credentials were not cached. Package managers and AUR helpers now invoke their normal sudo prompt; failed privileged installs remain failures so chezmoi can retry them.
