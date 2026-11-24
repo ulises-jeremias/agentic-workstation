@@ -10,14 +10,17 @@ set -eo pipefail
 ##
 ## Commands:
 ##     list                 List installed skills and their status per AI tool.
-##     sync                 Regenerate symlinks for all skills (reads skill.json compatibility).
+##     sync                 Delegate to agent-toolkit (skills are installed by agent-toolkit-cli).
 ##     install-toolkit      Install or update agent-toolkit (brew/AUR/GitHub/uv V launcher + agent-toolkit install).
-##     install <name>       Install an npm-sourced skill from the registry.
-##     check                Validate that required tools and pip packages are installed.
-##     add <source>         Add an npm skill to the registry: npm:<pkg>.
 ##
-## Note: github and url skills are managed by chezmoi (.chezmoiexternal).
-##       Enable them in chezmoi config and run: chezmoi apply
+## Deprecated (skills are owned by agent-toolkit-cli, not this repo):
+##     install <name>       REMOVED — use: agent-toolkit install
+##     check                REMOVED — use: agent-toolkit doctor
+##     add <source>         REMOVED — contribute the skill to agent-toolkit instead
+##
+## Note: agentic-workstation no longer installs or manages skills. The uvx
+## agent-toolkit-cli package installs every skill (canonical + products);
+## this repo only provisions machines and the CLI itself.
 ##
 ## Note: The bulk of cross-domain skills come from agent-toolkit; use `agent-toolkit inventory` for the live catalog.
 ##       Use 'dots-skills install-toolkit' or 'chezmoi apply' to install/update them.
@@ -791,9 +794,9 @@ case "$command" in
   list) cmd_list "$@" ;;
   sync) cmd_sync ;;
   install-toolkit) cmd_install_toolkit ;;
-  install) cmd_install "${1:-}" ;;
-  check) cmd_check ;;
-  add) cmd_add "${1:-}" ;;
+  install | check | add)
+    die "dots-skills ${command} was removed: skills are installed by agent-toolkit-cli. Use: dots-skills install-toolkit (or agent-toolkit install / agent-toolkit doctor)."
+    ;;
   deps)
     _graph_script="${DOTS_WORKSTATION_SKILLS_DIR:?}/../../scripts/skill-graph.py"
     if [[ ! -f ${_graph_script} ]]; then

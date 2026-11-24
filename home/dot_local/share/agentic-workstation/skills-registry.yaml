@@ -1,14 +1,13 @@
 # Skills Registry
 #
-# This file documents skills known to this baseline.
-# It is used by `dots-skills` for npm-sourced skills (install + sync).
+# Historical record of workstation-specific skills.
+# Skills are installed exclusively by agent-toolkit-cli (`agent-toolkit install`);
+# agentic-workstation no longer installs, syncs or registers skills (see dots-skills).
 #
 # Deployed to ~/.local/share/agentic-workstation/skills-registry.yaml via chezmoi.
 # Keep in sync with home/.chezmoidata/skills-registry.yaml (same content).
 #
-# Skills from github/url sources are managed natively by chezmoi:
-#   home/dot_local/share/agentic-workstation/.chezmoiexternal.toml.tmpl
-#   Opt-in via chezmoidata install_skill_* flags.
+# (Removed: chezmoi external skill archives and install_skill_* flags.)
 #
 # Thin workstation: first-party skills are delegated to agent-toolkit via
 # `dots-skills install-toolkit && agent-toolkit install`.

@@ -300,9 +300,6 @@
   install_agent_slack_cli              = {{ $installProd }}
   install_agent_rtk                    = {{ $installProd }}
 
-  # ── External skill packs ─────────────────────────────────────────────────
-  install_skill_dots_ai_slack_assistant    = {{ $installProd }}
-
   # ── LM Studio (local LLM, RTX 3060 12GB tuned) ────────────────────────
   install_group_lmstudio               = {{ $installLmstudio }}
   lmstudio_models_selection            = {{ $lmstudioModelsRaw | quote }}
